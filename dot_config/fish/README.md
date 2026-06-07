@@ -49,6 +49,33 @@ Add a file only:
 conf.d/60-your-tool.fish
 ```
 
+## Local Env And Alias Files
+
+`conf.d/35-local-env.fish` loads `~/.envs` if it exists:
+
+```text
+FOO=bar
+EDITOR=nvim
+PATH={HOME}/.local/custom/bin:{PATH}
+```
+
+- Lines must be `KEY=VALUE`.
+- Full-line comments and invalid variable names are ignored.
+- Matching outer single or double quotes are stripped.
+- `{HOME}` and `{PATH}` are expanded without using `eval`.
+- `PATH` is split on `:` and prepended in the written order.
+
+`conf.d/45-local-aliases.fish` loads `~/.aliases` if it exists:
+
+```text
+gs="git status"
+ll="ls -alFh"
+```
+
+Aliases load after the default aliases, so local aliases can override them.
+Fish aliases are implemented as functions, so repeated loads are skipped while
+the file mtime is unchanged.
+
 ## Add A Function
 
 Add a file only:

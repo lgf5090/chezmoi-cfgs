@@ -22,6 +22,75 @@ function _fpath_append
     end
 end
 
+set -g _FLOCAL_LOADER_VERSION 1
+
+function _fpath_prepend_value -a value
+    set -l new_path
+    for dir in (string split : -- "$value") $PATH
+        test -n "$dir"; or continue
+        test -d "$dir"; or continue
+        contains -- "$dir" $new_path; and continue
+        set -a new_path "$dir"
+    end
+    set -gx PATH $new_path
+end
+
+function _fload_envs -a file
+    test -r "$file"; or return 0
+
+    while read -l line
+        set -l parts (string match -r '^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$' -- "$line")
+        test (count $parts) -eq 3; or continue
+
+        set -l key $parts[2]
+        set -l val $parts[3]
+
+        if test (string length -- "$val") -ge 2
+            switch $val
+                case '"*"' "'*'"
+                    set val (string sub -s 2 -e -1 -- "$val")
+            end
+        end
+
+        set val (string replace -a '{HOME}' "$HOME" -- "$val")
+        set val (string replace -a '{PATH}' (string join : -- $PATH) -- "$val")
+
+        if test "$key" = PATH
+            _fpath_prepend_value "$val"
+        else
+            set -gx $key "$val"
+        end
+    end < "$file"
+end
+
+function _fload_aliases -a file
+    test -r "$file"; or return 0
+
+    set -l load_key "$file:"(path mtime -- "$file")
+    if set -q _FLOCAL_ALIASES_LOADED_KEY
+        test "$_FLOCAL_ALIASES_LOADED_KEY" = "$load_key"; and return 0
+    end
+
+    while read -l line
+        set -l parts (string match -r '^\s*([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*(.*?)\s*$' -- "$line")
+        test (count $parts) -eq 3; or continue
+
+        set -l name $parts[2]
+        set -l body $parts[3]
+
+        if test (string length -- "$body") -ge 2
+            switch $body
+                case '"*"' "'*'"
+                    set body (string sub -s 2 -e -1 -- "$body")
+            end
+        end
+
+        alias "$name" "$body"
+    end < "$file"
+
+    set -g _FLOCAL_ALIASES_LOADED_KEY "$load_key"
+end
+
 function _fver_ge -a left right
     set -l v1 (string split . -- "$left")
     set -l v2 (string split . -- "$right")
