@@ -54,6 +54,95 @@ _bver_ge() {
   return 0
 }
 
+_BLOCAL_LOADER_VERSION=2
+
+_bpath_prepend_value() {
+  local value=$1 old_path=$PATH part old_ifs new_path=
+  local -a parts=() old_parts=()
+  local -A seen=()
+
+  old_ifs=$IFS
+  IFS=:
+  read -r -a parts <<< "$value"
+  read -r -a old_parts <<< "$old_path"
+  IFS=$old_ifs
+
+  for part in "${parts[@]}" "${old_parts[@]}"; do
+    [[ -n $part && -d $part ]] || continue
+    [[ ${seen[$part]+set} ]] && continue
+    seen[$part]=1
+    new_path="${new_path:+$new_path:}$part"
+  done
+
+  PATH=$new_path
+  export PATH
+}
+
+_bload_envs() {
+  local file=$1 line key val
+  [[ -r $file ]] || return 0
+
+  while IFS= read -r line || [[ -n $line ]]; do
+    line=${line#"${line%%[![:space:]]*}"}
+    case $line in
+      ''|'#'*) continue ;;
+      export[[:space:]]*)
+        line=${line#export}
+        line=${line#"${line%%[![:space:]]*}"}
+        ;;
+    esac
+    [[ $line == *=* ]] || continue
+
+    key=${line%%=*}
+    val=${line#*=}
+    key=${key%"${key##*[![:space:]]}"}
+    val=${val#"${val%%[![:space:]]*}"}
+    val=${val%"${val##*[![:space:]]}"}
+    [[ $key =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
+
+    if (( ${#val} >= 2 )); then
+      case "${val:0:1}${val: -1}" in
+        '""'|"''") val=${val:1:${#val}-2} ;;
+      esac
+    fi
+    val=${val//\{HOME\}/$HOME}
+    val=${val//\{PATH\}/$PATH}
+
+    if [[ $key == PATH ]]; then
+      _bpath_prepend_value "$val"
+    else
+      export "$key=$val"
+    fi
+  done < "$file"
+}
+
+_bload_aliases() {
+  local file=$1 line name body
+  [[ -r $file ]] || return 0
+
+  while IFS= read -r line || [[ -n $line ]]; do
+    line=${line#"${line%%[![:space:]]*}"}
+    case $line in
+      ''|'#'*) continue ;;
+    esac
+    [[ $line == *=* ]] || continue
+
+    name=${line%%=*}
+    body=${line#*=}
+    name=${name%"${name##*[![:space:]]}"}
+    body=${body#"${body%%[![:space:]]*}"}
+    body=${body%"${body##*[![:space:]]}"}
+    [[ $name =~ ^[A-Za-z_][A-Za-z0-9_-]*$ ]] || continue
+
+    if (( ${#body} >= 2 )); then
+      case "${body:0:1}${body: -1}" in
+        '""'|"''") body=${body:1:${#body}-2} ;;
+      esac
+    fi
+    alias "$name=$body"
+  done < "$file"
+}
+
 _bprompt_add() {
   local cmd=$1
 
