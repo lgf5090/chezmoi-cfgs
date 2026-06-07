@@ -1,5 +1,6 @@
  tmp/
  plugins/
+ .agents/
 
  *.bak
  *-shm
