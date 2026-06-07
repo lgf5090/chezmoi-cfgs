@@ -2,3 +2,10 @@
  plugins/
 
  *.bak
+ *-shm
+ *-wal
+ *.log
+ *.tmp
+ *.swp
+ *.swo
+ *.DS_Store
