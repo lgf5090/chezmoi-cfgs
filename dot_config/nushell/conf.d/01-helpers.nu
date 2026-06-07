@@ -84,8 +84,8 @@ def nuplugin-update [] {
 }
 
 # Nushell source paths are parse-time constants, so this helper only installs or
-# updates git-backed script directories. Add static source lines in config.nu to
-# load files from installed plugins.
+# updates git-backed script directories. Source plugin files from tracked .nu
+# files that the generated autoload loader already includes.
 def _nuplugin [owner: string, repo: string] {
     let dir = ($env.NUSHELL_PLUGIN_DIR | path join $repo)
     if ($dir | path exists) { return }
