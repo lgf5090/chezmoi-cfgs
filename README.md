@@ -59,7 +59,7 @@ chezmoi init --apply https://github.com/lgf5090/chezmoi-cfgs.git
 2. 根据 `.chezmoi.toml.tmpl` 生成本机 `~/.config/chezmoi/chezmoi.toml`。
 3. 把仓库里的 dotfiles 应用到 `$HOME`。
 
-如果遇到加密文件，GPG 会提示输入对称加密密码。
+首次安装时会提示输入一次 `GPG passphrase`。这个密码会写入本机 `~/.config/chezmoi/chezmoi.toml`，后续解密多个 GPG 对称加密文件时会自动复用，避免同一次 `apply` 里反复输入。
 
 安装后可以检查：
 
@@ -225,10 +225,16 @@ git -C ~/.local/share/chezmoi push
 本仓库使用 GPG 对称加密：
 
 ```toml
+{{ $passphrase := promptStringOnce . "passphrase" "GPG passphrase" -}}
+
 encryption = "gpg"
+
+[data]
+    passphrase = "..."
 
 [gpg]
     symmetric = true
+    args = ["--batch", "--passphrase", "...", "--no-symkey-cache"]
 ```
 
 添加 SSH 私钥：
@@ -260,11 +266,29 @@ git -C ~/.local/share/chezmoi commit -m "Update SSH files"
 
 ## 常见问题
 
-### 每次 `chezmoi apply` 都提示 GPG 密码怎么办？
+### GPG 密码保存在哪里？
 
-可以用 `chezmoi apply --exclude=encrypted` 临时跳过加密文件。需要更新 SSH 等敏感文件时，再正常运行 `chezmoi apply` 并输入密码。
+首次 `chezmoi init` 会通过 `.chezmoi.toml.tmpl` 提示一次 `GPG passphrase`，并把它写入本机配置：
 
-如果希望会话内只输入一次密码，可以参考 chezmoi 官方文档里的 `promptStringOnce` 模板方案，或者改用 `age` 的 passphrase 模式。
+```text
+~/.config/chezmoi/chezmoi.toml
+```
+
+这是为了让 `chezmoi apply` 解密多个 `encrypted_*.asc` 文件时只输入一次密码。代价是该密码会以明文保存在本机，所以这个方案只适合自己的可信机器。
+
+已有安装在拉取到这次模板变更后，可以重新生成本机配置：
+
+```bash
+chezmoi init --prompt
+```
+
+`--prompt` 会强制重新询问 `GPG passphrase` 并更新 `~/.config/chezmoi/chezmoi.toml`。
+
+如果不想在某次操作里触碰加密文件，可以临时跳过：
+
+```bash
+chezmoi apply --exclude=encrypted
+```
 
 ### 为什么不能直接管理 `~/.config/chezmoi/chezmoi.toml`？
 
