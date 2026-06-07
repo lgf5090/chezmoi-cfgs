@@ -1,4 +1,4 @@
-```md
+
 # 🚀 My Chezmoi Dotfiles
 
 使用 [chezmoi](https://www.chezmoi.io/) 管理的个人配置文件（dotfiles），支持跨多台机器安全同步，并通过 **GPG 对称加密** 保护敏感文件（如 `~/.ssh/`）。
@@ -11,10 +11,24 @@
 - [git](https://git-scm.com/) – 版本控制
 - [GnuPG (gpg)](https://gnupg.org/) – 用于对称加密解密
 
-在 Ubuntu / Debian 上可以一键安装：
+[chezmoi安装教程](https://www.chezmoi.io/install/#__tabbed_2_1)
 
 ```bash
-sudo apt update && sudo apt install chezmoi git gnupg
+sudo apt update && sudo apt install -y bash zsh fish git gnupg
+```
+
+docker
+```bash
+docker run -it ubuntu bash
+```
+
+```bash
+apt update && apt install -y bash zsh fish git gnupg
+```
+
+安装chezmoi
+```bash
+sh -c "$(curl -fsLS https://get.chezmoi.io)"
 ```
 
 ## 🛠️ 首次安装与使用
