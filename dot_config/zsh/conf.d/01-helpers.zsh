@@ -14,6 +14,96 @@ _zpath_append() {
   done
 }
 
+typeset -g _ZLOCAL_LOADER_VERSION=1
+
+_zpath_prepend_value() {
+  local value=$1 part new_path=
+  local -a parts old_parts
+  local -A seen
+
+  parts=(${(s.:.)value})
+  old_parts=("${path[@]}")
+  seen=()
+
+  for part in "${parts[@]}" "${old_parts[@]}"; do
+    [[ -n $part && -d $part ]] || continue
+    [[ -n ${seen[$part]:-} ]] && continue
+    seen[$part]=1
+    new_path="${new_path:+$new_path:}$part"
+  done
+
+  PATH=$new_path
+}
+
+_zload_envs() {
+  local file=$1 line key val
+  [[ -r $file ]] || return 0
+
+  while IFS= read -r line || [[ -n $line ]]; do
+    line=${line#${line%%[![:space:]]*}}
+    case $line in
+      ''|'#'*) continue ;;
+      export[[:space:]]*)
+        line=${line#export}
+        line=${line#${line%%[![:space:]]*}}
+        ;;
+    esac
+    [[ $line == *=* ]] || continue
+
+    key=${line%%=*}
+    val=${line#*=}
+    key=${key%${key##*[![:space:]]}}
+    val=${val#${val%%[![:space:]]*}}
+    val=${val%${val##*[![:space:]]}}
+    case $key in
+      ''|[0-9]*|*[!A-Za-z0-9_]*) continue ;;
+    esac
+
+    if (( ${#val} >= 2 )); then
+      case "${val[1]}${val[-1]}" in
+        '""'|"''") val=${val[2,-2]} ;;
+      esac
+    fi
+    val=${val//\{HOME\}/$HOME}
+    val=${val//\{PATH\}/$PATH}
+
+    if [[ $key == PATH ]]; then
+      _zpath_prepend_value "$val"
+    else
+      export "$key=$val"
+    fi
+  done < "$file"
+}
+
+_zload_aliases() {
+  local file=$1 line name body
+  [[ -r $file ]] || return 0
+
+  while IFS= read -r line || [[ -n $line ]]; do
+    line=${line#${line%%[![:space:]]*}}
+    case $line in
+      ''|'#'*) continue ;;
+    esac
+    [[ $line == *=* ]] || continue
+
+    name=${line%%=*}
+    body=${line#*=}
+    name=${name%${name##*[![:space:]]}}
+    body=${body#${body%%[![:space:]]*}}
+    body=${body%${body##*[![:space:]]}}
+    case $name in
+      ''|[0-9-]*|*[!A-Za-z0-9_-]*) continue ;;
+    esac
+
+    if (( ${#body} >= 2 )); then
+      case "${body[1]}${body[-1]}" in
+        '""'|"''") body=${body[2,-2]} ;;
+      esac
+    fi
+    alias -- "$name=$body"
+  done < "$file"
+}
+
 _zver_ge() {
   local i n1 n2
   local -a v1=(${(s:.:)1}) v2=(${(s:.:)2})
