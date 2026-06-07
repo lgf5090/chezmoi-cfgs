@@ -48,6 +48,36 @@ Add a file only:
 conf.d/60-your-tool.ps1
 ```
 
+## Local Env And Alias Files
+
+`conf.d/35-local-env.ps1` loads `~/.envs` if it exists:
+
+```text
+FOO=bar
+EDITOR=nvim
+PATH={HOME}/.local/custom/bin:{PATH}
+```
+
+- Lines must be `KEY=VALUE`.
+- Full-line comments and invalid variable names are ignored.
+- Matching outer single or double quotes are stripped.
+- `{HOME}` and `{PATH}` are expanded without using `Invoke-Expression`.
+- `PATH` is split on `:` and `;` on Unix-like systems, and on `;` on Windows.
+
+`conf.d/45-local-aliases.ps1` loads `~/.aliases` if it exists:
+
+```text
+gs="git status"
+ll="Get-ChildItem -Force"
+```
+
+Aliases load after the default aliases, so local aliases can override them.
+They are implemented as global functions that append `@args` to the command
+body. Repeated loads are skipped while the file mtime is unchanged.
+
+Alias bodies are PowerShell command text. POSIX-only forms such as inline
+`NAME=value command` assignments may need a PowerShell-specific alias body.
+
 ## Add A Function
 
 Add a file only:

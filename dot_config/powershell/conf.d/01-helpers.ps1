@@ -70,6 +70,113 @@ function Add-PathAppend {
     Set-PathEntries $entries.ToArray()
 }
 
+$global:PowerShellLocalLoaderVersion = 1
+
+function Add-PathPrependValue {
+    param([Parameter(Mandatory)][string]$Value)
+
+    $entries = [System.Collections.Generic.List[string]]::new()
+    $seen = [System.Collections.Generic.HashSet[string]]::new((Get-PathComparer))
+    $separatorPattern = if ($script:IsWindowsPlatform) { ';' } else { '[:;]' }
+
+    foreach ($item in (($Value -split $separatorPattern) + (Get-PathEntries))) {
+        if ([string]::IsNullOrWhiteSpace($item)) { continue }
+        if (-not (Test-Path -LiteralPath $item -PathType Container)) { continue }
+        if (-not $seen.Add($item)) { continue }
+        [void]$entries.Add($item)
+    }
+
+    Set-PathEntries $entries.ToArray()
+}
+
+function Import-LocalEnvFile {
+    param([Parameter(Mandatory)][string]$Path)
+
+    if (-not [System.IO.File]::Exists($Path)) {
+        return
+    }
+
+    foreach ($lineRaw in [System.IO.File]::ReadLines($Path)) {
+        $line = $lineRaw.TrimStart()
+        if ([string]::IsNullOrEmpty($line) -or $line[0] -eq '#') {
+            continue
+        }
+        if ($line.StartsWith('export ')) {
+            $line = $line.Substring(6).TrimStart()
+        }
+
+        $eq = $line.IndexOf('=')
+        if ($eq -lt 1) {
+            continue
+        }
+
+        $key = $line.Substring(0, $eq).TrimEnd()
+        $value = $line.Substring($eq + 1).Trim()
+        if ($key -notmatch '^[A-Za-z_][A-Za-z0-9_]*$') {
+            continue
+        }
+
+        if ($value.Length -ge 2) {
+            $first = $value[0]
+            $last = $value[$value.Length - 1]
+            if (($first -eq '"' -and $last -eq '"') -or ($first -eq "'" -and $last -eq "'")) {
+                $value = $value.Substring(1, $value.Length - 2)
+            }
+        }
+
+        $value = $value.Replace('{HOME}', $HOME).Replace('{PATH}', $env:PATH)
+        if ($key -eq 'PATH') {
+            Add-PathPrependValue -Value $value
+        } else {
+            [System.Environment]::SetEnvironmentVariable($key, $value, 'Process')
+        }
+    }
+}
+
+function Import-LocalAliasFile {
+    param([Parameter(Mandatory)][string]$Path)
+
+    if (-not [System.IO.File]::Exists($Path)) {
+        return
+    }
+
+    $item = [System.IO.FileInfo]::new($Path)
+    $loadKey = "$($item.FullName):$($item.LastWriteTimeUtc.Ticks)"
+    if ($global:PowerShellLocalAliasesLoadedKey -eq $loadKey) {
+        return
+    }
+
+    foreach ($lineRaw in [System.IO.File]::ReadLines($Path)) {
+        $line = $lineRaw.TrimStart()
+        if ([string]::IsNullOrEmpty($line) -or $line[0] -eq '#') {
+            continue
+        }
+
+        $eq = $line.IndexOf('=')
+        if ($eq -lt 1) {
+            continue
+        }
+
+        $name = $line.Substring(0, $eq).TrimEnd()
+        $body = $line.Substring($eq + 1).Trim()
+        if ($name -notmatch '^[A-Za-z_][A-Za-z0-9_-]*$') {
+            continue
+        }
+
+        if ($body.Length -ge 2) {
+            $first = $body[0]
+            $last = $body[$body.Length - 1]
+            if (($first -eq '"' -and $last -eq '"') -or ($first -eq "'" -and $last -eq "'")) {
+                $body = $body.Substring(1, $body.Length - 2)
+            }
+        }
+
+        Set-Item -LiteralPath "function:global:$name" -Value ([scriptblock]::Create($body + ' @args'))
+    }
+
+    $global:PowerShellLocalAliasesLoadedKey = $loadKey
+}
+
 function Test-VersionGe {
     param(
         [Parameter(Mandatory)][string]$Left,
