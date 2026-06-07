@@ -4,12 +4,12 @@ local config     = wezterm.config_builder()
 -- ============================================================
 -- 平台检测
 -- ============================================================
-local is_windows = wezterm.target_triple == 'x86_64-pc-windows-msvc'
+local is_windows = wezterm.target_triple:find('windows') ~= nil
 local is_linux   = wezterm.target_triple:find('linux') ~= nil
 local is_darwin  = wezterm.target_triple:find('darwin') ~= nil
 
 -- ============================================================
--- Unix Shell 启动菜单
+-- Shell 启动菜单
 -- ============================================================
 local function starts_with(value, prefix)
     return value:sub(1, #prefix) == prefix
@@ -278,6 +278,308 @@ local function build_unix_shell_launch_menu()
     return launch_menu
 end
 
+local function build_windows_shell_launch_menu()
+    local function env_any(names)
+        for _, name in ipairs(names) do
+            local value = os.getenv(name)
+            if value ~= nil and value ~= '' then
+                return value
+            end
+        end
+
+        return nil
+    end
+
+    local function clean_path(path)
+        if path == nil then
+            return nil
+        end
+
+        path = path:gsub('^"+', ''):gsub('"+$', '')
+        path = path:gsub('/', '\\')
+        return (path:gsub('\\+$', ''))
+    end
+
+    local function join_path(...)
+        local parts = { ... }
+        local result = clean_path(parts[1])
+
+        if result == nil or result == '' then
+            return nil
+        end
+
+        for i = 2, #parts do
+            local part = clean_path(parts[i])
+            if part ~= nil and part ~= '' then
+                result = result .. '\\' .. part:gsub('^\\+', '')
+            end
+        end
+
+        return result
+    end
+
+    local function lower_path(path)
+        return string.lower(clean_path(path) or '')
+    end
+
+    local function append_dir(dirs, seen, path)
+        path = clean_path(path)
+        if path == nil or path == '' then
+            return
+        end
+
+        local key = lower_path(path)
+        if seen[key] == nil then
+            table.insert(dirs, path)
+            seen[key] = true
+        end
+    end
+
+    local function split_path(value)
+        local dirs = {}
+        for dir in string.gmatch(value or '', '([^;]+)') do
+            table.insert(dirs, dir)
+        end
+
+        return dirs
+    end
+
+    local function prefixed_dir(path)
+        path = lower_path(path)
+        if path == '' then
+            return nil
+        end
+
+        return path .. '\\'
+    end
+
+    local profile = env_any { 'USERPROFILE' }
+    if profile == nil then
+        local home_drive = env_any { 'HOMEDRIVE' }
+        local home_path = env_any { 'HOMEPATH' }
+        if home_drive ~= nil and home_path ~= nil then
+            profile = home_drive .. home_path
+        end
+    end
+
+    local system_root = env_any { 'SystemRoot', 'WINDIR' } or 'C:\\Windows'
+    local program_files = env_any { 'ProgramW6432', 'ProgramFiles' } or 'C:\\Program Files'
+    local program_files_x86 = env_any { 'ProgramFiles(x86)' } or 'C:\\Program Files (x86)'
+    local program_data = env_any { 'ProgramData' } or 'C:\\ProgramData'
+    local local_app_data = env_any { 'LOCALAPPDATA' }
+    local path_env = env_any { 'PATH', 'Path' }
+    local cargo_home = env_any { 'CARGO_HOME' } or (profile and join_path(profile, '.cargo') or nil)
+
+    local source_rules = {}
+    local function add_source_rule(path, label)
+        local prefix = prefixed_dir(path)
+        if prefix ~= nil then
+            table.insert(source_rules, { prefix = prefix, label = label })
+        end
+    end
+
+    add_source_rule(cargo_home and join_path(cargo_home, 'bin') or nil, 'cargo')
+    add_source_rule(profile and join_path(profile, 'scoop', 'shims') or nil, 'scoop')
+    add_source_rule(program_data and join_path(program_data, 'scoop', 'shims') or nil, 'scoop')
+    add_source_rule(program_data and join_path(program_data, 'chocolatey', 'bin') or nil, 'choco')
+    add_source_rule(local_app_data and join_path(local_app_data, 'Microsoft', 'WindowsApps') or nil, 'store')
+
+    local system_prefixes = {}
+    for _, dir in ipairs {
+        join_path(system_root, 'System32'),
+        join_path(system_root, 'SysWOW64'),
+        join_path(system_root, 'System32', 'WindowsPowerShell', 'v1.0'),
+        join_path(program_files, 'PowerShell'),
+        join_path(program_files_x86, 'PowerShell'),
+    } do
+        local prefix = prefixed_dir(dir)
+        if prefix ~= nil then
+            table.insert(system_prefixes, prefix)
+        end
+    end
+
+    local function source_label(path)
+        local normalized = lower_path(path)
+        for _, rule in ipairs(source_rules) do
+            if starts_with(normalized .. '\\', rule.prefix) or starts_with(normalized, rule.prefix) then
+                return rule.label
+            end
+        end
+
+        for _, prefix in ipairs(system_prefixes) do
+            if starts_with(normalized .. '\\', prefix) or starts_with(normalized, prefix) then
+                return nil
+            end
+        end
+
+        if profile ~= nil and starts_with(normalized, lower_path(profile) .. '\\') then
+            return 'user'
+        end
+
+        return nil
+    end
+
+    local path_dirs = {}
+    local seen_path_dirs = {}
+    for _, dir in ipairs(split_path(path_env)) do
+        append_dir(path_dirs, seen_path_dirs, dir)
+    end
+
+    local candidate_dirs = {}
+    local seen_candidate_dirs = {}
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(system_root, 'System32'))
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(system_root, 'System32', 'WindowsPowerShell', 'v1.0'))
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(program_files, 'PowerShell', '7'))
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(program_files, 'PowerShell', '7-preview'))
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(program_files_x86, 'PowerShell', '7'))
+    append_dir(candidate_dirs, seen_candidate_dirs, local_app_data and join_path(local_app_data, 'Microsoft', 'WindowsApps') or nil)
+    append_dir(candidate_dirs, seen_candidate_dirs, cargo_home and join_path(cargo_home, 'bin') or nil)
+    append_dir(candidate_dirs, seen_candidate_dirs, profile and join_path(profile, 'scoop', 'shims') or nil)
+    append_dir(candidate_dirs, seen_candidate_dirs, program_data and join_path(program_data, 'scoop', 'shims') or nil)
+    append_dir(candidate_dirs, seen_candidate_dirs, program_data and join_path(program_data, 'chocolatey', 'bin') or nil)
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(program_files, 'Git', 'bin'))
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(program_files, 'Git', 'usr', 'bin'))
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(program_files_x86, 'Git', 'bin'))
+    append_dir(candidate_dirs, seen_candidate_dirs, join_path(program_files_x86, 'Git', 'usr', 'bin'))
+    append_dir(candidate_dirs, seen_candidate_dirs, local_app_data and join_path(local_app_data, 'Programs', 'Git', 'bin') or nil)
+    append_dir(candidate_dirs, seen_candidate_dirs, local_app_data and join_path(local_app_data, 'Programs', 'Git', 'usr', 'bin') or nil)
+    append_dir(candidate_dirs, seen_candidate_dirs, 'C:\\msys64\\usr\\bin')
+    append_dir(candidate_dirs, seen_candidate_dirs, 'C:\\msys32\\usr\\bin')
+    append_dir(candidate_dirs, seen_candidate_dirs, 'C:\\cygwin64\\bin')
+    append_dir(candidate_dirs, seen_candidate_dirs, 'C:\\cygwin\\bin')
+
+    for _, dir in ipairs(path_dirs) do
+        append_dir(candidate_dirs, seen_candidate_dirs, dir)
+    end
+
+    local function collect_exe_paths(exe)
+        local paths = {}
+        local seen_paths = {}
+        for _, dir in ipairs(candidate_dirs) do
+            local path = join_path(dir, exe)
+            local key = lower_path(path)
+            if seen_paths[key] == nil and file_exists(path) then
+                table.insert(paths, path)
+                seen_paths[key] = true
+            end
+        end
+
+        return paths
+    end
+
+    local path_dir_lookup = {}
+    for _, dir in ipairs(path_dirs) do
+        path_dir_lookup[lower_path(dir)] = true
+    end
+
+    local function command_arg(path, exe)
+        local dir = path:match('^(.*)\\[^\\]+$')
+        if dir ~= nil and path_dir_lookup[lower_path(dir)] then
+            return exe
+        end
+
+        return path
+    end
+
+    local launch_menu = {}
+    local seen_entries = {}
+    local function add_item(label, args, identity)
+        identity = lower_path(identity or args[1])
+        if seen_entries[identity] ~= nil then
+            return
+        end
+
+        table.insert(launch_menu, {
+            label = label,
+            args = args,
+        })
+        seen_entries[identity] = true
+    end
+
+    local function add_first(label, exe, extra_args)
+        local paths = collect_exe_paths(exe)
+        if #paths == 0 then
+            return
+        end
+
+        local args = { command_arg(paths[1], exe) }
+        for _, arg in ipairs(extra_args or {}) do
+            table.insert(args, arg)
+        end
+        add_item(label, args, label)
+    end
+
+    add_first('PowerShell Core', 'pwsh.exe', { '-NoExit', '-NoLogo' })
+    add_first('PowerShell', 'powershell.exe', { '-NoExit', '-NoLogo' })
+    add_first('Command Prompt', 'cmd.exe')
+
+    local nu_paths = collect_exe_paths('nu.exe')
+    for _, path in ipairs(nu_paths) do
+        if source_label(path) == nil then
+            add_item('Nushell', { command_arg(path, 'nu.exe') }, path)
+            break
+        end
+    end
+    for _, path in ipairs(nu_paths) do
+        local source = source_label(path)
+        if source ~= nil then
+            add_item('Nushell (' .. source .. ')', { path }, path)
+        end
+    end
+
+    local bash_paths = collect_exe_paths('bash.exe')
+    local function add_bash(label, paths, fragments)
+        for _, path in ipairs(paths) do
+            path = clean_path(path)
+            if file_exists(path) then
+                add_item(label, { path, '-i', '-l' }, label)
+                return
+            end
+        end
+
+        for _, path in ipairs(bash_paths) do
+            local normalized = lower_path(path)
+            for _, fragment in ipairs(fragments or {}) do
+                if normalized:find(fragment, 1, true) then
+                    add_item(label, { path, '-i', '-l' }, label)
+                    return
+                end
+            end
+        end
+    end
+
+    add_bash('Git Bash', {
+        join_path(program_files, 'Git', 'bin', 'bash.exe'),
+        join_path(program_files, 'Git', 'usr', 'bin', 'bash.exe'),
+        join_path(program_files_x86, 'Git', 'bin', 'bash.exe'),
+        join_path(program_files_x86, 'Git', 'usr', 'bin', 'bash.exe'),
+        local_app_data and join_path(local_app_data, 'Programs', 'Git', 'bin', 'bash.exe') or nil,
+        local_app_data and join_path(local_app_data, 'Programs', 'Git', 'usr', 'bin', 'bash.exe') or nil,
+    }, {
+        '\\git\\bin\\bash.exe',
+        '\\git\\usr\\bin\\bash.exe',
+    })
+
+    add_bash('MSYS2 Bash', {
+        'C:\\msys64\\usr\\bin\\bash.exe',
+        'C:\\msys32\\usr\\bin\\bash.exe',
+    }, {
+        '\\msys64\\usr\\bin\\bash.exe',
+        '\\msys32\\usr\\bin\\bash.exe',
+        '\\msys2\\usr\\bin\\bash.exe',
+    })
+
+    add_bash('Cygwin Bash', {
+        'C:\\cygwin64\\bin\\bash.exe',
+        'C:\\cygwin\\bin\\bash.exe',
+    }, {
+        '\\cygwin64\\bin\\bash.exe',
+        '\\cygwin\\bin\\bash.exe',
+    })
+
+    return launch_menu
+end
+
 -- ============================================================
 -- 外观
 -- ============================================================
@@ -320,7 +622,9 @@ config.use_fancy_tab_bar                           = true
 config.tab_bar_at_bottom                           = false
 config.hide_tab_bar_if_only_one_tab                = false
 
-if not is_windows then
+if is_windows then
+    config.launch_menu = build_windows_shell_launch_menu()
+else
     config.launch_menu = build_unix_shell_launch_menu()
 end
 
