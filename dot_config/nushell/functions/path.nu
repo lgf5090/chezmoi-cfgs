@@ -1,0 +1,3 @@
+def path [] {
+    $env.PATH
+}
