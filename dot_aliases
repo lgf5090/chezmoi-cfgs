@@ -1,0 +1,250 @@
+# cd to usual directories
+cdws=cd ~/workspace
+cdcd=cd ~/code
+
+cdcfg=cd ~/.config
+cdlc=cd ~/.local
+cdls=cd ~/.local/share
+cdcg=cd ~/.cargo
+cdcc=cd ~/.cache
+cdt=cd /tmp
+cddl=cd ~/Downloads
+cddm=cd ~/Documents
+cddt=cd ~/Desktop
+cdv=cd ~/Videos
+cdm=cd ~/Music
+cdp=cd ~/Pictures
+cddlz=cd ~/下载
+cddmz=cd ~/文档
+cddtz=cd ~/桌面
+cdvz=cd ~/视频
+cdsz=cd ~/音乐
+cdpz=cd ~/图片
+
+
+
+# usually commands
+h=history
+hist=history
+
+
+
+# usually apps
+ff=fastfetch
+
+nv=nvim
+nvl=NVIM_APPNAME=nvim-lite nvim
+nvd=NVIM_APPNAME=nvim-dev nvim
+
+els=eza --color=always --icons=always --reverse --sort=size
+elsd=eza --color=always --icons=always --reverse --sort=size --only-dirs
+ell=eza -lh --color=always --icons=always --group-directories-first --reverse --sort=size
+elld=eza -lh --color=always --icons=always --group-directories-first --reverse --sort=size --only-dirs
+ela=eza -lah --color=always --icons=always --group-directories-first --reverse --sort=size
+elad=eza -lah --color=always --icons=always --group-directories-first --reverse --sort=size --only-dirs
+elt=eza --color=always --icons=always --tree --level=3
+
+
+
+# git aliases
+gst=git status
+gsb=git status --short --branch
+gph=git push
+gpsu=git push -u origin HEAD
+gpl=git pull
+gcm=git commit -m
+gco=git checkout
+gcob=git checkout -b
+gaa=git add --all
+gad=git add
+glg = git log --oneline --graph
+
+
+
+# ============================================
+# busybox 别名设置
+# ============================================
+
+# 通用 busybox 命令别名
+bb=busybox
+bbls=busybox ls --color=auto
+
+# 文件操作类
+bbcat=busybox cat
+bbcp=busybox cp
+bbmv=busybox mv
+bbrm=busybox rm
+bbmkdir=busybox mkdir
+bbrdir=busybox rmdir
+bbln=busybox ln
+bbchmod=busybox chmod
+bbchattr=busybox chattr
+bblsattr=busybox lsattr
+bbtouch=busybox touch
+bbinstall=busybox install
+
+# 文本处理类
+bbgrep=busybox grep
+bbegrep=busybox egrep
+bbfgrep=busybox fgrep
+bbsed=busybox sed
+bbawk=busybox awk
+bbcut=busybox cut
+bbsort=busybox sort
+bbuniq=busybox uniq
+bbwc=busybox wc
+bbhead=busybox head
+bbtail=busybox tail
+bbtac=busybox tac
+bbnl=busybox nl
+bbfold=busybox fold
+bbsplit=busybox split
+bbascii=busybox ascii
+bbrev=busybox rev
+
+# 压缩归档类
+bbtar=busybox tar
+bbgzip=busybox gzip
+bbgunzip=busybox gunzip
+bbzcat=busybox zcat
+bbbzip2=busybox bzip2
+bbbunzip2=busybox bunzip2
+bbbzcat=busybox bzcat
+bblzma=busybox lzma
+bbunlzma=busybox unlzma
+bblzop=busybox lzop
+bbunlzop=busybox unlzop
+bblzcat=busybox lzcat
+bblzopcat=busybox lzopcat
+bbxz=busybox xz
+bbunxz=busybox unxz
+bbxzcat=busybox xzcat
+bbunzip=busybox unzip
+bbcpio=busybox cpio
+
+# 编码解码类
+bbbase64=busybox base64
+bbbase32=busybox base32
+bbuuencode=busybox uuencode
+bbuudecode=busybox uudecode
+bbxxd=busybox xxd
+bbhexdump=busybox hexdump
+bbhd=busybox hd
+bbod=busybox od
+
+# 哈希校验类
+bbmd5sum=busybox md5sum
+bbsha1sum=busybox sha1sum
+bbsha256sum=busybox sha256sum
+bbsha512sum=busybox sha512sum
+bbsha3sum=busybox sha3sum
+bbcrc32=busybox crc32
+bbcsum=busybox cksum
+bbsum=busybox sum
+
+# 系统信息类
+bbdate=busybox date
+bbcal=busybox cal
+bbwhoami=busybox whoami
+bbid=busybox id
+bblogname=busybox logname
+bbuname=busybox uname
+bbuptime=busybox uptime
+bbfree=busybox free
+bbps=busybox ps
+bbpkill=busybox pkill
+bbpgrep=busybox pgrep
+bbpidof=busybox pidof
+bbkill=busybox kill
+bbkillall=busybox killall
+bbnproc=busybox nproc
+bbdf=busybox df
+bbdu=busybox du
+bbstat=busybox stat
+bbtimeout=busybox timeout
+bbwatch=busybox watch
+
+# 网络工具类
+bbwget=busybox wget
+bbnc=busybox nc
+bbftpget=busybox ftpget
+bbftpput=busybox ftpput
+bbhttpd=busybox httpd
+bbssl_client=busybox ssl_client
+bbwhois=busybox whois
+bbipcalc=busybox ipcalc
+
+# 数学计算类
+bbbc=busybox bc
+bbdc=busybox dc
+bbfactor=busybox factor
+bbseq=busybox seq
+bbexpr=busybox expr
+
+# 其他实用工具
+bbfind=busybox find
+bbxargs=busybox xargs
+bbwhich=busybox which
+bbreadlink=busybox readlink
+bbrealpath=busybox realpath
+bbdirname=busybox dirname
+bbbasename=busybox basename
+bbmktemp=busybox mktemp
+bbtruncate=busybox truncate
+bbshred=busybox shred
+bbshuf=busybox shuf
+bbstrings=busybox strings
+bbtest=busybox test
+bbtrue=busybox true
+bbfalse=busybox false
+bbsleep=busybox sleep
+bbusleep=busybox usleep
+bbtime=busybox time
+bbsync=busybox sync
+bbfsync=busybox fsync
+bbclear=busybox clear
+bbreset=busybox reset
+bbman=busybox man
+bbmake=busybox make
+bbpatch=busybox patch
+bbdiff=busybox diff
+bbcmp=busybox cmp
+bbcomm=busybox comm
+bbpaste=busybox paste
+bbexpand=busybox expand
+bbunexpand=busybox unexpand
+bbdos2unix=busybox dos2unix
+bbunix2dos=busybox unix2dos
+bbtsort=busybox tsort
+bbts=busybox ts
+bbvi=busybox vi
+bbash=busybox ash -l
+bbash=busybox bash -l
+bblash=busybox lash -l
+bbsh=busybox sh -l
+bbed=busybox ed
+bbless=busybox less
+bbenv=busybox env
+bbprintenv=busybox printenv
+bbgetopt=busybox getopt
+bbgroups=busybox groups
+bbsu=busybox su
+bbttysize=busybox ttysize
+bbinotifyd=busybox inotifyd
+bbpipe_progress=busybox pipe_progress
+
+# 包管理相关
+bbdpkg=busybox dpkg
+bbdpkg-deb=busybox dpkg-deb
+bbrpm=busybox rpm
+bbrpm2cpio=busybox rpm2cpio
+bbpdpmake=busybox pdpmake
+
+# 特殊工具
+bbar=busybox ar
+bbarch=busybox arch
+bbjn=busybox jn
+bbyes=busybox yes
+bbdrop=busybox drop
+bbcdrop=busybox cdrop
+bbpdrop=busybox pdrop
