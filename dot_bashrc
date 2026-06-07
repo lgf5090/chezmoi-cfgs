@@ -1,2 +1,2 @@
-config_file="$HOME/.config/bash/.bashrc"
+config_file="$HOME/.config/bash/config.bash"
 [[ -r $config_file ]] && source $config_file
