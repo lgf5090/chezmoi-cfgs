@@ -193,6 +193,8 @@ conf.d/*.nu
 - `conf.d/` 依赖文件名排序加载，继续使用 `00-`、`10-`、`90-` 这类前缀控制顺序。
 - completion 会先于 function 加载，避免函数引用 completion 时找不到定义。
 - 生成脚本使用临时文件加 `cmp`，内容没有变化时不会反复改写 autoload 文件。
+- 生成脚本会创建 `zz-local-aliases.nu` 占位文件；`conf.d/45-local-aliases.nu` 会根据 `~/.aliases` 刷新它，让本地 alias 在
+  `chezmoi-dotfiles.nu` 之后加载。
 - 如果机器没有 `nu`，生成脚本会打印提示并跳过。
 
 ## 添加普通配置

@@ -1,0 +1,1 @@
+_nu_regen_aliases_if_stale
