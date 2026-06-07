@@ -1,158 +1,307 @@
+# Chezmoi Dotfiles
 
-# 🚀 My Chezmoi Dotfiles
+这是一个使用 [chezmoi](https://www.chezmoi.io/) 管理的个人 dotfiles 仓库，用来在多台机器之间同步终端环境配置。敏感文件通过 GPG 对称加密保存，适合把 SSH 配置、私钥等内容放进仓库但不暴露明文。
 
-使用 [chezmoi](https://www.chezmoi.io/) 管理的个人配置文件（dotfiles），支持跨多台机器安全同步，并通过 **GPG 对称加密** 保护敏感文件（如 `~/.ssh/`）。
+## 主要内容
 
-## 📦 前置依赖
-
-在新机器上部署前，请确保已安装以下工具：
-
-- [chezmoi](https://www.chezmoi.io/install/) – 核心管理工具
-- [git](https://git-scm.com/) – 版本控制
-- [GnuPG (gpg)](https://gnupg.org/) – 用于对称加密解密
-
-[chezmoi安装教程](https://www.chezmoi.io/install/#__tabbed_2_1)
-
-```bash
-sudo apt update && sudo apt install -y bash zsh fish git gnupg
+```text
+.
+├── .chezmoi.toml.tmpl
+├── dot_bashrc
+├── dot_zshrc
+├── dot_config/
+│   ├── bash/
+│   ├── zsh/
+│   ├── nushell/
+│   └── powershell/
+├── dot_ssh/
+└── run_onchange_after_generate-nushell-autoload.sh.tmpl
 ```
 
-docker
-```bash
-docker run -it ubuntu bash
-```
+- `dot_bashrc`、`dot_zshrc`：轻量入口，只负责加载 `~/.config/bash/config.bash` 和 `~/.config/zsh/config.zsh`。
+- `dot_config/{bash,zsh,nushell,powershell}`：按 `functions/`、`conf.d/`、`completions/` 分层组织 shell 配置。
+- `dot_ssh/`：加密后的 SSH 文件，例如私钥、known_hosts、config。
+- `.chezmoi.toml.tmpl`：生成本机 `chezmoi.toml`，当前启用 GPG 对称加密。
+- `run_onchange_after_generate-nushell-autoload.sh.tmpl`：为 Nushell 自动生成 vendor autoload 入口。
+
+## 前置依赖
+
+最小依赖：
 
 ```bash
-apt update && apt install -y bash zsh fish git gnupg
+sudo apt update
+sudo apt install -y bash zsh git gnupg
 ```
 
-安装chezmoi
+还需要安装 chezmoi：
+
 ```bash
 sh -c "$(curl -fsLS https://get.chezmoi.io)"
 ```
 
-## 🛠️ 首次安装与使用
+按需安装这些工具，否则对应配置会自动跳过或使用降级逻辑：
 
-### 1️⃣ 克隆并应用配置
+```text
+nu / pwsh / starship / fzf / zoxide / lf / nvm / git
+```
+
+Nushell 自动加载文件的生成依赖 `nu` 命令。如果机器上没有 Nushell，`chezmoi apply` 会跳过生成，不影响其它 shell 配置。
+
+## 首次安装
 
 ```bash
 chezmoi init --apply https://github.com/lgf5090/chezmoi-cfgs.git
 ```
 
-执行后，chezmoi 会：
-- 克隆本仓库到 `~/.local/share/chezmoi`
-- 自动执行模板，生成本地配置文件 `~/.config/chezmoi/chezmoi.toml`
-- 将所有 dotfiles 链接到正确的位置（如 `~/.bashrc`、`~/.gitconfig` 等）
+这条命令会做三件事：
 
-### 2️⃣ 输入 GPG 密码
+1. 克隆仓库到 `~/.local/share/chezmoi`。
+2. 根据 `.chezmoi.toml.tmpl` 生成本机 `~/.config/chezmoi/chezmoi.toml`。
+3. 把仓库里的 dotfiles 应用到 `$HOME`。
 
-由于采用了 **GPG 对称加密**（配置文件 `chezmoi.toml` 中已定义），在首次 `chezmoi apply` 或后续更新时，若遇到加密文件，系统会提示你输入解密密码。
+如果遇到加密文件，GPG 会提示输入对称加密密码。
 
-> 💡 该密码是你之前加密敏感文件时设置的 **GPG 对称加密密码**，请妥善保管。
-
-### 3️⃣ 检查效果
+安装后可以检查：
 
 ```bash
-ls -la ~/.ssh        # 应该看到解密后的文件
-chezmoi verify       # 检查是否有未应用的变更
+chezmoi verify
+ls -la ~/.ssh
 ```
 
-## 🔐 添加或更新敏感文件（如 ~/.ssh）
+## 日常工作流
 
-如果你想添加新的私钥或更新 `~/.ssh/config`，请按照以下步骤操作：
+查看将要修改什么：
 
-1. **将文件加入 chezmoi 并加密**
+```bash
+chezmoi diff
+```
 
-   ```bash
-   chezmoi add --encrypt ~/.ssh/id_rsa
-   # 或递归添加整个目录
-   chezmoi add --encrypt --recursive ~/.ssh
-   ```
+应用所有配置：
 
-   GPG 会弹出提示输入密码（用于加密），请牢记该密码。
+```bash
+chezmoi apply
+```
 
-2. **查看加密后的文件**
+只预览，不写入：
 
-   ```bash
-   ls ~/.local/share/chezmoi/dot_ssh/
-   # 输出类似：encrypted_id_rsa  encrypted_config
-   ```
+```bash
+chezmoi apply --dry-run --verbose
+```
 
-3. **提交并推送变更**
+编辑源文件后应用：
 
-   ```bash
-   cd ~/.local/share/chezmoi
-   git add dot_ssh/
-   git commit -m "Update SSH config"
-   git push
-   ```
+```bash
+chezmoi edit ~/.bashrc
+chezmoi apply ~/.bashrc
+```
 
-## 📂 添加普通（非敏感）配置文件
+把 `$HOME` 里手动改过的文件同步回仓库：
 
-对于不需要加密的配置文件（如 `~/.gitconfig`），直接添加即可：
+```bash
+chezmoi re-add ~/.bashrc
+```
+
+拉取远端更新并应用：
+
+```bash
+chezmoi update -v
+```
+
+## 精确使用 `chezmoi apply`
+
+`chezmoi apply` 的参数是目标路径，也就是最终落到 `$HOME` 里的路径。
+
+应用单个文件：
+
+```bash
+chezmoi apply ~/.bashrc
+chezmoi apply ~/.config/nushell/config.nu
+```
+
+应用整个目录：
+
+```bash
+chezmoi apply ~/.config/bash
+chezmoi apply ~/.config/nushell
+```
+
+同时应用多个目标：
+
+```bash
+chezmoi apply ~/.bashrc ~/.zshrc ~/.config/nushell
+```
+
+如果更习惯使用仓库里的 source path，可以加 `--source-path`：
+
+```bash
+chezmoi apply --source-path dot_bashrc
+chezmoi apply --source-path dot_config/nushell
+```
+
+临时“排除某个目录”时，推荐反过来只指定要应用的目录或文件。例如想更新 shell 配置但不碰 `~/.ssh`：
+
+```bash
+chezmoi apply ~/.bashrc ~/.zshrc ~/.config/bash ~/.config/zsh ~/.config/nushell ~/.config/powershell
+```
+
+`--include` 和 `--exclude` 过滤的是 chezmoi 条目类型，不是任意目录或 glob。常用例子：
+
+```bash
+# 跳过加密文件，避免触发 GPG 解密提示
+chezmoi apply --exclude=encrypted
+
+# 跳过脚本，只应用文件、目录、符号链接等普通条目
+chezmoi apply --exclude=scripts
+
+# 只处理普通文件和目录
+chezmoi apply --include=files,dirs
+
+# 预览时也可以使用同样的过滤
+chezmoi diff --exclude=encrypted
+```
+
+如果要长期在某台机器忽略某些 source path，应使用 `.chezmoiignore` 或模板条件，而不是依赖 `apply` 的临时参数。
+
+## Nushell 自动加载
+
+Nushell 的 `source` 是 parse-time 关键字，不能像 bash/zsh 那样在运行时循环目录并动态 `source` 一批文件。因此本仓库采用“chezmoi 生成静态加载器”的方式：
+
+1. `chezmoi apply` 发现 `run_onchange_after_generate-nushell-autoload.sh.tmpl`。
+2. chezmoi 先渲染模板，模板用 `glob` 枚举仓库里的 Nushell 文件。
+3. 渲染后的脚本调用 `nu --no-config-file` 获取 `$nu.data-dir/vendor/autoload`。
+4. 脚本写入 `chezmoi-dotfiles.nu` 到 Nushell vendor autoload 目录。
+5. Nushell 启动时自动加载该文件。
+
+生成位置：
+
+```nu
+$nu.data-dir | path join "vendor" "autoload" "chezmoi-dotfiles.nu"
+```
+
+生成的加载顺序固定为：
+
+```text
+completions/*.nu
+functions/*.nu
+conf.d/*.nu
+```
+
+注意事项：
+
+- 新增、删除、重命名 `dot_config/nushell/**/*.nu` 后，运行 `chezmoi apply` 即可刷新 autoload 文件。
+- 不需要手动修改 `dot_config/nushell/config.nu`，它只保留为 Nushell 原生配置入口。
+- `conf.d/` 依赖文件名排序加载，继续使用 `00-`、`10-`、`90-` 这类前缀控制顺序。
+- completion 会先于 function 加载，避免函数引用 completion 时找不到定义。
+- 生成脚本使用临时文件加 `cmp`，内容没有变化时不会反复改写 autoload 文件。
+- 如果机器没有 `nu`，生成脚本会打印提示并跳过。
+
+## 添加普通配置
+
+添加不敏感文件：
 
 ```bash
 chezmoi add ~/.gitconfig
-chezmoi apply
+chezmoi apply ~/.gitconfig
+```
+
+添加整个目录：
+
+```bash
+chezmoi add --recursive ~/.config/some-tool
+chezmoi apply ~/.config/some-tool
+```
+
+提交变更：
+
+```bash
+git -C ~/.local/share/chezmoi status
 git -C ~/.local/share/chezmoi add .
-git -C ~/.local/share/chezmoi commit -m "Add gitconfig"
+git -C ~/.local/share/chezmoi commit -m "Add some-tool config"
 git -C ~/.local/share/chezmoi push
 ```
 
-## 🔄 日常更新工作流
+## 添加或更新敏感文件
 
-- **编辑源文件后应用变更**：  
-  ```bash
-  chezmoi edit ~/.bashrc     # 修改源文件
-  chezmoi apply              # 部署到真实 HOME
-  ```
+本仓库使用 GPG 对称加密：
 
-- **查看哪些文件会被修改**：  
-  ```bash
-  chezmoi diff
-  ```
+```toml
+encryption = "gpg"
 
-- **将外部修改同步回仓库**：  
-  如果你直接修改了 `~/.bashrc`，需要反向同步到 chezmoi：
-  ```bash
-  chezmoi re-add ~/.bashrc
-  ```
+[gpg]
+    symmetric = true
+```
 
-- **拉取上游更新并应用**：  
-  ```bash
-  chezmoi update -v
-  ```
-
-## ❓ 常见问题
-
-### Q：每次 `chezmoi apply` 都要求输入 GPG 密码，很烦怎么办？
-
-A：GPG 对称加密会每次都询问密码。如果你希望“一次输入，会话内记住”，可以参考官方文档使用 `promptStringOnce` 模板（[链接](https://www.chezmoi.io/user-guide/encryption/gpg/#symmetric-encryption-with-a-passphrase)）。或者改用 `age` 配合 `passphrase = true` 并安装 `age` 工具。
-
-### Q：为什么不能直接 `chezmoi add ~/.config/chezmoi/chezmoi.toml`？
-
-A：chezmoi 禁止将自己的配置文件直接加入仓库，这会破坏跨机器的差异化设计。正确做法是使用模板 `.chezmoi.toml.tmpl`（本仓库已提供）。
-
-### Q：换了一台新机器，初始化后 SSH 私钥权限不对？
-
-A：可以在模板或脚本中添加 `run_once_` 脚本修正权限，例如：
+添加 SSH 私钥：
 
 ```bash
-#!/bin/bash
+chezmoi add --encrypt ~/.ssh/id_rsa
+```
+
+递归添加 SSH 目录：
+
+```bash
+chezmoi add --encrypt --recursive ~/.ssh
+```
+
+查看仓库中的加密文件：
+
+```bash
+ls ~/.local/share/chezmoi/dot_ssh/
+```
+
+提交：
+
+```bash
+git -C ~/.local/share/chezmoi add dot_ssh/
+git -C ~/.local/share/chezmoi commit -m "Update SSH files"
+```
+
+注意：GPG 对称加密密码无法找回。忘记密码后，只能删除旧加密文件并重新加密。
+
+## 常见问题
+
+### 每次 `chezmoi apply` 都提示 GPG 密码怎么办？
+
+可以用 `chezmoi apply --exclude=encrypted` 临时跳过加密文件。需要更新 SSH 等敏感文件时，再正常运行 `chezmoi apply` 并输入密码。
+
+如果希望会话内只输入一次密码，可以参考 chezmoi 官方文档里的 `promptStringOnce` 模板方案，或者改用 `age` 的 passphrase 模式。
+
+### 为什么不能直接管理 `~/.config/chezmoi/chezmoi.toml`？
+
+chezmoi 不建议直接把自己的运行配置作为普通目标文件管理。跨机器差异应放在 `.chezmoi.toml.tmpl` 里，通过模板生成本机配置。
+
+### 新机器上 SSH 权限不正确怎么办？
+
+可以手动修正：
+
+```bash
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/id_rsa
+chmod 600 ~/.ssh/config
 ```
 
-### Q：我忘记 GPG 加密密码了怎么办？
+如果经常遇到这个问题，可以新增 `run_once_` 脚本自动修正权限。
 
-A：很遗憾，对称加密的密码无法找回。你需要删除加密文件（如 `encrypted_id_rsa`），重新运行 `chezmoi add --encrypt` 并设置一个新的密码。
+### 如何确认某个 source path 会落到哪里？
 
-## 📚 相关链接
+```bash
+chezmoi target-path dot_config/nushell
+chezmoi target-path dot_bashrc
+```
+
+反向查看目标文件对应的 source path：
+
+```bash
+chezmoi source-path ~/.config/nushell
+chezmoi source-path ~/.bashrc
+```
+
+## 相关链接
 
 - [chezmoi 官方文档](https://www.chezmoi.io/)
-- [GPG 对称加密指南](https://www.gnupg.org/documentation/manuals/gnupg/Symmetric-Encryption.html)
+- [chezmoi 加密文档](https://www.chezmoi.io/user-guide/encryption/)
+- [GPG 对称加密说明](https://www.gnupg.org/documentation/manuals/gnupg/Symmetric-Encryption.html)
 
-## 📄 许可证
+## License
 
-本仓库中的配置文件遵循 [MIT License](LICENSE)（如果存在）或仅为个人使用，请自行判断。
-```
+本仓库主要为个人配置使用。如需复用，请先检查其中是否包含与你环境相关的私有路径、主机名或敏感配置。
