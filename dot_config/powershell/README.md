@@ -50,7 +50,7 @@ conf.d/60-your-tool.ps1
 
 ## Local Env And Alias Files
 
-`conf.d/35-local-env.ps1` loads `~/.envs` if it exists:
+`conf.d/11-local-env.ps1` loads `~/.envs` if it exists:
 
 ```text
 FOO=bar
