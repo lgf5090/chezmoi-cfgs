@@ -15,5 +15,11 @@ if ([string]::IsNullOrWhiteSpace($env:XDG_CACHE_HOME)) {
     $env:XDG_CACHE_HOME = Join-Path $HOME '.cache'
 }
 
-New-Item -ItemType Directory -Force -Path (Join-Path $env:XDG_STATE_HOME 'powershell') | Out-Null
-New-Item -ItemType Directory -Force -Path (Join-Path $env:XDG_CACHE_HOME 'powershell') | Out-Null
+foreach ($dir in @(
+    (Join-Path $env:XDG_STATE_HOME 'powershell'),
+    (Join-Path $env:XDG_CACHE_HOME 'powershell')
+)) {
+    if (-not [System.IO.Directory]::Exists($dir)) {
+        [System.IO.Directory]::CreateDirectory($dir) | Out-Null
+    }
+}
