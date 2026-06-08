@@ -48,6 +48,12 @@ Add a file only:
 conf.d/60-your-tool.ps1
 ```
 
+Use adjacent numbers inside the same category. Current PowerShell tool ranges:
+
+- `60-69`: interactive CLI integrations such as `fzf`, `zoxide`, `lf`.
+- `70-79`: runtime, package, and environment managers such as `mise`, `asdf`,
+  `pyenv`, `fnm`, `nvm`, `conda`, `SDKMAN`, `direnv`, and `poetry`.
+
 ## Local Env And Alias Files
 
 `conf.d/11-local-env.ps1` loads `~/.envs` if it exists:
