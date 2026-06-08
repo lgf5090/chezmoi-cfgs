@@ -1,5 +1,24 @@
-if (Test-Command starship) {
-    Invoke-Expression (& starship init powershell)
+$homeDir = [Environment]::GetFolderPath('UserProfile')
+$starshipCandidates = @(
+    (Join-Path $homeDir '.local/bin/starship'),
+    '/home/linuxbrew/.linuxbrew/bin/starship',
+    (Join-Path $homeDir '.linuxbrew/bin/starship'),
+    '/opt/homebrew/bin/starship',
+    '/usr/local/bin/starship'
+)
+
+foreach ($candidate in $starshipCandidates) {
+    if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) { continue }
+    $script:PowerShellStarshipExe = (Resolve-Path -LiteralPath $candidate).ProviderPath
+    break
+}
+
+if ([string]::IsNullOrWhiteSpace($script:PowerShellStarshipExe) -and $env:POWERSHELL_STARSHIP_DISCOVERY -eq '1') {
+    $script:PowerShellStarshipExe = (Get-Command starship -CommandType Application -ErrorAction SilentlyContinue).Source
+}
+
+if (-not [string]::IsNullOrWhiteSpace($script:PowerShellStarshipExe)) {
+    Invoke-Expression (& $script:PowerShellStarshipExe init powershell)
     return
 }
 
