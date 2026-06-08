@@ -52,7 +52,8 @@ conf.d/60-your-tool.bash
 Use adjacent numbers inside the same category. Current bash tool ranges:
 
 - `60-69`: interactive CLI integrations such as `fzf`, `zoxide`, `lf`.
-- `70-79`: runtime and version managers such as `mise`, `nvm`.
+- `70-79`: runtime, package, and environment managers such as `mise`, `asdf`,
+  `pyenv`, `fnm`, `nvm`, `conda`, `SDKMAN`, `direnv`, and `poetry`.
 
 No change is needed in `config.bash`.
 

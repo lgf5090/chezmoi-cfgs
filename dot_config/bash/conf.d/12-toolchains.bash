@@ -5,7 +5,17 @@
 : "${PNPM_HOME:=$HOME/.pnpm-global}"
 export NPM_CONFIG_PREFIX PNPM_HOME
 
-[[ -d $HOME/.fnm ]] && export FNM_DIR="$HOME/.fnm"
+if [[ -z ${FNM_DIR:-} ]]; then
+  for __bash_fnm_dir in "${XDG_DATA_HOME:-$HOME/.local/share}/fnm" "$HOME/.fnm"; do
+    [[ -d $__bash_fnm_dir ]] || continue
+    FNM_DIR=$__bash_fnm_dir
+    break
+  done
+  unset __bash_fnm_dir
+fi
+[[ -n ${FNM_DIR:-} ]] && export FNM_DIR
+
+[[ -d $HOME/.volta ]] && export VOLTA_HOME="$HOME/.volta"
 [[ -d $HOME/.bun ]] && export BUN_INSTALL="$HOME/.bun"
 [[ -d $HOME/.deno ]] && export DENO_INSTALL="$HOME/.deno"
 
@@ -46,6 +56,48 @@ if [[ -z ${PYENV_ROOT:-} && -d $HOME/.pyenv ]]; then
   PYENV_ROOT=$HOME/.pyenv
 fi
 [[ -n ${PYENV_ROOT:-} ]] && export PYENV_ROOT
+
+if [[ -z ${ASDF_DIR:-} ]]; then
+  for __bash_asdf_dir in \
+    "$HOME/.asdf" \
+    "${HOMEBREW_PREFIX:-}/opt/asdf/libexec" \
+    /home/linuxbrew/.linuxbrew/opt/asdf/libexec \
+    /opt/homebrew/opt/asdf/libexec \
+    /usr/local/opt/asdf/libexec
+  do
+    [[ -d $__bash_asdf_dir ]] || continue
+    ASDF_DIR=$__bash_asdf_dir
+    break
+  done
+  unset __bash_asdf_dir
+fi
+[[ -n ${ASDF_DIR:-} ]] && export ASDF_DIR
+
+if [[ -z ${ASDF_DATA_DIR:-} && -n ${ASDF_DIR:-} ]]; then
+  case $ASDF_DIR in
+    "$HOME/.asdf") ASDF_DATA_DIR=$ASDF_DIR ;;
+    *) ASDF_DATA_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/asdf ;;
+  esac
+fi
+[[ -n ${ASDF_DATA_DIR:-} ]] && export ASDF_DATA_DIR
+
+__bash_env_roots=(
+  "RBENV_ROOT:$HOME/.rbenv"
+  "NODENV_ROOT:$HOME/.nodenv"
+  "GOENV_ROOT:$HOME/.goenv"
+  "JENV_ROOT:$HOME/.jenv"
+  "SDKMAN_DIR:$HOME/.sdkman"
+)
+for __bash_env_root in "${__bash_env_roots[@]}"; do
+  __bash_env_name=${__bash_env_root%%:*}
+  __bash_env_dir=${__bash_env_root#*:}
+  if [[ -n ${!__bash_env_name:-} ]]; then
+    export "$__bash_env_name"
+  elif [[ -d $__bash_env_dir ]]; then
+    export "$__bash_env_name=$__bash_env_dir"
+  fi
+done
+unset __bash_env_roots __bash_env_root __bash_env_name __bash_env_dir
 
 if [[ -z ${JAVA_HOME:-} ]]; then
   if [[ -x /usr/libexec/java_home ]]; then

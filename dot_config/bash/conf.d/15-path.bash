@@ -6,6 +6,11 @@ _bpath_append \
   "$HOME/.local/Applications"
 
 _bpath_prepend \
+  "${ASDF_DIR:+$ASDF_DIR/bin}" \
+  "${RBENV_ROOT:+$RBENV_ROOT/bin}" \
+  "${NODENV_ROOT:+$NODENV_ROOT/bin}" \
+  "${GOENV_ROOT:+$GOENV_ROOT/bin}" \
+  "${JENV_ROOT:+$JENV_ROOT/bin}" \
   "${CARGO_HOME:-$HOME/.cargo}/bin" \
   "$HOME/.rd/bin" \
   "$HOME/.opencode/bin"
@@ -19,6 +24,7 @@ _bpath_prepend \
   "${PNPM_HOME:+$PNPM_HOME}" \
   "$HOME/.yarn/bin" \
   "$HOME/.config/yarn/global/node_modules/.bin" \
+  "${VOLTA_HOME:+$VOLTA_HOME/bin}" \
   "$HOME/.volta/bin" \
   "${FNM_DIR:+$FNM_DIR}" \
   "$HOME/.local/share/npm/bin"
