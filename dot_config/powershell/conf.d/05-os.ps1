@@ -20,9 +20,17 @@ if ($script:IsWindowsPlatform) {
     $global:ShellsOS = 'unknown'
 }
 
-if ($global:ShellsOS -eq 'linux' -and (Test-Path -LiteralPath '/proc/version')) {
-    $procVersion = Get-Content -LiteralPath '/proc/version' -TotalCount 1 -ErrorAction SilentlyContinue
-    if ($procVersion -match 'microsoft|wsl') {
+if ($global:ShellsOS -eq 'linux' -and [System.IO.File]::Exists('/proc/version')) {
+    $reader = [System.IO.File]::OpenText('/proc/version')
+    try {
+        $procVersion = $reader.ReadLine()
+    } finally {
+        $reader.Dispose()
+    }
+    if ($procVersion -and (
+        $procVersion.IndexOf('microsoft', [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+        $procVersion.IndexOf('wsl', [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+    )) {
         $global:ShellsOS = 'wsl'
     }
 }
