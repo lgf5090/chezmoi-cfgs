@@ -24,6 +24,19 @@ function Set-PathEntries {
     $env:PATH = ($Entries -join [IO.Path]::PathSeparator)
 }
 
+function Get-ExistingDirectoryPath {
+    param([string]$Path)
+
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        return $null
+    }
+    if (-not [System.IO.Directory]::Exists($Path)) {
+        return $null
+    }
+
+    [System.IO.Path]::GetFullPath($Path)
+}
+
 function Add-PathPrepend {
     param([Parameter(ValueFromRemainingArguments)][string[]]$Path)
 
@@ -32,10 +45,8 @@ function Add-PathPrepend {
     $comparer = Get-PathComparer
 
     foreach ($item in $Path) {
-        if ([string]::IsNullOrWhiteSpace($item)) { continue }
-        if (-not (Test-Path -LiteralPath $item -PathType Container)) { continue }
-
-        $resolved = (Resolve-Path -LiteralPath $item).ProviderPath
+        $resolved = Get-ExistingDirectoryPath -Path $item
+        if ([string]::IsNullOrWhiteSpace($resolved)) { continue }
         for ($i = $entries.Count - 1; $i -ge 0; $i--) {
             if ($comparer.Equals($entries[$i], $resolved)) {
                 $entries.RemoveAt($i)
@@ -55,10 +66,8 @@ function Add-PathAppend {
     $comparer = Get-PathComparer
 
     foreach ($item in $Path) {
-        if ([string]::IsNullOrWhiteSpace($item)) { continue }
-        if (-not (Test-Path -LiteralPath $item -PathType Container)) { continue }
-
-        $resolved = (Resolve-Path -LiteralPath $item).ProviderPath
+        $resolved = Get-ExistingDirectoryPath -Path $item
+        if ([string]::IsNullOrWhiteSpace($resolved)) { continue }
         for ($i = $entries.Count - 1; $i -ge 0; $i--) {
             if ($comparer.Equals($entries[$i], $resolved)) {
                 $entries.RemoveAt($i)
@@ -81,9 +90,10 @@ function Add-PathPrependValue {
 
     foreach ($item in (($Value -split $separatorPattern) + (Get-PathEntries))) {
         if ([string]::IsNullOrWhiteSpace($item)) { continue }
-        if (-not (Test-Path -LiteralPath $item -PathType Container)) { continue }
-        if (-not $seen.Add($item)) { continue }
-        [void]$entries.Add($item)
+        $resolved = Get-ExistingDirectoryPath -Path $item
+        if ([string]::IsNullOrWhiteSpace($resolved)) { continue }
+        if (-not $seen.Add($resolved)) { continue }
+        [void]$entries.Add($resolved)
     }
 
     Set-PathEntries $entries.ToArray()
