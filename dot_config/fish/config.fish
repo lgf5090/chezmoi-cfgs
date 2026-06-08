@@ -4,7 +4,7 @@
 #   source /tmp/fish/config.fish
 #   ln -s /tmp/fish ~/.config/fish
 
-set -l _fish_config_dir (dirname (status filename))
+set -l _fish_config_dir (path dirname (status filename))
 set -g FISH_CONFIG_DIR "$_fish_config_dir"
 
 contains -- "$_fish_config_dir/functions" $fish_function_path
