@@ -6,6 +6,8 @@ _nu_path_append ...[
     ($nu.home-dir | path join ".local" "Applications")
 ]
 
+# Tool installation dirs and language runtimes. Keeping these in one prepend
+# avoids repeated PATH scans while preserving the previous priority order.
 _nu_path_prepend ...[
     (if (($env.ASDF_DIR? | default "") | is-empty) { "" } else { $env.ASDF_DIR | path join "bin" })
     (if (($env.RBENV_ROOT? | default "") | is-empty) { "" } else { $env.RBENV_ROOT | path join "bin" })
@@ -15,9 +17,6 @@ _nu_path_prepend ...[
     ((if (($env.CARGO_HOME? | default "") | is-empty) { $nu.home-dir | path join ".cargo" } else { $env.CARGO_HOME }) | path join "bin")
     ($nu.home-dir | path join ".rd" "bin")
     ($nu.home-dir | path join ".opencode" "bin")
-]
-
-_nu_path_prepend ...[
     (if (($env.BUN_INSTALL? | default "") | is-empty) { "" } else { $env.BUN_INSTALL | path join "bin" })
     (if (($env.DENO_INSTALL? | default "") | is-empty) { "" } else { $env.DENO_INSTALL | path join "bin" })
     (if (($env.NPM_CONFIG_PREFIX? | default "") | is-empty) { "" } else { $env.NPM_CONFIG_PREFIX | path join "bin" })
@@ -28,17 +27,11 @@ _nu_path_prepend ...[
     ($nu.home-dir | path join ".volta" "bin")
     ($env.FNM_DIR? | default "")
     ($nu.home-dir | path join ".local" "share" "npm" "bin")
-]
-
-_nu_path_prepend ...[
     (if (($env.PYENV_ROOT? | default "") | is-empty) { "" } else { $env.PYENV_ROOT | path join "bin" })
     (if (($env.ANACONDA_HOME? | default "") | is-empty) { "" } else { $env.ANACONDA_HOME | path join "bin" })
     (if (($env.POETRY_HOME? | default "") | is-empty) { "" } else { $env.POETRY_HOME | path join "bin" })
     ($nu.home-dir | path join ".poetry" "bin")
     ($nu.home-dir | path join ".local" "pipx" "bin")
-]
-
-_nu_path_prepend ...[
     (if (($env.GOPATH? | default "") | is-empty) { "" } else { $env.GOPATH | path join "bin" })
     (if (($env.GOROOT? | default "") | is-empty) { "" } else { $env.GOROOT | path join "bin" })
 ]
