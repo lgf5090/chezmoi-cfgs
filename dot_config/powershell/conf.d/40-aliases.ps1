@@ -16,7 +16,7 @@ function now { Get-Date -Format 'yyyy-MM-ddTHH:mm:sszzz' }
 function cls { Clear-Host }
 function reload { . (Join-Path $global:PowerShellConfigDir 'config.ps1') }
 
-if (-not (Test-Command grep)) {
+if ($global:ShellsOS -eq 'windows' -and -not (Test-Command grep)) {
     function grep {
         param(
             [Parameter(Position=0, Mandatory)][string]$Pattern,
