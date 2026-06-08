@@ -38,5 +38,8 @@ if ($env.XDG_STATE_HOME? | is-empty) {
     )
 }
 
-mkdir ($env.XDG_STATE_HOME | path join "nushell")
-mkdir ($env.XDG_CACHE_HOME | path join "nushell")
+let nushell_state_dir = ($env.XDG_STATE_HOME | path join "nushell")
+let nushell_cache_dir = ($env.XDG_CACHE_HOME | path join "nushell")
+
+if (($nushell_state_dir | path type) != "dir") { mkdir $nushell_state_dir }
+if (($nushell_cache_dir | path type) != "dir") { mkdir $nushell_cache_dir }
