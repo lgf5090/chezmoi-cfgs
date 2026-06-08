@@ -4,29 +4,18 @@ if ([string]::IsNullOrWhiteSpace($env:POWERSHELL_CONFIG_DIR)) {
     $env:POWERSHELL_CONFIG_DIR = $PSScriptRoot
 }
 
-$global:PowerShellConfigDir = (Resolve-Path -LiteralPath $env:POWERSHELL_CONFIG_DIR).ProviderPath
+$global:PowerShellConfigDir = [System.IO.Path]::GetFullPath($env:POWERSHELL_CONFIG_DIR)
 
-function Get-PSConfigFiles {
-    param([Parameter(Mandatory)][string]$Path)
+foreach ($configSubdir in @('functions', 'conf.d', 'completions')) {
+    $configPath = Join-Path $global:PowerShellConfigDir $configSubdir
 
-    if (-not (Test-Path -LiteralPath $Path -PathType Container)) {
-        return
+    if (-not [System.IO.Directory]::Exists($configPath)) {
+        continue
     }
 
-    Get-ChildItem -LiteralPath $Path -Filter '*.ps1' -File |
-        Sort-Object -Property Name
+    $configFiles = [System.IO.Directory]::GetFiles($configPath, '*.ps1')
+    [System.Array]::Sort($configFiles, [System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($file in $configFiles) {
+        . $file
+    }
 }
-
-foreach ($file in Get-PSConfigFiles (Join-Path $global:PowerShellConfigDir 'functions')) {
-    . $file.FullName
-}
-
-foreach ($file in Get-PSConfigFiles (Join-Path $global:PowerShellConfigDir 'conf.d')) {
-    . $file.FullName
-}
-
-foreach ($file in Get-PSConfigFiles (Join-Path $global:PowerShellConfigDir 'completions')) {
-    . $file.FullName
-}
-
-Remove-Item Function:\Get-PSConfigFiles -ErrorAction SilentlyContinue
