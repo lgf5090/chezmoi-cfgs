@@ -79,7 +79,23 @@ for brew in \
     /opt/homebrew/bin/brew \
     /usr/local/bin/brew
     if test -x "$brew"
-        "$brew" shellenv fish | source
+        set -l brew_bin (path dirname "$brew")
+        set -l brew_prefix (path dirname "$brew_bin")
+
+        _fpath_prepend "$brew_prefix/sbin" "$brew_prefix/bin"
+        set -gx HOMEBREW_PREFIX "$brew_prefix"
+        set -gx HOMEBREW_CELLAR "$brew_prefix/Cellar"
+        switch "$brew_prefix"
+            case /opt/homebrew '*/Homebrew'
+                set -gx HOMEBREW_REPOSITORY "$brew_prefix"
+            case '*'
+                set -gx HOMEBREW_REPOSITORY "$brew_prefix/Homebrew"
+        end
+        if set -q MANPATH[1]; and test -n "$MANPATH[1]"
+            set -gx MANPATH '' $MANPATH
+        end
+        contains -- "$brew_prefix/share/info" $INFOPATH
+        or set -gx INFOPATH "$brew_prefix/share/info" $INFOPATH
         break
     end
 end
