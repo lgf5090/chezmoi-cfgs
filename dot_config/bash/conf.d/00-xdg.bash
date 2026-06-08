@@ -5,4 +5,7 @@
 
 export XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME
 
-mkdir -p "$XDG_STATE_HOME/bash" "$XDG_CACHE_HOME/bash"
+for __bash_xdg_dir in "$XDG_STATE_HOME/bash" "$XDG_CACHE_HOME/bash"; do
+  [[ -d $__bash_xdg_dir ]] || mkdir -p "$__bash_xdg_dir" 2>/dev/null
+done
+unset __bash_xdg_dir
