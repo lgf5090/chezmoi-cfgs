@@ -71,6 +71,72 @@ function _fload_aliases -a file
         test "$_FLOCAL_ALIASES_LOADED_KEY" = "$load_key"; and return 0
     end
 
+    set -l cache_root "$XDG_CACHE_HOME/fish"
+    if not test -d "$cache_root"
+        mkdir -p "$cache_root" 2>/dev/null
+    end
+    if not test -w "$cache_root"
+        set -l cache_base /tmp
+        set -q TMPDIR; and set cache_base (string trim --right --chars=/ -- "$TMPDIR")
+        set cache_root "$cache_base/fish-$USER"
+        mkdir -p "$cache_root" 2>/dev/null
+    end
+
+    set -l resolved_file (path resolve -- "$file" 2>/dev/null)
+    test -n "$resolved_file"; or set resolved_file "$file"
+    set -l cache_id (string escape --style=var -- "$resolved_file")
+    set -l cache_file "$cache_root/local-aliases-$cache_id.fish"
+    set -l cache_header "# _FLOCAL_ALIASES_LOADED_KEY=$load_key"
+
+    if test -r "$cache_file"
+        read -l existing_header < "$cache_file"
+        if test "$existing_header" = "$cache_header"
+            source "$cache_file"
+            set -g _FLOCAL_ALIASES_LOADED_KEY "$load_key"
+            return 0
+        end
+    end
+
+    set -l cache_tmp "$cache_file.tmp."(random)
+    begin
+        printf '%s\n' "$cache_header"
+        while read -l line
+            set -l parts (string match -r '^\s*([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*(.*?)\s*$' -- "$line")
+            test (count $parts) -eq 3; or continue
+
+            set -l name $parts[2]
+            set -l body $parts[3]
+
+            if test (string length -- "$body") -ge 2
+                switch $body
+                    case '"*"' "'*'"
+                        set body (string sub -s 2 -e -1 -- "$body")
+                end
+            end
+
+            printf '%s\n' "$body" | read -l --list words
+            set -l wraps
+            if test (count $words) -gt 0
+                set wraps "--wraps "(string escape -- "$words[1]")
+            end
+            set -l description (string escape -- "alias $name=$body")
+
+            printf 'function %s %s --description %s\n' "$name" "$wraps" "$description"
+            printf '    %s $argv\n' "$body"
+            printf 'end\n'
+        end < "$file"
+    end > "$cache_tmp"
+
+    if test -s "$cache_tmp"
+        command mv -f "$cache_tmp" "$cache_file" 2>/dev/null
+        if test -r "$cache_file"
+            source "$cache_file"
+            set -g _FLOCAL_ALIASES_LOADED_KEY "$load_key"
+            return 0
+        end
+    end
+    command rm -f "$cache_tmp" 2>/dev/null
+
     while read -l line
         set -l parts (string match -r '^\s*([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*(.*?)\s*$' -- "$line")
         test (count $parts) -eq 3; or continue
