@@ -51,7 +51,7 @@ conf.d/60-your-tool.fish
 
 ## Local Env And Alias Files
 
-`conf.d/35-local-env.fish` loads `~/.envs` if it exists:
+`conf.d/11-local-env.fish` loads `~/.envs` if it exists:
 
 ```text
 FOO=bar
