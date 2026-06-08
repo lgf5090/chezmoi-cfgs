@@ -1,6 +1,7 @@
 # Language and toolchain environment variables used by 15-path.ps1.
 # Existing values are respected so ~/.envs or parent shells can override.
 
+& {
 $homeDir = [Environment]::GetFolderPath('UserProfile')
 $xdgDataHome = if ([string]::IsNullOrWhiteSpace($env:XDG_DATA_HOME)) {
     Join-Path $homeDir '.local/share'
@@ -24,6 +25,19 @@ function Set-EnvIfMissing {
     [Environment]::SetEnvironmentVariable($Name, $Value, 'Process')
 }
 
+function Get-ExistingDirectoryPath {
+    param([Parameter(Mandatory)][string]$Path)
+
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        return $null
+    }
+    if (-not [System.IO.Directory]::Exists($Path)) {
+        return $null
+    }
+
+    [System.IO.Path]::GetFullPath($Path)
+}
+
 function Set-EnvDirIfMissing {
     param(
         [Parameter(Mandatory)][string]$Name,
@@ -35,9 +49,9 @@ function Set-EnvDirIfMissing {
     }
 
     foreach ($item in $Path) {
-        if ([string]::IsNullOrWhiteSpace($item)) { continue }
-        if (-not (Test-Path -LiteralPath $item -PathType Container)) { continue }
-        [Environment]::SetEnvironmentVariable($Name, (Resolve-Path -LiteralPath $item).ProviderPath, 'Process')
+        $resolved = Get-ExistingDirectoryPath -Path $item
+        if ([string]::IsNullOrWhiteSpace($resolved)) { continue }
+        [Environment]::SetEnvironmentVariable($Name, $resolved, 'Process')
         return
     }
 }
@@ -48,11 +62,11 @@ function Add-EnvPathPrepend {
         [Parameter(Mandatory)][string]$Path
     )
 
-    if (-not (Test-Path -LiteralPath $Path -PathType Container)) {
+    $resolved = Get-ExistingDirectoryPath -Path $Path
+    if ([string]::IsNullOrWhiteSpace($resolved)) {
         return
     }
 
-    $resolved = (Resolve-Path -LiteralPath $Path).ProviderPath
     $current = [Environment]::GetEnvironmentVariable($Name, 'Process')
     $separator = [IO.Path]::PathSeparator
     $comparer = Get-PathComparer
@@ -125,7 +139,7 @@ Set-EnvDirIfMissing -Name 'JENV_ROOT' (Join-Path $homeDir '.jenv')
 Set-EnvDirIfMissing -Name 'SDKMAN_DIR' (Join-Path $homeDir '.sdkman')
 
 if ([string]::IsNullOrWhiteSpace($env:JAVA_HOME)) {
-    if (Test-Path -LiteralPath '/usr/libexec/java_home' -PathType Leaf) {
+    if ([System.IO.File]::Exists('/usr/libexec/java_home')) {
         $javaHome = & /usr/libexec/java_home 2>$null
         if (-not [string]::IsNullOrWhiteSpace($javaHome)) {
             $env:JAVA_HOME = $javaHome
@@ -162,7 +176,4 @@ switch ($global:ShellsOS) {
 
 Set-EnvIfMissing -Name 'DOCKER_BUILDKIT' -Value '1'
 Set-EnvIfMissing -Name 'COMPOSE_DOCKER_CLI_BUILD' -Value '1'
-
-Remove-Item Function:\Set-EnvIfMissing -ErrorAction SilentlyContinue
-Remove-Item Function:\Set-EnvDirIfMissing -ErrorAction SilentlyContinue
-Remove-Item Function:\Add-EnvPathPrepend -ErrorAction SilentlyContinue
+}
