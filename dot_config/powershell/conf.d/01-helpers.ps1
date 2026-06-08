@@ -141,10 +141,45 @@ function Import-LocalAliasFile {
     }
 
     $item = [System.IO.FileInfo]::new($Path)
-    $loadKey = "$($item.FullName):$($item.LastWriteTimeUtc.Ticks)"
+    $loadKey = "$($item.FullName):$($item.LastWriteTimeUtc.Ticks):$($item.Length)"
     if ($global:PowerShellLocalAliasesLoadedKey -eq $loadKey) {
         return
     }
+
+    $cacheRoot = if ([string]::IsNullOrWhiteSpace($env:XDG_CACHE_HOME)) {
+        Join-Path $HOME '.cache'
+    } else {
+        $env:XDG_CACHE_HOME
+    }
+    $cacheDir = Join-Path $cacheRoot 'powershell'
+    $hash = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $hashBytes = $hash.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($item.FullName))
+    } finally {
+        $hash.Dispose()
+    }
+    $cacheId = [System.BitConverter]::ToString($hashBytes, 0, 8).Replace('-', '').ToLowerInvariant()
+    $cacheFile = Join-Path $cacheDir "local-aliases-$cacheId.ps1"
+    $cacheHeader = "# PowerShellLocalAliasesLoadedKey=$loadKey"
+
+    if ([System.IO.File]::Exists($cacheFile)) {
+        $firstLine = $null
+        $reader = [System.IO.File]::OpenText($cacheFile)
+        try {
+            $firstLine = $reader.ReadLine()
+        } finally {
+            $reader.Dispose()
+        }
+
+        if ($firstLine -eq $cacheHeader) {
+            . $cacheFile
+            $global:PowerShellLocalAliasesLoadedKey = $loadKey
+            return
+        }
+    }
+
+    $builder = [System.Text.StringBuilder]::new()
+    [void]$builder.AppendLine($cacheHeader)
 
     foreach ($lineRaw in [System.IO.File]::ReadLines($Path)) {
         $line = $lineRaw.TrimStart()
@@ -171,9 +206,17 @@ function Import-LocalAliasFile {
             }
         }
 
-        Set-Item -LiteralPath "function:global:$name" -Value ([scriptblock]::Create($body + ' @args'))
+        [void]$builder.Append('function global:').Append($name).Append(' { ').Append($body).AppendLine(' @args }')
     }
 
+    $aliasScript = $builder.ToString()
+    try {
+        New-Item -ItemType Directory -Force -Path $cacheDir -ErrorAction Stop | Out-Null
+        [System.IO.File]::WriteAllText($cacheFile, $aliasScript, [System.Text.UTF8Encoding]::new($false))
+        . $cacheFile
+    } catch {
+        . ([scriptblock]::Create($aliasScript))
+    }
     $global:PowerShellLocalAliasesLoadedKey = $loadKey
 }
 
