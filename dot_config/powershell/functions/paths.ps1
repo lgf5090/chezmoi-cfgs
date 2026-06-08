@@ -1,3 +1,3 @@
-function path {
+function paths {
     $env:PATH -split [Regex]::Escape([IO.Path]::PathSeparator)
 }

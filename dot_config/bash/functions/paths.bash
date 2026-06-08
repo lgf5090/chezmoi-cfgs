@@ -1,4 +1,4 @@
-path() {
+paths() {
   local old_ifs=$IFS part
   IFS=:
   for part in $PATH; do

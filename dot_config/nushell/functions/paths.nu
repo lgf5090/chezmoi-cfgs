@@ -1,3 +1,3 @@
-def path [] {
+def paths [] {
     $env.PATH
 }
