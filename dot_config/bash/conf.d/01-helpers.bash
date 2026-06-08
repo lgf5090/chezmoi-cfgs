@@ -120,6 +120,52 @@ _bload_aliases() {
   local file=$1 line name body
   [[ -r $file ]] || return 0
 
+  local cache_root=${XDG_CACHE_HOME:-$HOME/.cache}/bash
+  if [[ ! -d $cache_root ]]; then
+    mkdir -p "$cache_root" 2>/dev/null || true
+  fi
+  if [[ ! -w $cache_root ]]; then
+    cache_root="${TMPDIR:-/tmp}/bash-${UID:-$USER}"
+    [[ -d $cache_root ]] || mkdir -p "$cache_root" 2>/dev/null || true
+  fi
+
+  local cache_id=${file//[^[:alnum:]_]/_}
+  local cache_file="$cache_root/local-aliases-$cache_id.bash"
+  if [[ -r $cache_file && $cache_file -nt $file ]]; then
+    source "$cache_file"
+    return 0
+  fi
+
+  local cache_tmp="$cache_file.tmp.$$.$RANDOM"
+  if {
+    printf '# generated from %q\n' "$file"
+    while IFS= read -r line || [[ -n $line ]]; do
+      line=${line#"${line%%[![:space:]]*}"}
+      case $line in
+        ''|'#'*) continue ;;
+      esac
+      [[ $line == *=* ]] || continue
+
+      name=${line%%=*}
+      body=${line#*=}
+      name=${name%"${name##*[![:space:]]}"}
+      body=${body#"${body%%[![:space:]]*}"}
+      body=${body%"${body##*[![:space:]]}"}
+      [[ $name =~ ^[A-Za-z_][A-Za-z0-9_-]*$ ]] || continue
+
+      if (( ${#body} >= 2 )); then
+        case "${body:0:1}${body: -1}" in
+          '""'|"''") body=${body:1:${#body}-2} ;;
+        esac
+      fi
+      printf 'alias %s=%q\n' "$name" "$body"
+    done < "$file"
+  } > "$cache_tmp" && [[ -s $cache_tmp ]] && mv -f "$cache_tmp" "$cache_file" 2>/dev/null; then
+    source "$cache_file"
+    return 0
+  fi
+  rm -f "$cache_tmp" 2>/dev/null
+
   while IFS= read -r line || [[ -n $line ]]; do
     line=${line#"${line%%[![:space:]]*}"}
     case $line in
