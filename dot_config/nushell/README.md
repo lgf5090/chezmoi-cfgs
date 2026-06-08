@@ -73,6 +73,12 @@ Create a file:
 conf.d/60-your-tool.nu
 ```
 
+Use adjacent numbers inside the same category. Current Nushell tool ranges:
+
+- `60-69`: interactive CLI integrations such as `fzf`, `zoxide`, `lf`.
+- `70-79`: runtime, package, and environment managers such as `mise`, `asdf`,
+  `pyenv`, `fnm`, `nvm`, `conda`, `SDKMAN`, `direnv`, and `poetry`.
+
 ## Local Env And Alias Files
 
 `conf.d/11-local-env.nu` loads `~/.envs` if it exists:
