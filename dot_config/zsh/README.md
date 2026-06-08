@@ -46,6 +46,12 @@ Add a file only:
 conf.d/60-your-tool.zsh
 ```
 
+Use adjacent numbers inside the same category. Current zsh tool ranges:
+
+- `60-69`: interactive CLI integrations such as `fzf`, `zoxide`, `lf`.
+- `70-79`: runtime, package, and environment managers such as `mise`, `asdf`,
+  `pyenv`, `fnm`, `nvm`, `conda`, `SDKMAN`, `direnv`, and `poetry`.
+
 No change is needed in `config.zsh`.
 
 ## Local Env And Alias Files
