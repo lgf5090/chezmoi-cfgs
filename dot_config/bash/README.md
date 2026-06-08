@@ -49,6 +49,11 @@ Add a file only:
 conf.d/60-your-tool.bash
 ```
 
+Use adjacent numbers inside the same category. Current bash tool ranges:
+
+- `60-69`: interactive CLI integrations such as `fzf`, `zoxide`, `lf`.
+- `70-79`: runtime and version managers such as `mise`, `nvm`.
+
 No change is needed in `config.bash`.
 
 ## Local Env And Alias Files
