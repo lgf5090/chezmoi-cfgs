@@ -83,10 +83,21 @@ for __bash_brew in \
   /usr/local/bin/brew
 do
   if [[ -x $__bash_brew ]]; then
-    eval "$("$__bash_brew" shellenv)"
+    __bash_brew_bin=${__bash_brew%/*}
+    __bash_brew_prefix=${__bash_brew_bin%/*}
+
+    _bpath_prepend "$__bash_brew_prefix/sbin" "$__bash_brew_prefix/bin"
+    export HOMEBREW_PREFIX=$__bash_brew_prefix
+    export HOMEBREW_CELLAR="$__bash_brew_prefix/Cellar"
+    case $__bash_brew_prefix in
+      /opt/homebrew|*/Homebrew) export HOMEBREW_REPOSITORY=$__bash_brew_prefix ;;
+      *) export HOMEBREW_REPOSITORY="$__bash_brew_prefix/Homebrew" ;;
+    esac
+    [[ -z ${MANPATH+x} ]] || export MANPATH=":${MANPATH#:}"
+    export INFOPATH="$__bash_brew_prefix/share/info:${INFOPATH:-}"
     break
   fi
 done
-unset __bash_brew
+unset __bash_brew __bash_brew_bin __bash_brew_prefix
 
 export PATH
