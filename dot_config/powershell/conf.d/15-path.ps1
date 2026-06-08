@@ -18,7 +18,7 @@ Add-PathPrepend `
     (Join-Path $homeDir '.opencode/bin')
 
 $cargoEnv = Join-Path $homeDir '.cargo/env.ps1'
-if (Test-Path -LiteralPath $cargoEnv -PathType Leaf) {
+if ($env:POWERSHELL_SOURCE_CARGO_ENV -eq '1' -and [System.IO.File]::Exists($cargoEnv)) {
     . $cargoEnv
 }
 
