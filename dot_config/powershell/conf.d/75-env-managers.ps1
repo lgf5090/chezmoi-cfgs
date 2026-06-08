@@ -5,12 +5,13 @@ foreach ($manager in @(
     @{ Name = 'jenv'; Root = $env:JENV_ROOT }
 )) {
     $managerName = $manager.Name
-
-    if (-not [string]::IsNullOrWhiteSpace($manager.Root)) {
-        Add-PathPrepend `
-            (Join-Path $manager.Root 'bin') `
-            (Join-Path $manager.Root 'shims')
+    if ([string]::IsNullOrWhiteSpace($manager.Root)) {
+        continue
     }
+
+    Add-PathPrepend `
+        (Join-Path $manager.Root 'bin') `
+        (Join-Path $manager.Root 'shims')
 
     if (-not (Test-Command $managerName)) { continue }
 
