@@ -75,7 +75,7 @@ conf.d/60-your-tool.nu
 
 ## Local Env And Alias Files
 
-`conf.d/35-local-env.nu` loads `~/.envs` if it exists:
+`conf.d/11-local-env.nu` loads `~/.envs` if it exists:
 
 ```text
 FOO=bar
