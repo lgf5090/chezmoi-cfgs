@@ -1,4 +1,4 @@
-case "$(uname -s 2>/dev/null | tr '[:upper:]' '[:lower:]')" in
+case ${OSTYPE,,} in
   linux*) SHELLS_OS=linux ;;
   darwin*) SHELLS_OS=macos ;;
   freebsd*) SHELLS_OS=freebsd ;;
@@ -7,9 +7,12 @@ case "$(uname -s 2>/dev/null | tr '[:upper:]' '[:lower:]')" in
   *) SHELLS_OS=unknown ;;
 esac
 
-if [[ $SHELLS_OS == linux && -r /proc/version ]] \
-  && grep -qiE 'microsoft|wsl' /proc/version 2>/dev/null; then
-  SHELLS_OS=wsl
+if [[ $SHELLS_OS == linux && -r /proc/version ]]; then
+  IFS= read -r __bash_proc_version < /proc/version || __bash_proc_version=
+  case ${__bash_proc_version,,} in
+    *microsoft*|*wsl*) SHELLS_OS=wsl ;;
+  esac
+  unset __bash_proc_version
 fi
 
 export SHELLS_OS
