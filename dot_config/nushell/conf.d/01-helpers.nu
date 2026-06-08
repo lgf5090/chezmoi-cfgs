@@ -6,30 +6,37 @@ def _nu_path_list [] {
     }
 }
 
-def --env _nu_path_prepend [...dirs: string] {
-    mut paths = (_nu_path_list)
+def _nu_is_dir [dir: string] {
+    ($dir | is-not-empty) and (($dir | path type) == "dir")
+}
+
+def _nu_existing_dirs [dirs: list<string>] {
+    mut out = []
 
     for dir in $dirs {
-        if ($dir | is-empty) { continue }
-        if not (($dir | path exists) and (($dir | path type) == "dir")) { continue }
-
-        $paths = ($paths | where { |p| $p != $dir } | prepend $dir)
+        if not (_nu_is_dir $dir) { continue }
+        $out = ($out | where { |p| $p != $dir } | append $dir)
     }
 
-    $env.PATH = $paths
+    $out
+}
+
+def --env _nu_path_prepend [...dirs: string] {
+    let add = (_nu_existing_dirs $dirs)
+    if ($add | is-empty) { return }
+
+    let paths = (_nu_path_list | where { |p| $p not-in $add })
+
+    $env.PATH = (($add | reverse) | append $paths)
 }
 
 def --env _nu_path_append [...dirs: string] {
-    mut paths = (_nu_path_list)
+    let add = (_nu_existing_dirs $dirs)
+    if ($add | is-empty) { return }
 
-    for dir in $dirs {
-        if ($dir | is-empty) { continue }
-        if not (($dir | path exists) and (($dir | path type) == "dir")) { continue }
+    let paths = (_nu_path_list | where { |p| $p not-in $add })
 
-        $paths = ($paths | where { |p| $p != $dir } | append $dir)
-    }
-
-    $env.PATH = $paths
+    $env.PATH = ($paths | append $add)
 }
 
 def --env _nu_path_prepend_value [value: string] {
@@ -42,8 +49,7 @@ def --env _nu_path_prepend_value [value: string] {
     mut paths = []
 
     for dir in ($parts | append (_nu_path_list)) {
-        if ($dir | is-empty) { continue }
-        if not (($dir | path exists) and (($dir | path type) == "dir")) { continue }
+        if not (_nu_is_dir $dir) { continue }
         if ($paths | any { |p| $p == $dir }) { continue }
 
         $paths = ($paths | append $dir)
@@ -174,7 +180,7 @@ def _nu_regen_aliases_if_stale [] {
     }
 
     if (not $had_cache) or (
-        ((ls -al $infile | get 0.modified) > (ls -al $outfile | get 0.modified))
+        ((ls $infile | get 0.modified) > (ls $outfile | get 0.modified))
     ) {
         shells-regen-aliases
         if $had_cache {
@@ -187,7 +193,7 @@ def _nu_regen_aliases_if_stale [] {
 
 def _nu_first_dir [...dirs: string] {
     for dir in $dirs {
-        if ($dir | is-not-empty) and ($dir | path exists) and (($dir | path type) == "dir") {
+        if (_nu_is_dir $dir) {
             return $dir
         }
     }
