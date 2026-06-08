@@ -79,7 +79,7 @@ function _fload_aliases -a file
         set -l cache_base /tmp
         set -q TMPDIR; and set cache_base (string trim --right --chars=/ -- "$TMPDIR")
         set cache_root "$cache_base/fish-$USER"
-        mkdir -p "$cache_root" 2>/dev/null
+        test -d "$cache_root"; or mkdir -p "$cache_root" 2>/dev/null
     end
 
     set -l resolved_file (path resolve -- "$file" 2>/dev/null)

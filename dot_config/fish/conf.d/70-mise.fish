@@ -9,7 +9,7 @@ if not set -q MISE_CACHE_DIR
         set -l cache_base /tmp
         set -q TMPDIR; and set cache_base (string trim --right --chars=/ -- "$TMPDIR")
         set mise_cache "$cache_base/mise-$USER"
-        mkdir -p "$mise_cache" 2>/dev/null
+        test -d "$mise_cache"; or mkdir -p "$mise_cache" 2>/dev/null
     end
     set -gx MISE_CACHE_DIR "$mise_cache"
 end
