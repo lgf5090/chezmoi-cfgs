@@ -50,7 +50,7 @@ No change is needed in `config.zsh`.
 
 ## Local Env And Alias Files
 
-`conf.d/35-local-env.zsh` loads `~/.envs` if it exists:
+`conf.d/11-local-env.zsh` loads `~/.envs` if it exists:
 
 ```text
 FOO=bar
