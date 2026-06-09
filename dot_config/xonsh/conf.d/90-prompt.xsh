@@ -76,7 +76,7 @@ if XSH.env.get("XONSH_INTERACTIVE") and not XSH.env.get("SHELLS_NO_PROMPT"):
             "{GREEN}{user}{BOLD_WHITE}@{hostname}{RESET} "
             "{BLUE}[{cwd}]{RESET}"
             "{CYAN}{shells_env}{RESET}"
-            "{MAGENTA}{shells_git}{RESET}"
+            "{PURPLE}{shells_git}{RESET}"
             "{RED}{shells_rc}{RESET}\n"
             "{CYAN}{shells_prompt_end}{RESET} "
         )
