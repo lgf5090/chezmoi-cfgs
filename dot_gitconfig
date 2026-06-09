@@ -1,0 +1,46 @@
+[user]
+	name = lgf5090
+	email = lgf5090@gmail.com
+[init]
+	defaultBranch = main
+[alias]
+	st = status -sb
+	co = checkout
+	com = checkout main
+	cod = checkout dev
+	br = branch
+	mg = merge
+	cm = commit
+	ds = diff --staged
+	dt = difftool
+	mt = mergetool
+	last = log -1 HEAD
+	latest = for-each-ref --sort=-committerdate --format=\"%(committername)@%(refname:short) [%(committerdate:short)] %(contents)\"
+	ls = log --pretty=format:\"%C(yellow)%h %C(blue)%ad %C(red)%d %C(reset)%s %C(green)[%cn]\" --decorate --date=short
+	hist = log --pretty=format:\"%C(yellow)%h %C(red)%d %C(reset)%s %C(green)[%an] %C(blue)%ad\" --topo-order --graph --date=short
+	type = cat-file -t
+	dump = cat-file -p
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	glg = log --graph --oneline --decorate --all
+	gll = log --pretty=format:'%C(yellow)%h%Creset %C(green)(%cd)%Creset %C(bold blue)<%cn>%Creset%C(red)%d%Creset %C(white)%s%Creset' --date=format-local:'%Y-%m-%d %H:%M:%S'
+	gla = log --pretty=format:'%C(yellow)%h%Creset %C(green)(%cd)%Creset %C(bold blue)<%cn>%Creset%C(red)%d%Creset %C(white)%s%Creset' --date=format-local:'%Y-%m-%d %H:%M:%S' --graph --all
+[credential "https://huggingface.co"]
+	provider = generic
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[core]
+	editor = vim
+	autocrlf = input
+	quotePath = false
+	excludesfile = /home/lgf/.gitignore_global
+[push]
+	default = simple
+[pull]
+	rebase = false
+[color]
+	ui = auto
+
+
