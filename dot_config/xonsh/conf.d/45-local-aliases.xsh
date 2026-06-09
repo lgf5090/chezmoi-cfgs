@@ -2,7 +2,7 @@ from pathlib import Path
 
 from xonsh.built_ins import XSH
 
-if globals().get("_XLOCAL_LOADER_VERSION") != 2:
+if globals().get("_XLOCAL_LOADER_VERSION") != 4:
     source @(str(Path($XONSH_CONFIG_DIR) / "conf.d" / "01-helpers.xsh"))
 
 _xonsh_local_aliases_file = (

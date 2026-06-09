@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import shutil
@@ -5,9 +6,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+from xonsh.aliases import EXEC_ALIAS_RE, isexpression, strip_simple_quotes
 from xonsh.built_ins import XSH
 
-_XLOCAL_LOADER_VERSION = 2
+_XLOCAL_LOADER_VERSION = 4
+_XENV_KEY_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+_XALIAS_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_-]*$")
 
 if XSH.builtins.execx is not None:
     XSH.ctx.setdefault("execx", XSH.builtins.execx)
@@ -96,7 +100,6 @@ def _xload_envs(file_path):
     if not path.is_file():
         return
 
-    key_re = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
     for raw_line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):
@@ -109,7 +112,7 @@ def _xload_envs(file_path):
         key, value = line.split("=", 1)
         key = key.rstrip()
         value = value.strip()
-        if not key_re.match(key):
+        if not _XENV_KEY_RE.match(key):
             continue
         if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
             value = value[1:-1]
@@ -128,7 +131,15 @@ def _xload_aliases(file_path):
     if not path.is_file():
         return
 
-    name_re = re.compile(r"^[A-Za-z_][A-Za-z0-9_-]*$")
+    stat = path.stat()
+    cache_path = _xaliases_cache_path(path)
+    loaded_aliases = _xload_aliases_cache(cache_path, path, stat)
+    if loaded_aliases is not None:
+        aliases.update(loaded_aliases)
+        return
+
+    loaded_aliases = {}
+    cache_entries = []
     for raw_line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#") or "=" not in line:
@@ -137,11 +148,87 @@ def _xload_aliases(file_path):
         name, body = line.split("=", 1)
         name = name.rstrip()
         body = body.strip()
-        if not name_re.match(name):
+        if not _XALIAS_NAME_RE.match(name):
             continue
         if len(body) >= 2 and body[0] == body[-1] and body[0] in ("'", '"'):
             body = body[1:-1]
-        aliases[name] = body
+
+        value = _xparse_alias_value(body)
+        loaded_aliases[name] = value
+        cache_entries.append([name, "argv" if isinstance(value, list) else "text", value])
+
+    if loaded_aliases:
+        aliases.update(loaded_aliases)
+        _xwrite_aliases_cache(cache_path, path, stat, cache_entries)
+
+
+def _xaliases_cache_path(path):
+    cache_root = Path(XSH.env.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "xonsh" / "local-aliases"
+    safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(path.resolve()).strip(os.sep))
+    return cache_root / f"{safe_name}.json"
+
+
+def _xparse_alias_value(value):
+    try:
+        if EXEC_ALIAS_RE.search(value) is None and isexpression(value):
+            lexer = XSH.execer.parser.lexer
+            return list(map(strip_simple_quotes, lexer.split(value)))
+    except Exception:
+        return value
+    return value
+
+
+def _xload_aliases_cache(cache_path, path, stat):
+    try:
+        data = json.loads(cache_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+    if (
+        data.get("version") != _XLOCAL_LOADER_VERSION
+        or data.get("path") != str(path)
+        or data.get("mtime_ns") != stat.st_mtime_ns
+        or data.get("size") != stat.st_size
+    ):
+        return None
+
+    loaded_aliases = {}
+    for entry in data.get("aliases", []):
+        if not isinstance(entry, list) or len(entry) != 3:
+            return None
+        name, kind, value = entry
+        if not isinstance(name, str) or not _XALIAS_NAME_RE.match(name):
+            return None
+        if kind == "argv" and isinstance(value, list) and all(isinstance(item, str) for item in value):
+            loaded_aliases[name] = value
+        elif kind == "text" and isinstance(value, str):
+            loaded_aliases[name] = value
+        else:
+            return None
+
+    return loaded_aliases
+
+
+def _xwrite_aliases_cache(cache_path, path, stat, cache_entries):
+    try:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(
+            json.dumps(
+                {
+                    "version": _XLOCAL_LOADER_VERSION,
+                    "path": str(path),
+                    "mtime_ns": stat.st_mtime_ns,
+                    "size": stat.st_size,
+                    "aliases": cache_entries,
+                },
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
 
 
 def _xsource_file(file_path):

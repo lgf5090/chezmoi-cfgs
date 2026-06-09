@@ -3,26 +3,28 @@ from pathlib import Path
 
 from xonsh.built_ins import XSH
 
+_xonsh_builtin_aliases = {
+    "ll": "ls -alFh",
+    "la": "ls -A",
+    "l": "ls -CF",
+    "lt": "ls -alFht",
+    "grep": "grep --color=auto",
+    "fgrep": "fgrep --color=auto",
+    "egrep": "egrep --color=auto",
+    "..": "cd ..",
+    "...": "cd ../..",
+    "....": "cd ../../..",
+    "md": "mkdir -p",
+    "now": "date +%Y-%m-%dT%H:%M:%S%z",
+    "cls": "clear",
+}
+
 if XSH.env.get("SHELLS_OS") in ("linux", "wsl", "cygwin", "windows"):
-    aliases["ls"] = "ls --color=auto"
+    _xonsh_builtin_aliases["ls"] = "ls --color=auto"
 elif XSH.env.get("SHELLS_OS") in ("macos", "freebsd"):
-    aliases["ls"] = "ls -G"
+    _xonsh_builtin_aliases["ls"] = "ls -G"
 
-aliases["ll"] = "ls -alFh"
-aliases["la"] = "ls -A"
-aliases["l"] = "ls -CF"
-aliases["lt"] = "ls -alFht"
-
-aliases["grep"] = "grep --color=auto"
-aliases["fgrep"] = "fgrep --color=auto"
-aliases["egrep"] = "egrep --color=auto"
-
-aliases[".."] = "cd .."
-aliases["..."] = "cd ../.."
-aliases["...."] = "cd ../../.."
-aliases["md"] = "mkdir -p"
-aliases["now"] = "date +%Y-%m-%dT%H:%M:%S%z"
-aliases["cls"] = "clear"
+aliases.update(_xonsh_builtin_aliases)
 
 
 def _xonsh_reload(args, stdin=None):
@@ -33,3 +35,5 @@ def _xonsh_reload(args, stdin=None):
 
 
 aliases["reload"] = _xonsh_reload
+
+del _xonsh_builtin_aliases
