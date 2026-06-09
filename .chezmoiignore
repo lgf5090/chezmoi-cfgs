@@ -1,0 +1,210 @@
+**/*.tmp
+**/.DS_Store
+**/.idea/
+**/.vscode/
+
+**/tmp/
+**/temp/
+
+**/doc/
+**/docs/
+
+data/
+http/
+
+scripts/
+
+**/.gitignore
+
+**/*.md
+*.txt
+
+
+# 通用构建输出和依赖目录
+**/node_modules/
+**/vendor/
+**/.bundle/
+**/dist/
+**/out/
+**/output/
+**/.output/
+**/.build/
+
+# Java
+**/target/
+**/build/
+**/.gradle/
+**/.m2/
+**/out/
+
+# JavaScript/TypeScript
+**/node_modules/
+**/dist/
+**/build/
+**/.next/
+**/.nuxt/
+**/.svelte-kit/
+**/.vuepress/dist/
+**/.cache/
+**/.parcel-cache/
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.Python/
+**/pip-log.txt
+**/pip-delete-this-directory.txt
+**/htmlcov/
+**/.tox/
+**/.nox/
+**/.coverage
+**/.cache
+**/nosetests.xml
+**/coverage.xml
+**/*.cover
+**/.hypothesis/
+**/venv/
+**/env/
+**/.venv/
+**/ENV/
+
+# Go
+**/bin/
+**/pkg/
+**/vendor/
+**/go-build/
+**/go-bin/
+**/go-pkg/
+
+# Rust
+**/target/
+**/Cargo.lock
+**/*.rs.bk
+
+# C/C++
+**/build/
+**/Debug/
+**/Release/
+**/x64/
+**/x86/
+**/.vs/
+**/out/
+**/bin/
+**/obj/
+**/CMakeFiles/
+**/CMakeCache.txt
+**/*.so
+**/*.dylib
+**/*.dll
+**/*.a
+**/*.lib
+
+# .NET
+**/bin/
+**/obj/
+**/.vs/
+**/*.csproj.user
+**/packages/
+
+# PHP
+**/vendor/
+**/composer.lock
+**/.phpunit.result.cache
+
+# Ruby
+**/.bundle/
+**/vendor/bundle/
+**/Gemfile.lock
+**/_site/
+**/.jekyll-cache/
+**/*.gem
+
+# Swift
+**/.build/
+**/Packages/
+**/*.xcodeproj/
+**/*.xcworkspace/
+**/DerivedData/
+
+# Android
+**/build/
+**/.gradle/
+**/local.properties/
+**/*.apk
+**/*.aab
+**/app/build/
+
+# iOS
+**/build/
+**/DerivedData/
+**/*.app
+**/*.ipa
+**/Pods/
+
+# Flutter
+**/build/
+**/.dart_tool/
+**/.pub-cache/
+**/.pub/
+**/pubspec.lock
+
+# Haskell
+**/.stack-work/
+**/dist/
+**/dist-newstyle/
+
+# Scala
+**/target/
+**/.metals/
+
+# Elixir
+**/_build/
+**/deps/
+**/cover/
+**/.elixir_ls/
+
+# Clojure
+**/target/
+**/.cpcache/
+**/.nrepl-port
+
+# Docker
+**/.docker/
+
+# IDE 和编辑器
+**/.idea/
+**/.vscode/
+**/.vs/
+**/*.swp
+**/*.swo
+**/.project
+**/.classpath
+**/.settings/
+
+# 操作系统
+**/.DS_Store
+**/Thumbs.db
+**/desktop.ini
+
+# 版本控制
+**/.git/
+**/.svn/
+**/.hg/
+
+# 日志文件
+**/*.log
+**/logs/
+
+# 临时文件
+**/tmp/
+**/temp/
+**/*.tmp
+**/*.temp
+
+# 配置文件（根据需要取消注释）
+# **/.env
+# **/config.local.*
+# **/settings.local.*
+
