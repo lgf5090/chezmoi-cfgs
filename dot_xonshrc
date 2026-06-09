@@ -1,0 +1,13 @@
+# Xonsh Shell configuration file
+# Managed by chezmoi, corresponds to ~/.xonshrc
+
+# If not running interactively, don't do anything
+import sys
+if not sys.stdin.isatty():
+    pass
+else:
+    # Load main configuration file
+    from pathlib import Path
+    config_file = Path.home() / '.config' / 'xonsh' / 'config.xsh'
+    if config_file.exists():
+        source @(str(config_file))
