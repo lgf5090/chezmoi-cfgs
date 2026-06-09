@@ -22,20 +22,35 @@ def _xonsh_load_conda():
     return True
 
 
+def _xonsh_run_loaded_alias(name, fallback, args, stdin=None):
+    current = aliases.get(name)
+    if current is fallback:
+        return None
+    if callable(current):
+        return current(args, stdin=stdin)
+    if isinstance(current, (list, tuple)):
+        result = subprocess.run([*current, *args], env=XSH.env.detype(), check=False)
+        return result.returncode
+    if isinstance(current, str):
+        result = subprocess.run([current, *args], env=XSH.env.detype(), check=False)
+        return result.returncode
+    return None
+
+
 def _conda(args, stdin=None):
     _xonsh_load_conda()
-    current = aliases.get("conda")
-    if current is not _conda:
-        return current(args, stdin=stdin)
+    loaded = _xonsh_run_loaded_alias("conda", _conda, args, stdin=stdin)
+    if loaded is not None:
+        return loaded
     result = subprocess.run([_xonsh_conda_exe, *args], env=XSH.env.detype(), check=False)
     return result.returncode
 
 
 def _mamba(args, stdin=None):
     _xonsh_load_conda()
-    current = aliases.get("mamba")
-    if current is not _mamba:
-        return current(args, stdin=stdin)
+    loaded = _xonsh_run_loaded_alias("mamba", _mamba, args, stdin=stdin)
+    if loaded is not None:
+        return loaded
     exe = shutil.which("mamba")
     if not exe:
         return 127
@@ -55,9 +70,9 @@ if shutil.which("micromamba"):
         hook = subprocess.run([_xonsh_micromamba_exe, "shell", "hook", "--shell", "xonsh"], capture_output=True, text=True, check=False)
         if hook.returncode == 0 and hook.stdout:
             XSH.builtins.execx(hook.stdout, "exec", XSH.ctx, filename="micromamba")
-            current = aliases.get("micromamba")
-            if current is not _micromamba:
-                return current(args, stdin=stdin)
+            loaded = _xonsh_run_loaded_alias("micromamba", _micromamba, args, stdin=stdin)
+            if loaded is not None:
+                return loaded
         result = subprocess.run([_xonsh_micromamba_exe, *args], env=XSH.env.detype(), check=False)
         return result.returncode
 
