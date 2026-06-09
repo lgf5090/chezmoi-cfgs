@@ -9,6 +9,9 @@ from xonsh.built_ins import XSH
 
 _XLOCAL_LOADER_VERSION = 2
 
+if XSH.builtins.execx is not None:
+    XSH.ctx.setdefault("execx", XSH.builtins.execx)
+
 
 def _xenv_default(name, value):
     if not XSH.env.get(name):
