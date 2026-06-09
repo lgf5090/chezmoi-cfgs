@@ -1,0 +1,51 @@
+## nano配置文件 (~/.nanorc)
+## 兼容旧版本的基础设置
+
+# 显示行号
+set linenumbers
+
+# 显示当前光标位置
+set constantshow
+
+# 启用鼠标支持
+set mouse
+
+# 自动缩进
+set autoindent
+
+# 使用制表符进行缩进，宽度为4
+set tabsize 4
+
+# 将制表符转换为空格
+set tabstospaces
+
+# 启用软换行
+set softwrap
+
+# 启用语法高亮颜色
+set titlecolor brightwhite,blue
+set statuscolor brightwhite,green
+set keycolor cyan
+set functioncolor green
+
+# 显示空白字符（如果支持的话）
+# set whitespace "»·"
+
+# 保存时自动备份到当前目录
+set backup
+
+# 搜索时忽略大小写
+# set casesensitive
+
+# 启用正则表达式搜索
+set regexp
+
+# 启用快速空白修正（如果支持）
+# set trimblanks
+
+# 包含系统的语法高亮文件, 貌似已经自动加载了
+# include "/usr/share/nano/*.nanorc"
+
+## 状态栏消息颜色
+set errorcolor brightwhite,red
+set statuscolor brightwhite,green
