@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 if sys.stdin.isatty():
-    _xonsh_config_file = Path.home() / ".config" / "xonsh" / "config.xsh"
-    if _xonsh_config_file.is_file():
-        source @(str(_xonsh_config_file))
-    del _xonsh_config_file
+    _xonsh_rc_config_file = Path.home() / ".config" / "xonsh" / "config.xsh"
+    if _xonsh_rc_config_file.is_file():
+        source @(str(_xonsh_rc_config_file))
+    del _xonsh_rc_config_file
