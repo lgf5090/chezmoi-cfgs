@@ -50,24 +50,30 @@ def _xpath_remove(directory):
 
 def _xpath_prepend(*directories):
     parts = _xpath_as_list()
+    new_parts = []
+    seen = set()
     for directory in directories:
         directory = _xpath_existing(directory)
-        if directory is None:
+        if directory is None or directory in seen:
             continue
-        parts = [part for part in parts if part != directory]
-        parts.insert(0, directory)
-    _xpath_set(parts)
+        seen.add(directory)
+        new_parts.append(directory)
+    if new_parts:
+        _xpath_set([*reversed(new_parts), *[part for part in parts if part not in seen]])
 
 
 def _xpath_append(*directories):
     parts = _xpath_as_list()
+    new_parts = []
+    seen = set()
     for directory in directories:
         directory = _xpath_existing(directory)
-        if directory is None:
+        if directory is None or directory in seen:
             continue
-        parts = [part for part in parts if part != directory]
-        parts.append(directory)
-    _xpath_set(parts)
+        seen.add(directory)
+        new_parts.append(directory)
+    if new_parts:
+        _xpath_set([*[part for part in parts if part not in seen], *new_parts])
 
 
 def _xpath_prepend_value(value):
