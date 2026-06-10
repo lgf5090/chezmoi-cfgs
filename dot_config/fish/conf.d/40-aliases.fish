@@ -1,23 +1,67 @@
+set -g __fish_ls_color_opt
 switch $SHELLS_OS
     case linux wsl cygwin windows
-        alias ls 'ls --color=auto'
+        set -g __fish_ls_color_opt --color=auto
     case macos freebsd
-        alias ls 'ls -G'
+        set -g __fish_ls_color_opt -G
 end
 
-alias ll 'ls -alFh'
-alias la 'ls -A'
-alias l 'ls -CF'
-alias lt 'ls -alFht'
+function ls --wraps ls --description 'list directory contents'
+    command ls $__fish_ls_color_opt $argv
+end
 
-alias grep 'grep --color=auto'
-alias fgrep 'fgrep --color=auto'
-alias egrep 'egrep --color=auto'
+function ll --wraps ls --description 'list all files, long format'
+    command ls $__fish_ls_color_opt -alFh $argv
+end
 
-alias .. 'cd ..'
-alias ... 'cd ../..'
-alias .... 'cd ../../..'
-alias md 'mkdir -p'
-alias now 'date +%Y-%m-%dT%H:%M:%S%z'
-alias cls clear
-alias reload 'source "$FISH_CONFIG_DIR/config.fish"'
+function la --wraps ls --description 'list non-hidden and hidden files'
+    command ls $__fish_ls_color_opt -A $argv
+end
+
+function l --wraps ls --description 'list files in columns'
+    command ls $__fish_ls_color_opt -CF $argv
+end
+
+function lt --wraps ls --description 'list all files by time'
+    command ls $__fish_ls_color_opt -alFht $argv
+end
+
+function grep --wraps grep --description 'grep with color'
+    command grep --color=auto $argv
+end
+
+function fgrep --wraps fgrep --description 'fgrep with color'
+    command fgrep --color=auto $argv
+end
+
+function egrep --wraps egrep --description 'egrep with color'
+    command egrep --color=auto $argv
+end
+
+function .. --description 'cd ..'
+    cd ..
+end
+
+function ... --description 'cd ../..'
+    cd ../..
+end
+
+function .... --description 'cd ../../..'
+    cd ../../..
+end
+
+function md --wraps mkdir --description 'mkdir -p'
+    command mkdir -p $argv
+end
+
+function now --wraps date --description 'current timestamp'
+    command date +%Y-%m-%dT%H:%M:%S%z $argv
+end
+
+function cls --wraps clear --description clear
+    command clear $argv
+end
+
+function reload --description 'reload fish config'
+    source "$FISH_CONFIG_DIR/config.fish" $argv
+end
