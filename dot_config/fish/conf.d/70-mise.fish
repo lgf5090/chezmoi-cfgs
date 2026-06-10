@@ -1,4 +1,5 @@
 set -q MISE_DATA_DIR; or set -gx MISE_DATA_DIR "$XDG_DATA_HOME/mise"
+set -q FISH_MISE_ACTIVATE; or set -gx FISH_MISE_ACTIVATE shims
 
 if not set -q MISE_CACHE_DIR
     set -l mise_cache "$XDG_CACHE_HOME/mise"
@@ -45,8 +46,15 @@ if test -z "$mise"; and test "$mise_discovery" = 1
     set mise (command -s mise 2>/dev/null)
 end
 
-if test -n "$mise"; and test -x "$mise"
-    "$mise" activate fish | source
+switch (string lower -- "$FISH_MISE_ACTIVATE")
+    case full 1 yes true
+        if test -n "$mise"; and test -x "$mise"
+            "$mise" activate fish | source
+        end
 end
 
-_fpath_prepend "$HOME/.mise/shims" "$MISE_DATA_DIR/shims"
+switch (string lower -- "$FISH_MISE_ACTIVATE")
+    case none 0 no false
+    case '*'
+        _fpath_prepend "$HOME/.mise/shims" "$MISE_DATA_DIR/shims"
+end
