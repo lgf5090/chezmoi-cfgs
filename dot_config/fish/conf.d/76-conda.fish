@@ -1,7 +1,10 @@
+set -l conda_discovery 0
+set -q FISH_CONDA_DISCOVERY; and set conda_discovery "$FISH_CONDA_DISCOVERY"
+
 if set -q ANACONDA_HOME; and test -x "$ANACONDA_HOME/bin/conda"
     set -g __FISH_CONDA_EXE "$ANACONDA_HOME/bin/conda"
-else if command -q conda
-    set -g __FISH_CONDA_EXE (command -s conda)
+else if test "$conda_discovery" = 1
+    set -g __FISH_CONDA_EXE (command -s conda 2>/dev/null)
 end
 
 if set -q __FISH_CONDA_EXE; and test -x "$__FISH_CONDA_EXE"
@@ -14,7 +17,7 @@ if set -q __FISH_CONDA_EXE; and test -x "$__FISH_CONDA_EXE"
         else if set -q ANACONDA_HOME; and test -r "$ANACONDA_HOME/etc/fish/conf.d/conda.fish"
             source "$ANACONDA_HOME/etc/fish/conf.d/conda.fish"
         else
-            _fpath_prepend (dirname "$__FISH_CONDA_EXE")
+            _fpath_prepend (path dirname "$__FISH_CONDA_EXE")
         end
     end
 
@@ -23,7 +26,14 @@ if set -q __FISH_CONDA_EXE; and test -x "$__FISH_CONDA_EXE"
         conda $argv
     end
 
-    if command -q mamba
+    set -l mamba
+    if set -q ANACONDA_HOME; and test -x "$ANACONDA_HOME/bin/mamba"
+        set mamba "$ANACONDA_HOME/bin/mamba"
+    else if test "$conda_discovery" = 1
+        set mamba (command -s mamba 2>/dev/null)
+    end
+
+    if test -n "$mamba"
         function mamba
             _fconda_load
             mamba $argv
@@ -31,9 +41,13 @@ if set -q __FISH_CONDA_EXE; and test -x "$__FISH_CONDA_EXE"
     end
 end
 
-if command -q micromamba
-    set -g __FISH_MICROMAMBA_EXE (command -s micromamba)
+if set -q MICROMAMBA_EXE; and test -x "$MICROMAMBA_EXE"
+    set -g __FISH_MICROMAMBA_EXE "$MICROMAMBA_EXE"
+else if test "$conda_discovery" = 1
+    set -g __FISH_MICROMAMBA_EXE (command -s micromamba 2>/dev/null)
+end
 
+if set -q __FISH_MICROMAMBA_EXE; and test -x "$__FISH_MICROMAMBA_EXE"
     function micromamba
         functions -e micromamba 2>/dev/null
 
