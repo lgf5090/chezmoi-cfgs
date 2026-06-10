@@ -25,18 +25,14 @@ def --env _nu_path_prepend [...dirs: string] {
     let add = (_nu_existing_dirs $dirs)
     if ($add | is-empty) { return }
 
-    let paths = (_nu_path_list | where { |p| $p not-in $add })
-
-    $env.PATH = (($add | reverse) | append $paths)
+    $env.PATH = (($add | reverse) | append (_nu_path_list) | uniq)
 }
 
 def --env _nu_path_append [...dirs: string] {
     let add = (_nu_existing_dirs $dirs)
     if ($add | is-empty) { return }
 
-    let paths = (_nu_path_list | where { |p| $p not-in $add })
-
-    $env.PATH = ($paths | append $add)
+    $env.PATH = (((_nu_path_list) | append $add | reverse | uniq) | reverse)
 }
 
 def --env _nu_path_prepend_value [value: string] {
