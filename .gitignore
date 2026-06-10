@@ -1,12 +1,13 @@
- tmp/
- plugins/
- .agents/
+*.log
+*.bak
+*.tmp
+*.swp
+*.swo
+*.DS_Store
 
- *.bak
- *-shm
- *-wal
- *.log
- *.tmp
- *.swp
- *.swo
- *.DS_Store
+*-shm
+*-wal
+
+tmp/
+plugins/
+.agents/
