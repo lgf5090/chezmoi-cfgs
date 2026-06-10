@@ -1,5 +1,16 @@
 $homeDir = [Environment]::GetFolderPath('UserProfile')
 
+$loadDirenvHook = (
+    $env:POWERSHELL_DIRENV_HOOK -eq '1' -or (
+        $env:POWERSHELL_DIRENV_HOOK -ne '0' -and
+        -not [Console]::IsInputRedirected -and
+        -not [Console]::IsOutputRedirected
+    )
+)
+if (-not $loadDirenvHook) {
+    return
+}
+
 $direnvCandidates = @(
     (Join-Path $homeDir '.local/bin/direnv'),
     '/home/linuxbrew/.linuxbrew/bin/direnv',
