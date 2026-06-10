@@ -4,7 +4,15 @@
 #   source /tmp/fish/config.fish
 #   ln -s /tmp/fish ~/.config/fish
 
-set -l _fish_config_dir (path dirname (status filename))
+set -l _fish_config_file (path normalize (status filename))
+set -l _fish_native_config (path normalize "$__fish_config_dir/config.fish")
+set -l _fish_home_config (path normalize "$HOME/.config/config.fish")
+
+if contains -- "$_fish_config_file" "$_fish_native_config" "$_fish_home_config"
+    return 0
+end
+
+set -l _fish_config_dir (path dirname "$_fish_config_file")
 set -g FISH_CONFIG_DIR "$_fish_config_dir"
 
 contains -- "$_fish_config_dir/functions" $fish_function_path
