@@ -14,7 +14,12 @@ else
 fi
 export FZF_CTRL_T_OPTS="--preview '$_FZF_PREVIEW_CMD'"
 
-if (( $+commands[fzf] )) && [[ -o interactive && -t 0 && -t 1 ]]; then
+_fzf_load_shell_integration() {
+  (( ${+__zsh_fzf_loaded} )) && return 0
+  typeset -g __zsh_fzf_loaded=1
+
+  local _fzf_dir _fzf_ver
+  local -a _fzf_dirs
   _fzf_dirs=(
     "${commands[fzf]:A:h:h}/shell"
     "${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/opt/fzf/shell}"
@@ -29,18 +34,16 @@ if (( $+commands[fzf] )) && [[ -o interactive && -t 0 && -t 1 ]]; then
     [[ -r $_fzf_dir/key-bindings.zsh || -r $_fzf_dir/completion.zsh ]] || continue
     source "$_fzf_dir/key-bindings.zsh" 2>/dev/null
     source "$_fzf_dir/completion.zsh" 2>/dev/null
-    _fzf_loaded=1
-    break
+    return 0
   done
 
-  if [[ -z ${_fzf_loaded:-} ]]; then
-    _fzf_ver=${$(fzf --version 2>/dev/null)%% *}
-    if _zver_ge "$_fzf_ver" "0.48.0"; then
-      source <(fzf --zsh)
-    fi
+  _fzf_ver=${$(fzf --version 2>/dev/null)%% *}
+  if _zver_ge "$_fzf_ver" "0.48.0"; then
+    source <(fzf --zsh)
   fi
-  unset _fzf_dirs _fzf_dir _fzf_loaded _fzf_ver
+}
 
+if (( $+commands[fzf] )) && [[ -o interactive && -t 0 && -t 1 ]]; then
   _fzf_file_no_hidden() {
     local result
     if (( $+commands[fd] )); then
@@ -52,4 +55,21 @@ if (( $+commands[fzf] )) && [[ -o interactive && -t 0 && -t 1 ]]; then
     zle reset-prompt
   }
   zle -N _fzf_file_no_hidden
+
+  case ${ZSH_FZF_LOAD:-defer} in
+    none|0|no|false) ;;
+    sync|eager|1|yes|true)
+      _fzf_load_shell_integration
+      ;;
+    *)
+      autoload -Uz add-zle-hook-widget
+      _fzf_load_deferred() {
+        add-zle-hook-widget -d zle-line-init _fzf_load_deferred 2>/dev/null
+        _fzf_load_shell_integration
+        zle reset-prompt 2>/dev/null || true
+      }
+      add-zle-hook-widget zle-line-init _fzf_load_deferred 2>/dev/null \
+        || _fzf_load_shell_integration
+      ;;
+  esac
 fi
