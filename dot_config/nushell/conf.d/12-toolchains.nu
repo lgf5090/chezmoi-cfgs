@@ -33,16 +33,16 @@ if (($env.FNM_DIR? | default "") | is-empty) {
 }
 
 if (($env.VOLTA_HOME? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".volta"))
-    if ($dir | is-not-empty) { $env.VOLTA_HOME = $dir }
+    let dir = ($nu.home-dir | path join ".volta")
+    if (_nu_is_dir $dir) { $env.VOLTA_HOME = $dir }
 }
 if (($env.BUN_INSTALL? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".bun"))
-    if ($dir | is-not-empty) { $env.BUN_INSTALL = $dir }
+    let dir = ($nu.home-dir | path join ".bun")
+    if (_nu_is_dir $dir) { $env.BUN_INSTALL = $dir }
 }
 if (($env.DENO_INSTALL? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".deno"))
-    if ($dir | is-not-empty) { $env.DENO_INSTALL = $dir }
+    let dir = ($nu.home-dir | path join ".deno")
+    if (_nu_is_dir $dir) { $env.DENO_INSTALL = $dir }
 }
 
 if (($env.GOPATH? | default "") | is-empty) {
@@ -69,12 +69,12 @@ if (($env.ANACONDA_HOME? | default "") | is-empty) {
 }
 
 if (($env.POETRY_HOME? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".poetry"))
-    if ($dir | is-not-empty) { $env.POETRY_HOME = $dir }
+    let dir = ($nu.home-dir | path join ".poetry")
+    if (_nu_is_dir $dir) { $env.POETRY_HOME = $dir }
 }
 if (($env.PYENV_ROOT? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".pyenv"))
-    if ($dir | is-not-empty) { $env.PYENV_ROOT = $dir }
+    let dir = ($nu.home-dir | path join ".pyenv")
+    if (_nu_is_dir $dir) { $env.PYENV_ROOT = $dir }
 }
 
 if (($env.ASDF_DIR? | default "") | is-empty) {
@@ -97,24 +97,24 @@ if (($env.ASDF_DATA_DIR? | default "") | is-empty) and (($env.ASDF_DIR? | defaul
 }
 
 if (($env.RBENV_ROOT? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".rbenv"))
-    if ($dir | is-not-empty) { $env.RBENV_ROOT = $dir }
+    let dir = ($nu.home-dir | path join ".rbenv")
+    if (_nu_is_dir $dir) { $env.RBENV_ROOT = $dir }
 }
 if (($env.NODENV_ROOT? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".nodenv"))
-    if ($dir | is-not-empty) { $env.NODENV_ROOT = $dir }
+    let dir = ($nu.home-dir | path join ".nodenv")
+    if (_nu_is_dir $dir) { $env.NODENV_ROOT = $dir }
 }
 if (($env.GOENV_ROOT? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".goenv"))
-    if ($dir | is-not-empty) { $env.GOENV_ROOT = $dir }
+    let dir = ($nu.home-dir | path join ".goenv")
+    if (_nu_is_dir $dir) { $env.GOENV_ROOT = $dir }
 }
 if (($env.JENV_ROOT? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".jenv"))
-    if ($dir | is-not-empty) { $env.JENV_ROOT = $dir }
+    let dir = ($nu.home-dir | path join ".jenv")
+    if (_nu_is_dir $dir) { $env.JENV_ROOT = $dir }
 }
 if (($env.SDKMAN_DIR? | default "") | is-empty) {
-    let dir = (_nu_first_dir ($nu.home-dir | path join ".sdkman"))
-    if ($dir | is-not-empty) { $env.SDKMAN_DIR = $dir }
+    let dir = ($nu.home-dir | path join ".sdkman")
+    if (_nu_is_dir $dir) { $env.SDKMAN_DIR = $dir }
 }
 
 if (($env.JAVA_HOME? | default "") | is-empty) {
