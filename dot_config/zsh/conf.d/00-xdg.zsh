@@ -6,4 +6,5 @@
 
 export XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME ZDOTDIR
 
-mkdir -p "$XDG_STATE_HOME/zsh" "$XDG_CACHE_HOME/zsh"
+[[ -d $XDG_STATE_HOME/zsh ]] || mkdir -p "$XDG_STATE_HOME/zsh"
+[[ -d $XDG_CACHE_HOME/zsh ]] || mkdir -p "$XDG_CACHE_HOME/zsh"
