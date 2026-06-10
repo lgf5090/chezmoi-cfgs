@@ -63,5 +63,7 @@ function cls --wraps clear --description clear
 end
 
 function reload --description 'reload fish config'
-    source "$FISH_CONFIG_DIR/config.fish" $argv
+    set -l config_dir "$__fish_config_dir"
+    set -q FISH_CONFIG_DIR; and set config_dir "$FISH_CONFIG_DIR"
+    source "$config_dir/config.fish" $argv
 end
