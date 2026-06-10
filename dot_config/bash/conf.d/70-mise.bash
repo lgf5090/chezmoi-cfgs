@@ -1,4 +1,5 @@
 : "${MISE_DATA_DIR:=${XDG_DATA_HOME:-$HOME/.local/share}/mise}"
+: "${BASH_MISE_ACTIVATE:=shims}"
 export MISE_DATA_DIR
 
 if [[ -z ${MISE_CACHE_DIR:-} ]]; then
@@ -47,9 +48,16 @@ if [[ -z $__bash_mise && ${BASH_MISE_DISCOVERY:-0} == 1 ]]; then
   __bash_mise=$(command -v mise 2>/dev/null)
 fi
 
-if [[ -n $__bash_mise && -x $__bash_mise ]]; then
-  eval "$("$__bash_mise" activate bash)"
-fi
+case ${BASH_MISE_ACTIVATE,,} in
+  full|1|yes|true)
+    if [[ -n $__bash_mise && -x $__bash_mise ]]; then
+      eval "$("$__bash_mise" activate bash)"
+    fi
+    ;;
+esac
 unset __bash_mise
 
-_bpath_prepend "$HOME/.mise/shims" "$MISE_DATA_DIR/shims"
+case ${BASH_MISE_ACTIVATE,,} in
+  none|0|no|false) ;;
+  *) _bpath_prepend "$HOME/.mise/shims" "$MISE_DATA_DIR/shims" ;;
+esac
