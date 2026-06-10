@@ -89,11 +89,13 @@ def --env _nu_load_envs [file: string] {
         mut value = ($line | str substring ($eq + 1).. | str trim)
         if ($key | parse --regex '^[A-Za-z_][A-Za-z0-9_]*$' | is-empty) { continue }
 
-        $value = (
-            _nu_strip_outer_quotes $value
-            | str replace --all "{HOME}" $nu.home-dir
-            | str replace --all "{PATH}" ((_nu_path_list) | str join (char path_sep))
-        )
+        $value = (_nu_strip_outer_quotes $value)
+        if ($value | str contains "{HOME}") {
+            $value = ($value | str replace --all "{HOME}" $nu.home-dir)
+        }
+        if ($value | str contains "{PATH}") {
+            $value = ($value | str replace --all "{PATH}" ((_nu_path_list) | str join (char path_sep)))
+        }
 
         if $key == "PATH" {
             _nu_path_prepend_value $value
