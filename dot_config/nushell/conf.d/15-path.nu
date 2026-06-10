@@ -1,4 +1,4 @@
-_nu_path_append ...[
+mut path_append_dirs = [
     ($nu.home-dir | path join ".lmstudio" "bin")
     ($nu.home-dir | path join ".local" "bin")
     ($nu.home-dir | path join "bin")
@@ -8,7 +8,7 @@ _nu_path_append ...[
 
 # Tool installation dirs and language runtimes. Keeping these in one prepend
 # avoids repeated PATH scans while preserving the previous priority order.
-_nu_path_prepend ...[
+mut path_prepend_dirs = [
     (if (($env.ASDF_DIR? | default "") | is-empty) { "" } else { $env.ASDF_DIR | path join "bin" })
     (if (($env.RBENV_ROOT? | default "") | is-empty) { "" } else { $env.RBENV_ROOT | path join "bin" })
     (if (($env.NODENV_ROOT? | default "") | is-empty) { "" } else { $env.NODENV_ROOT | path join "bin" })
@@ -37,37 +37,37 @@ _nu_path_prepend ...[
 ]
 
 if $env.SHELLS_OS in ["linux" "wsl"] {
-    _nu_path_append ...[
+    $path_append_dirs = ($path_append_dirs | append [
         "/snap/bin"
         "/var/lib/snapd/snap/bin"
         "/var/lib/flatpak/exports/bin"
         ($nu.home-dir | path join ".local" "share" "flatpak" "exports" "bin")
         "/opt/bin"
-    ]
+    ])
 }
 
 if $env.SHELLS_OS == "wsl" {
-    _nu_path_append ...[
+    $path_append_dirs = ($path_append_dirs | append [
         "/mnt/c/Program Files/Microsoft VS Code/bin"
         $"/mnt/c/Users/($env.USER? | default "")/AppData/Local/Programs/Microsoft VS Code/bin"
-    ]
+    ])
 }
 
 if $env.SHELLS_OS == "windows" {
-    _nu_path_prepend ...[
+    $path_prepend_dirs = ($path_prepend_dirs | append [
         ($nu.home-dir | path join "scoop" "shims")
         (if (($env.PROGRAMDATA? | default "") | is-empty) { "" } else { $env.PROGRAMDATA | path join "scoop" "shims" })
         (if (($env.PROGRAMDATA? | default "") | is-empty) { "" } else { $env.PROGRAMDATA | path join "chocolatey" "bin" })
         (if (($env.LOCALAPPDATA? | default "") | is-empty) { "" } else { $env.LOCALAPPDATA | path join "Microsoft" "WindowsApps" })
         (if (($env.APPDATA? | default "") | is-empty) { "" } else { $env.APPDATA | path join "npm" })
-    ]
+    ])
 }
 
-_nu_path_prepend ...[
+$path_prepend_dirs = ($path_prepend_dirs | append [
     ($nu.home-dir | path join ".nix-profile" "bin")
     "/run/current-system/sw/bin"
     "/nix/var/nix/profiles/default/bin"
-]
+])
 
 for brew in [
     "/home/linuxbrew/.linuxbrew/bin/brew"
@@ -79,10 +79,10 @@ for brew in [
 
     let brew_bin = ($brew | path dirname)
     let brew_prefix = ($brew_bin | path dirname)
-    _nu_path_prepend ...[
+    $path_prepend_dirs = ($path_prepend_dirs | append [
         ($brew_prefix | path join "bin")
         ($brew_prefix | path join "sbin")
-    ]
+    ])
 
     $env.HOMEBREW_PREFIX = $brew_prefix
     $env.HOMEBREW_CELLAR = ($brew_prefix | path join "Cellar")
@@ -93,3 +93,6 @@ for brew in [
     }
     break
 }
+
+_nu_path_append ...$path_append_dirs
+_nu_path_prepend ...$path_prepend_dirs
