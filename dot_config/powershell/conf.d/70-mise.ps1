@@ -1,7 +1,4 @@
 $homeDir = [Environment]::GetFolderPath('UserProfile')
-if ([string]::IsNullOrWhiteSpace($env:MISE_DATA_DIR)) {
-    $env:MISE_DATA_DIR = Join-Path $env:XDG_DATA_HOME 'mise'
-}
 
 $miseCandidates = @(
     $env:MISE_EXE,
@@ -37,7 +34,3 @@ if (-not [string]::IsNullOrWhiteSpace($script:PowerShellMiseExe)) {
         & $script:PowerShellMiseExe @args
     }
 }
-
-Add-PathPrepend `
-    (Join-Path $homeDir '.mise/shims') `
-    (Join-Path $env:MISE_DATA_DIR 'shims')

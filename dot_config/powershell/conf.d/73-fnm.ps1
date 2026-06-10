@@ -1,9 +1,5 @@
 $homeDir = [Environment]::GetFolderPath('UserProfile')
 
-if (-not [string]::IsNullOrWhiteSpace($env:FNM_DIR)) {
-    Add-PathPrepend $env:FNM_DIR
-}
-
 $fnmActivate = if ([string]::IsNullOrWhiteSpace($env:POWERSHELL_FNM_ACTIVATE)) {
     'default'
 } else {
@@ -58,8 +54,6 @@ switch ($fnmActivate) {
         break
     }
     default {
-        if (-not [string]::IsNullOrWhiteSpace($env:FNM_DIR)) {
-            Add-PathPrepend (Join-Path $env:FNM_DIR 'aliases/default/bin')
-        }
+        break
     }
 }

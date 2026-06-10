@@ -86,6 +86,7 @@ function Add-EnvPathPrepend {
 
 Set-EnvIfMissing -Name 'NPM_CONFIG_PREFIX' -Value (Join-Path $homeDir '.npm-global')
 Set-EnvIfMissing -Name 'PNPM_HOME' -Value (Join-Path $homeDir '.pnpm-global')
+Set-EnvIfMissing -Name 'MISE_DATA_DIR' -Value (Join-Path $xdgDataHome 'mise')
 
 Set-EnvDirIfMissing -Name 'FNM_DIR' `
     (Join-Path $xdgDataHome 'fnm') `
@@ -109,7 +110,9 @@ Set-EnvDirIfMissing -Name 'ANACONDA_HOME' `
     '/opt/miniconda3'
 
 Set-EnvDirIfMissing -Name 'POETRY_HOME' (Join-Path $homeDir '.poetry')
-Set-EnvDirIfMissing -Name 'PYENV_ROOT' (Join-Path $homeDir '.pyenv')
+Set-EnvDirIfMissing -Name 'PYENV_ROOT' `
+    (Join-Path $homeDir '.pyenv/pyenv-win') `
+    (Join-Path $homeDir '.pyenv')
 
 $asdfCandidates = @(
     (Join-Path $homeDir '.asdf')
