@@ -76,8 +76,28 @@ _zload_envs() {
 }
 
 _zload_aliases() {
-  local file=$1 line name body
+  local file=$1 line name body alias_def
+  local cache_dir cache_key cache tmp use_cache=0
   [[ -r $file ]] || return 0
+
+  cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+  cache_key=${file:A}
+  cache_key=${cache_key//\//%}
+  cache_key=${cache_key//[^A-Za-z0-9_.%-]/_}
+  cache="$cache_dir/local-aliases-${cache_key}.zsh"
+
+  if [[ -s $cache && $cache -nt $file ]]; then
+    source "$cache"
+    return 0
+  fi
+
+  if [[ -d $cache_dir || -w ${cache_dir:h} ]]; then
+    [[ -d $cache_dir ]] || mkdir -p "$cache_dir" 2>/dev/null
+    if [[ -d $cache_dir && -w $cache_dir ]]; then
+      tmp="$cache.tmp.$$"
+      : > "$tmp" 2>/dev/null && use_cache=1
+    fi
+  fi
 
   while IFS= read -r line || [[ -n $line ]]; do
     line=${line#${line%%[![:space:]]*}}
@@ -100,8 +120,14 @@ _zload_aliases() {
         '""'|"''") body=${body[2,-2]} ;;
       esac
     fi
-    alias -- "$name=$body"
+    alias_def="$name=$body"
+    alias -- "$alias_def"
+    (( use_cache )) && print -r -- "alias -- ${(qqq)alias_def}" >> "$tmp"
   done < "$file"
+
+  if (( use_cache )); then
+    command mv -f "$tmp" "$cache" 2>/dev/null || command rm -f "$tmp"
+  fi
 }
 
 _zver_ge() {
