@@ -19,52 +19,62 @@ if ($global:ShellsOS -eq 'windows') {
 
 foreach ($candidate in $zoxideCandidates) {
     if ([string]::IsNullOrWhiteSpace($candidate)) { continue }
-    if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) { continue }
-    $script:PowerShellZoxideExe = (Resolve-Path -LiteralPath $candidate).ProviderPath
+    if (-not [System.IO.File]::Exists($candidate)) { continue }
+    $global:PowerShellZoxideExe = [System.IO.Path]::GetFullPath($candidate)
     break
 }
 
-if ([string]::IsNullOrWhiteSpace($script:PowerShellZoxideExe) -and $env:POWERSHELL_ZOXIDE_DISCOVERY -eq '1') {
-    $script:PowerShellZoxideExe = (Get-Command zoxide -CommandType Application -ErrorAction SilentlyContinue).Source
+if ([string]::IsNullOrWhiteSpace($global:PowerShellZoxideExe) -and $env:POWERSHELL_ZOXIDE_DISCOVERY -eq '1') {
+    $global:PowerShellZoxideExe = (Get-Command zoxide -CommandType Application -ErrorAction SilentlyContinue).Source
 }
 
-if (-not [string]::IsNullOrWhiteSpace($script:PowerShellZoxideExe)) {
-    $zoxideItem = [System.IO.FileInfo]::new($script:PowerShellZoxideExe)
-    $zoxideKey = "$($zoxideItem.FullName):$($zoxideItem.LastWriteTimeUtc.Ticks):$($zoxideItem.Length)"
-    $cacheRoot = if ([string]::IsNullOrWhiteSpace($env:XDG_CACHE_HOME)) {
-        Join-Path $homeDir '.cache'
-    } else {
-        $env:XDG_CACHE_HOME
-    }
-    $cacheDir = Join-Path $cacheRoot 'powershell'
-    $hash = [System.Security.Cryptography.SHA256]::Create()
-    try {
-        $hashBytes = $hash.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($zoxideItem.FullName))
-    } finally {
-        $hash.Dispose()
-    }
-    $cacheId = [System.BitConverter]::ToString($hashBytes, 0, 8).Replace('-', '').ToLowerInvariant()
-    $cacheFile = Join-Path $cacheDir "zoxide-init-$cacheId.ps1"
-    $cacheHeader = "# PowerShellZoxideInitKey=$zoxideKey"
+if (-not [string]::IsNullOrWhiteSpace($global:PowerShellZoxideExe)) {
+    function global:z {
+        param([Parameter(ValueFromRemainingArguments)][string[]]$Query)
 
-    if ([System.IO.File]::Exists($cacheFile)) {
-        $cachedHook = [System.IO.File]::ReadAllText($cacheFile)
-        if ($cachedHook.StartsWith($cacheHeader, [System.StringComparison]::Ordinal)) {
-            Invoke-Expression $cachedHook
+        if ($Query.Count -eq 0) {
+            Set-Location -LiteralPath $HOME
             return
+        }
+
+        if ($Query.Count -eq 1 -and (Test-Path -LiteralPath $Query[0] -PathType Container)) {
+            Set-Location -LiteralPath $Query[0]
+            return
+        }
+
+        $dir = & $global:PowerShellZoxideExe query -- @Query 2>$null
+        if (-not [string]::IsNullOrWhiteSpace($dir)) {
+            Set-Location -LiteralPath $dir
         }
     }
 
-    $hook = & $script:PowerShellZoxideExe init powershell | Out-String
-    if ([string]::IsNullOrWhiteSpace($hook)) {
-        return
+    function global:zi {
+        param([Parameter(ValueFromRemainingArguments)][string[]]$Query)
+
+        $dir = & $global:PowerShellZoxideExe query -i -- @Query 2>$null
+        if (-not [string]::IsNullOrWhiteSpace($dir)) {
+            Set-Location -LiteralPath $dir
+        }
     }
 
-    $cachedHook = "$cacheHeader`n$hook"
-    try {
-        New-Item -ItemType Directory -Force -Path $cacheDir -ErrorAction Stop | Out-Null
-        [System.IO.File]::WriteAllText($cacheFile, $cachedHook, [System.Text.UTF8Encoding]::new($false))
-    } catch {
+    $location = Get-Location
+    $global:PowerShellZoxideOldPwd = if ($location.Provider.Name -eq 'FileSystem') {
+        $location.ProviderPath
+    } else {
+        $null
     }
-    Invoke-Expression $cachedHook
+    $global:PowerShellZoxideHookEnabled = $true
+
+    function global:__PowerShellZoxideHook {
+        if ([string]::IsNullOrWhiteSpace($global:PowerShellZoxideExe)) { return }
+
+        $location = Get-Location
+        if ($location.Provider.Name -ne 'FileSystem') { return }
+
+        $pwd = $location.ProviderPath
+        if ($pwd -eq $global:PowerShellZoxideOldPwd) { return }
+
+        & $global:PowerShellZoxideExe add -- $pwd *> $null
+        $global:PowerShellZoxideOldPwd = $pwd
+    }
 }

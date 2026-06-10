@@ -86,5 +86,9 @@ function prompt {
     $user = [Environment]::UserName
     $extraText = if ($extra.Count -gt 0) { ' ' + ($extra -join ' ') } else { '' }
 
+    if ($global:PowerShellZoxideHookEnabled) {
+        $null = __PowerShellZoxideHook
+    }
+
     "$script:AnsiGray[$time]$script:AnsiReset $script:AnsiGreen$user$script:AnsiWhite@$script:PromptHostName$script:AnsiReset $script:AnsiBlue[$cwd]$script:AnsiReset$extraText$rc`n$script:AnsiCyanPS>$script:AnsiReset "
 }
