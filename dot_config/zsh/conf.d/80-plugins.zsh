@@ -8,12 +8,9 @@ _zplugins_load() {
   _zplugin zdharma-continuum fast-syntax-highlighting
 }
 
-case ${ZSH_PLUGIN_LOAD:-defer} in
+case ${ZSH_PLUGIN_LOAD:-sync} in
   none|0|no|false) ;;
-  sync|eager|1|yes|true)
-    _zplugins_load
-    ;;
-  *)
+  defer|lazy)
     if [[ -o interactive ]]; then
       autoload -Uz add-zle-hook-widget
       _zplugins_load_deferred() {
@@ -26,5 +23,8 @@ case ${ZSH_PLUGIN_LOAD:-defer} in
     else
       _zplugins_load
     fi
+    ;;
+  *)
+    _zplugins_load
     ;;
 esac
