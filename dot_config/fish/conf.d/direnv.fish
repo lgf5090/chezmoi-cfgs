@@ -1,13 +1,4 @@
 if status is-interactive
-    if not set -q FISH_CONFIG_DIR
-        for vendor_conf in \
-            /home/linuxbrew/.linuxbrew/share/fish/vendor_conf.d/direnv.fish \
-            /opt/homebrew/share/fish/vendor_conf.d/direnv.fish \
-            /usr/local/share/fish/vendor_conf.d/direnv.fish
-            test -r "$vendor_conf"; and return 0
-        end
-    end
-
     set -l direnv_candidates
     set -q DIRENV_EXE; and set -a direnv_candidates "$DIRENV_EXE"
     set -a direnv_candidates \
