@@ -12,10 +12,12 @@ $loadPSReadLine = (
     )
 )
 
+$global:PowerShellPSReadLineLoaded = $false
 if ($loadPSReadLine) {
     Import-Module PSReadLine -ErrorAction SilentlyContinue
 }
 
 if ($loadPSReadLine -and (Get-Module -Name PSReadLine)) {
+    $global:PowerShellPSReadLineLoaded = $true
     Set-PSReadLineOption -HistorySavePath $historyFile -HistorySaveStyle SaveIncrementally -ErrorAction SilentlyContinue
 }
