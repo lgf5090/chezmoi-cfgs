@@ -1,6 +1,7 @@
-if [[ -n ${ANACONDA_HOME:-} && -r $ANACONDA_HOME/etc/profile.d/conda.sh ]]; then
+__ZSH_CONDA_EXE=
+if [[ -n ${ANACONDA_HOME:-} && -x $ANACONDA_HOME/bin/conda ]]; then
   __ZSH_CONDA_EXE=$ANACONDA_HOME/bin/conda
-elif (( $+commands[conda] )); then
+elif [[ ${ZSH_CONDA_DISCOVERY:-0} == 1 ]] && (( $+commands[conda] )); then
   __ZSH_CONDA_EXE=${commands[conda]}
 fi
 
@@ -24,17 +25,30 @@ if [[ -n ${__ZSH_CONDA_EXE:-} && -x $__ZSH_CONDA_EXE ]]; then
     conda "$@"
   }
 
-  if (( $+commands[mamba] )); then
+  __ZSH_MAMBA_EXE=
+  if [[ -n ${ANACONDA_HOME:-} && -x $ANACONDA_HOME/bin/mamba ]]; then
+    __ZSH_MAMBA_EXE=$ANACONDA_HOME/bin/mamba
+  elif [[ ${ZSH_CONDA_DISCOVERY:-0} == 1 ]] && (( $+commands[mamba] )); then
+    __ZSH_MAMBA_EXE=${commands[mamba]}
+  fi
+
+  if [[ -n $__ZSH_MAMBA_EXE ]]; then
     mamba() {
       _zconda_load
       mamba "$@"
     }
   fi
+  unset __ZSH_MAMBA_EXE
 fi
 
-if (( $+commands[micromamba] )); then
+__ZSH_MICROMAMBA_EXE=
+if [[ -n ${MICROMAMBA_EXE:-} && -x $MICROMAMBA_EXE ]]; then
+  __ZSH_MICROMAMBA_EXE=$MICROMAMBA_EXE
+elif [[ ${ZSH_CONDA_DISCOVERY:-0} == 1 ]] && (( $+commands[micromamba] )); then
   __ZSH_MICROMAMBA_EXE=${commands[micromamba]}
+fi
 
+if [[ -n ${__ZSH_MICROMAMBA_EXE:-} && -x $__ZSH_MICROMAMBA_EXE ]]; then
   micromamba() {
     local __zsh_micromamba_setup
     unfunction micromamba 2>/dev/null
