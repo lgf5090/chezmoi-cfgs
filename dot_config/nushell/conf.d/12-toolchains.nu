@@ -20,6 +20,10 @@ if (($env.PNPM_HOME? | default "") | is-empty) {
     $env.PNPM_HOME = ($nu.home-dir | path join ".pnpm-global")
 }
 
+if (($env.MISE_DATA_DIR? | default "") | is-empty) {
+    $env.MISE_DATA_DIR = ($env.XDG_DATA_HOME | path join "mise")
+}
+
 if (($env.FNM_DIR? | default "") | is-empty) {
     let dir = (_nu_first_dir
         ($env.XDG_DATA_HOME | path join "fnm")

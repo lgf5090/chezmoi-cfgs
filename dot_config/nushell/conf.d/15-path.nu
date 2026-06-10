@@ -94,5 +94,48 @@ for brew in [
     break
 }
 
+# Keep runtime-manager shims in the same priority order that the old 70-79
+# path fragments produced, while still applying PATH only once.
+$path_prepend_dirs = ($path_prepend_dirs | append [
+    ($nu.home-dir | path join ".mise" "shims")
+    (if (($env.MISE_DATA_DIR? | default "") | is-empty) { "" } else { $env.MISE_DATA_DIR | path join "shims" })
+])
+
+$path_prepend_dirs = ($path_prepend_dirs | append [
+    (if (($env.ASDF_DIR? | default "") | is-empty) { "" } else { $env.ASDF_DIR | path join "bin" })
+    (if (($env.ASDF_DATA_DIR? | default "") | is-empty) { "" } else { $env.ASDF_DATA_DIR | path join "shims" })
+])
+
+$path_prepend_dirs = ($path_prepend_dirs | append [
+    (if (($env.PYENV_ROOT? | default "") | is-empty) { "" } else { $env.PYENV_ROOT | path join "bin" })
+    (if (($env.PYENV_ROOT? | default "") | is-empty) { "" } else { $env.PYENV_ROOT | path join "shims" })
+    (if (($env.PYENV_ROOT? | default "") | is-empty) { "" } else { $env.PYENV_ROOT | path join "pyenv-win" "bin" })
+    (if (($env.PYENV_ROOT? | default "") | is-empty) { "" } else { $env.PYENV_ROOT | path join "pyenv-win" "shims" })
+])
+
+$path_prepend_dirs = ($path_prepend_dirs | append [
+    ($env.FNM_DIR? | default "")
+])
+
+$path_prepend_dirs = ($path_prepend_dirs | append [
+    (if (($env.RBENV_ROOT? | default "") | is-empty) { "" } else { $env.RBENV_ROOT | path join "bin" })
+    (if (($env.RBENV_ROOT? | default "") | is-empty) { "" } else { $env.RBENV_ROOT | path join "shims" })
+    (if (($env.NODENV_ROOT? | default "") | is-empty) { "" } else { $env.NODENV_ROOT | path join "bin" })
+    (if (($env.NODENV_ROOT? | default "") | is-empty) { "" } else { $env.NODENV_ROOT | path join "shims" })
+    (if (($env.GOENV_ROOT? | default "") | is-empty) { "" } else { $env.GOENV_ROOT | path join "bin" })
+    (if (($env.GOENV_ROOT? | default "") | is-empty) { "" } else { $env.GOENV_ROOT | path join "shims" })
+    (if (($env.JENV_ROOT? | default "") | is-empty) { "" } else { $env.JENV_ROOT | path join "bin" })
+    (if (($env.JENV_ROOT? | default "") | is-empty) { "" } else { $env.JENV_ROOT | path join "shims" })
+])
+
+$path_prepend_dirs = ($path_prepend_dirs | append [
+    (if (($env.ANACONDA_HOME? | default "") | is-empty) { "" } else { $env.ANACONDA_HOME | path join "bin" })
+    (if (($env.ANACONDA_HOME? | default "") | is-empty) { "" } else { $env.ANACONDA_HOME | path join "condabin" })
+])
+
+$path_prepend_dirs = ($path_prepend_dirs | append [
+    (if (($env.POETRY_HOME? | default "") | is-empty) { "" } else { $env.POETRY_HOME | path join "bin" })
+])
+
 _nu_path_append ...$path_append_dirs
 _nu_path_prepend ...$path_prepend_dirs
