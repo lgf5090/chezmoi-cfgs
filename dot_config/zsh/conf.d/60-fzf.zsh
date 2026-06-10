@@ -15,27 +15,31 @@ fi
 export FZF_CTRL_T_OPTS="--preview '$_FZF_PREVIEW_CMD'"
 
 if (( $+commands[fzf] )) && [[ -o interactive && -t 0 && -t 1 ]]; then
-  _fzf_ver=$(fzf --version 2>/dev/null | awk '{print $1}')
+  _fzf_dirs=(
+    "${commands[fzf]:A:h:h}/shell"
+    "${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/opt/fzf/shell}"
+    /home/linuxbrew/.linuxbrew/opt/fzf/shell
+    /opt/homebrew/opt/fzf/shell
+    /usr/local/opt/fzf/shell
+    /usr/share/fzf
+    /usr/share/doc/fzf/examples
+  )
 
-  if _zver_ge "$_fzf_ver" "0.48.0"; then
-    source <(fzf --zsh)
-  else
-    _fzf_dirs=(/usr/share/fzf /usr/share/doc/fzf/examples)
-    if (( $+commands[brew] )); then
-      _fzf_brew=$(brew --prefix fzf 2>/dev/null)
-      [[ -n $_fzf_brew ]] && _fzf_dirs=("$_fzf_brew/shell" "${_fzf_dirs[@]}")
-      unset _fzf_brew
+  for _fzf_dir in "${_fzf_dirs[@]}"; do
+    [[ -r $_fzf_dir/key-bindings.zsh || -r $_fzf_dir/completion.zsh ]] || continue
+    source "$_fzf_dir/key-bindings.zsh" 2>/dev/null
+    source "$_fzf_dir/completion.zsh" 2>/dev/null
+    _fzf_loaded=1
+    break
+  done
+
+  if [[ -z ${_fzf_loaded:-} ]]; then
+    _fzf_ver=${$(fzf --version 2>/dev/null)%% *}
+    if _zver_ge "$_fzf_ver" "0.48.0"; then
+      source <(fzf --zsh)
     fi
-
-    for _fzf_dir in "${_fzf_dirs[@]}"; do
-      [[ -d $_fzf_dir ]] || continue
-      source "$_fzf_dir/key-bindings.zsh" 2>/dev/null
-      source "$_fzf_dir/completion.zsh" 2>/dev/null
-      break
-    done
-    unset _fzf_dirs _fzf_dir
   fi
-  unset _fzf_ver
+  unset _fzf_dirs _fzf_dir _fzf_loaded _fzf_ver
 
   _fzf_file_no_hidden() {
     local result
