@@ -313,14 +313,11 @@ _mcc_completion() {
     _describe -t options 'option' opts
 }
 
-# 注册补全。两种加载顺序都要支持：
-#   a) 用户 zshrc 在 compinit 之后 source 本文件 —— compdef 是函数，直接注册。
-#   b) 用户 zshrc 在 compinit 之前 source 本文件 —— 自动 autoload + compinit，
-#      避免 `(( ${+functions[compdef]} ))` 那种"静默跳过"导致补全失效。
-if (( ! ${+functions[compdef]} )); then
-    autoload -Uz compinit && compinit -u 2>/dev/null
-fi
-compdef _mcc_completion mcc 2>/dev/null
+_mcc_register_completion() {
+    (( ${+functions[compdef]} )) || return 0
+    compdef _mcc_completion mcc 2>/dev/null
+}
+_mcc_register_completion
 
 # ============================================================
 # 主函数

@@ -14,6 +14,8 @@ else
 fi
 unset _zcompdump _zcompdump_dir
 
+(( $+functions[_mcc_register_completion] )) && _mcc_register_completion
+
 LISTMAX=999999
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
