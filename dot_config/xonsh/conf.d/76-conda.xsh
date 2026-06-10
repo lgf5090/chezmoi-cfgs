@@ -1,79 +1,42 @@
-import shutil
-import subprocess
-from pathlib import Path
-
 from xonsh.built_ins import XSH
 
-_xonsh_conda_exe = None
-if XSH.env.get("ANACONDA_HOME") and (Path(str(XSH.env["ANACONDA_HOME"])) / "bin" / "conda").is_file():
-    _xonsh_conda_exe = str(Path(str(XSH.env["ANACONDA_HOME"])) / "bin" / "conda")
-elif shutil.which("conda"):
-    _xonsh_conda_exe = shutil.which("conda")
+_XONSH_CONDA_IMPL_LOADED = False
+_xonsh_conda_discovery = str(XSH.env.get("XONSH_CONDA_DISCOVERY", XSH.env.get("BASH_CONDA_DISCOVERY", "0"))) == "1"
 
 
-def _xonsh_load_conda():
-    if not _xonsh_conda_exe:
-        return False
-    hook = subprocess.run([_xonsh_conda_exe, "shell.xonsh", "hook"], capture_output=True, text=True, check=False)
-    if hook.returncode == 0 and hook.stdout:
-        XSH.builtins.execx(hook.stdout, "exec", XSH.ctx, filename="conda")
-    else:
-        _xpath_prepend(Path(_xonsh_conda_exe).parent)
-    return True
+def _xonsh_conda_load_impl():
+    global _XONSH_CONDA_IMPL_LOADED
+    if _XONSH_CONDA_IMPL_LOADED:
+        return
+    source @($XONSH_CONFIG_DIR + "/lib/conda.xsh")
+    _XONSH_CONDA_IMPL_LOADED = True
 
 
-def _xonsh_run_loaded_alias(name, fallback, args, stdin=None):
-    current = aliases.get(name)
-    if current is fallback:
-        return None
-    if callable(current):
-        return current(args, stdin=stdin)
-    if isinstance(current, (list, tuple)):
-        result = subprocess.run([*current, *args], env=XSH.env.detype(), check=False)
-        return result.returncode
-    if isinstance(current, str):
-        result = subprocess.run([current, *args], env=XSH.env.detype(), check=False)
-        return result.returncode
-    return None
+def _xonsh_conda_lazy_alias(name):
+    def _run(args, stdin=None):
+        _xonsh_conda_load_impl()
+        target = aliases.get(name)
+        if target is None or target is _run:
+            return 127
+        if callable(target):
+            return target(args, stdin=stdin)
+        if isinstance(target, (list, tuple)) and target and callable(target[0]):
+            if getattr(target[0], "func", None) is _run:
+                return 127
+            return target[0]([*target[1:], *args], stdin=stdin)
+
+        import subprocess
+        command = [*target, *args] if isinstance(target, (list, tuple)) else [target, *args]
+        return subprocess.run(command, env=XSH.env.detype(), check=False).returncode
+
+    return _run
 
 
-def _conda(args, stdin=None):
-    _xonsh_load_conda()
-    loaded = _xonsh_run_loaded_alias("conda", _conda, args, stdin=stdin)
-    if loaded is not None:
-        return loaded
-    result = subprocess.run([_xonsh_conda_exe, *args], env=XSH.env.detype(), check=False)
-    return result.returncode
+if XSH.env.get("ANACONDA_HOME") or _xonsh_conda_discovery:
+    aliases["conda"] = _xonsh_conda_lazy_alias("conda")
+    aliases["mamba"] = _xonsh_conda_lazy_alias("mamba")
 
+if XSH.env.get("MICROMAMBA_EXE") or _xonsh_conda_discovery:
+    aliases["micromamba"] = _xonsh_conda_lazy_alias("micromamba")
 
-def _mamba(args, stdin=None):
-    _xonsh_load_conda()
-    loaded = _xonsh_run_loaded_alias("mamba", _mamba, args, stdin=stdin)
-    if loaded is not None:
-        return loaded
-    exe = shutil.which("mamba")
-    if not exe:
-        return 127
-    result = subprocess.run([exe, *args], env=XSH.env.detype(), check=False)
-    return result.returncode
-
-
-if _xonsh_conda_exe:
-    aliases["conda"] = _conda
-    if shutil.which("mamba"):
-        aliases["mamba"] = _mamba
-
-if shutil.which("micromamba"):
-    _xonsh_micromamba_exe = shutil.which("micromamba")
-
-    def _micromamba(args, stdin=None):
-        hook = subprocess.run([_xonsh_micromamba_exe, "shell", "hook", "--shell", "xonsh"], capture_output=True, text=True, check=False)
-        if hook.returncode == 0 and hook.stdout:
-            XSH.builtins.execx(hook.stdout, "exec", XSH.ctx, filename="micromamba")
-            loaded = _xonsh_run_loaded_alias("micromamba", _micromamba, args, stdin=stdin)
-            if loaded is not None:
-                return loaded
-        result = subprocess.run([_xonsh_micromamba_exe, *args], env=XSH.env.detype(), check=False)
-        return result.returncode
-
-    aliases["micromamba"] = _micromamba
+del _xonsh_conda_discovery
