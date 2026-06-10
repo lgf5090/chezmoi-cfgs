@@ -7,9 +7,12 @@ case ${OSTYPE:l} in
   *) SHELLS_OS=unknown ;;
 esac
 
-if [[ $SHELLS_OS == linux && -r /proc/version ]] \
-  && command grep -qiE 'microsoft|wsl' /proc/version 2>/dev/null; then
-  SHELLS_OS=wsl
+if [[ $SHELLS_OS == linux && -r /proc/version ]]; then
+  IFS= read -r __zsh_proc_version < /proc/version
+  case ${__zsh_proc_version:l} in
+    *microsoft*|*wsl*) SHELLS_OS=wsl ;;
+  esac
+  unset __zsh_proc_version
 fi
 
 export SHELLS_OS
