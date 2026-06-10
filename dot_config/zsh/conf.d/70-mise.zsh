@@ -1,4 +1,5 @@
 : "${MISE_DATA_DIR:=${XDG_DATA_HOME:-$HOME/.local/share}/mise}"
+: "${ZSH_MISE_ACTIVATE:=shims}"
 export MISE_DATA_DIR
 
 if [[ -z ${MISE_CACHE_DIR:-} ]]; then
@@ -45,9 +46,16 @@ if [[ -z $__zsh_mise && ${ZSH_MISE_DISCOVERY:-0} == 1 ]]; then
   __zsh_mise=$(command -v mise 2>/dev/null)
 fi
 
-if [[ -n $__zsh_mise && -x $__zsh_mise ]]; then
-  eval "$("$__zsh_mise" activate zsh)"
-fi
+case ${ZSH_MISE_ACTIVATE:l} in
+  full|1|yes|true)
+    if [[ -n $__zsh_mise && -x $__zsh_mise ]]; then
+      eval "$("$__zsh_mise" activate zsh)"
+    fi
+    ;;
+esac
 unset __zsh_mise
 
-_zpath_prepend "$HOME/.mise/shims" "$MISE_DATA_DIR/shims"
+case ${ZSH_MISE_ACTIVATE:l} in
+  none|0|no|false) ;;
+  *) _zpath_prepend "$HOME/.mise/shims" "$MISE_DATA_DIR/shims" ;;
+esac
