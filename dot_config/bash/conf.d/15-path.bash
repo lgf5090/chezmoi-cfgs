@@ -1,9 +1,10 @@
-_bpath_append \
+__bash_path_append=(
   "$HOME/.lmstudio/bin" \
   "$HOME/.local/bin" \
   "$HOME/bin" \
   "$HOME/Applications" \
   "$HOME/.local/Applications"
+)
 
 _bpath_prepend \
   "${ASDF_DIR:+$ASDF_DIR/bin}" \
@@ -17,7 +18,7 @@ _bpath_prepend \
 
 [[ -r $HOME/.cargo/env ]] && source "$HOME/.cargo/env"
 
-_bpath_prepend \
+__bash_path_prepend=(
   "${BUN_INSTALL:+$BUN_INSTALL/bin}" \
   "${DENO_INSTALL:+$DENO_INSTALL/bin}" \
   "${NPM_CONFIG_PREFIX:+$NPM_CONFIG_PREFIX/bin}" \
@@ -27,54 +28,56 @@ _bpath_prepend \
   "${VOLTA_HOME:+$VOLTA_HOME/bin}" \
   "$HOME/.volta/bin" \
   "${FNM_DIR:+$FNM_DIR}" \
-  "$HOME/.local/share/npm/bin"
-
-_bpath_prepend \
+  "$HOME/.local/share/npm/bin" \
   "${PYENV_ROOT:+$PYENV_ROOT/bin}" \
   "${ANACONDA_HOME:+$ANACONDA_HOME/bin}" \
   "${POETRY_HOME:+$POETRY_HOME/bin}" \
   "$HOME/.poetry/bin" \
-  "$HOME/.local/pipx/bin"
-
-_bpath_prepend \
+  "$HOME/.local/pipx/bin" \
   "${GOPATH:+$GOPATH/bin}" \
   "${GOROOT:+$GOROOT/bin}"
+)
 
 case ${SHELLS_OS:-unknown} in
   linux|wsl)
-    _bpath_append \
+    __bash_path_append+=( \
       /snap/bin \
       /var/lib/snapd/snap/bin \
       /var/lib/flatpak/exports/bin \
       "$HOME/.local/share/flatpak/exports/bin" \
       /opt/bin
+    )
     ;;
 esac
 
 case ${SHELLS_OS:-unknown} in
   wsl)
-    _bpath_append \
+    __bash_path_append+=( \
       "/mnt/c/Program Files/Microsoft VS Code/bin" \
       "/mnt/c/Users/$USER/AppData/Local/Programs/Microsoft VS Code/bin"
+    )
     ;;
   cygwin)
-    _bpath_prepend /mingw64/bin
-    _bpath_append \
+    __bash_path_prepend+=(/mingw64/bin)
+    __bash_path_append+=( \
       "/cygdrive/c/Program Files/Microsoft VS Code/bin" \
       "/cygdrive/c/Users/$USER/AppData/Local/Programs/Microsoft VS Code/bin"
+    )
     ;;
   windows)
-    _bpath_prepend /mingw64/bin
-    _bpath_append \
+    __bash_path_prepend+=(/mingw64/bin)
+    __bash_path_append+=( \
       "/c/Program Files/Microsoft VS Code/bin" \
       "/c/Users/$USER/AppData/Local/Programs/Microsoft VS Code/bin"
+    )
     ;;
 esac
 
-_bpath_prepend \
+__bash_path_prepend+=( \
   "$HOME/.nix-profile/bin" \
   /run/current-system/sw/bin \
   /nix/var/nix/profiles/default/bin
+)
 
 for __bash_brew in \
   /home/linuxbrew/.linuxbrew/bin/brew \
@@ -86,7 +89,7 @@ do
     __bash_brew_bin=${__bash_brew%/*}
     __bash_brew_prefix=${__bash_brew_bin%/*}
 
-    _bpath_prepend "$__bash_brew_prefix/sbin" "$__bash_brew_prefix/bin"
+    __bash_path_prepend+=("$__bash_brew_prefix/sbin" "$__bash_brew_prefix/bin")
     export HOMEBREW_PREFIX=$__bash_brew_prefix
     export HOMEBREW_CELLAR="$__bash_brew_prefix/Cellar"
     case $__bash_brew_prefix in
@@ -98,6 +101,10 @@ do
     break
   fi
 done
-unset __bash_brew __bash_brew_bin __bash_brew_prefix
 
+_bpath_append "${__bash_path_append[@]}"
+_bpath_prepend "${__bash_path_prepend[@]}"
+
+unset __bash_path_append __bash_path_prepend
+unset __bash_brew __bash_brew_bin __bash_brew_prefix
 export PATH
