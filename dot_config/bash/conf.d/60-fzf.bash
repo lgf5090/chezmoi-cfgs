@@ -4,6 +4,7 @@ else
   export FZF_DEFAULT_COMMAND='find . -type f'
 fi
 
+: "${BASH_FZF_COMPLETION:=0}"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='--height=60% --layout=reverse --border=rounded --preview-window=right:65%:wrap:border-left'
 
@@ -27,7 +28,11 @@ if command -v fzf >/dev/null 2>&1 && [[ $- == *i* && -t 0 && -t 1 ]]; then
   for _fzf_dir in "${_fzf_dirs[@]}"; do
     [[ -r "$_fzf_dir/key-bindings.bash" || -r "$_fzf_dir/completion.bash" ]] || continue
     [[ -r "$_fzf_dir/key-bindings.bash" ]] && source "$_fzf_dir/key-bindings.bash"
-    [[ -r "$_fzf_dir/completion.bash" ]] && source "$_fzf_dir/completion.bash"
+    case ${BASH_FZF_COMPLETION,,} in
+      1|yes|true|on)
+        [[ -r "$_fzf_dir/completion.bash" ]] && source "$_fzf_dir/completion.bash"
+        ;;
+    esac
     _fzf_loaded=1
     break
   done
