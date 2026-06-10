@@ -1,4 +1,11 @@
-switch (uname -s | string lower)
+if set -q SHELLS_OS; and contains -- "$SHELLS_OS" linux wsl macos freebsd cygwin windows unknown
+    return 0
+end
+
+set -l __fish_uname (command uname -s)
+set __fish_uname (string lower -- "$__fish_uname")
+
+switch $__fish_uname
     case 'linux*'
         set -gx SHELLS_OS linux
     case 'darwin*'
