@@ -191,8 +191,10 @@ _bload_aliases() {
 
 _bprompt_add() {
   local cmd=$1
+  local prompt_decl
 
-  if declare -p PROMPT_COMMAND 2>/dev/null | grep -q '^declare \-[^ ]*a'; then
+  prompt_decl=$(declare -p PROMPT_COMMAND 2>/dev/null || :)
+  if [[ $prompt_decl == declare\ -*a* ]]; then
     local item
     for item in "${PROMPT_COMMAND[@]}"; do
       [[ $item == "$cmd" ]] && return 0
