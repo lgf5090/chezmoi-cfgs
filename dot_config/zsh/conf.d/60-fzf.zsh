@@ -6,6 +6,7 @@ fi
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='--height=60% --layout=reverse --border=rounded --preview-window=right:65%:wrap:border-left'
+: "${ZSH_FZF_CTRL_F:=1}"
 
 if (( $+commands[bat] )); then
   export _FZF_PREVIEW_CMD='bat --color=always --style=plain,numbers --line-range=:500 {}'
@@ -55,6 +56,14 @@ if (( $+commands[fzf] )) && [[ -o interactive && -t 0 && -t 1 ]]; then
     zle reset-prompt
   }
   zle -N _fzf_file_no_hidden
+
+  case ${ZSH_FZF_CTRL_F:-1} in
+    1|yes|true|on)
+      bindkey -M emacs '^F' _fzf_file_no_hidden
+      bindkey -M viins '^F' _fzf_file_no_hidden
+      bindkey -M vicmd '^F' _fzf_file_no_hidden
+      ;;
+  esac
 
   case ${ZSH_FZF_LOAD:-defer} in
     none|0|no|false) ;;

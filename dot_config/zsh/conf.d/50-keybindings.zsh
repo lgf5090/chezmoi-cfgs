@@ -13,6 +13,8 @@ ZVM_VI_HIGHLIGHT_EXTRASTYLE=none
 autoload -Uz edit-command-line
 zle -N edit-command-line
 
+# Ctrl+F/Ctrl+R/Ctrl+T/Alt+C are reserved for fzf in 60-fzf.zsh.
+
 _zbind_widget() {
   local keymap=$1 key=$2 widget=$3
   (( $+widgets[$widget] )) || return 0
@@ -28,7 +30,7 @@ _zbind_viins() {
   # Basic movement and editing.
   _zbind_widget viins '^A' beginning-of-line
   _zbind_widget viins '^E' end-of-line
-  _zbind_widget viins '^F' forward-char
+  _zbind_widget viins '^X^F' forward-char
   _zbind_widget viins '^B' backward-char
   _zbind_widget viins '^D' delete-char
   _zbind_widget viins '^H' backward-delete-char
@@ -38,7 +40,7 @@ _zbind_viins() {
   _zbind_widget viins '^Y' yank
 
   # History.
-  _zbind_widget viins '^R' history-incremental-search-backward
+  _zbind_widget viins '^X^R' history-incremental-search-backward
   _zbind_widget viins '^S' history-incremental-search-forward
   _zbind_widget viins '^P' up-history
   _zbind_widget viins '^N' down-history
@@ -52,11 +54,11 @@ _zbind_viins() {
 
   # Completion and special editing.
   _zbind_widget viins '^I' expand-or-complete
-  _zbind_widget viins '^T' transpose-chars
+  _zbind_widget viins '^X^T' transpose-chars
   _zbind_widget viins '\et' transpose-words
   _zbind_widget viins '\eu' up-case-word
   _zbind_widget viins '\el' down-case-word
-  _zbind_widget viins '\ec' capitalize-word
+  _zbind_widget viins '^Xc' capitalize-word
   _zbind_widget viins '^V' quoted-insert
 
   # Navigation keys.
@@ -75,7 +77,7 @@ _zbind_vicmd() {
   # Basic movement and editing.
   _zbind_widget vicmd '^A' beginning-of-line
   _zbind_widget vicmd '^E' end-of-line
-  _zbind_widget vicmd '^F' forward-char
+  _zbind_widget vicmd '^X^F' forward-char
   _zbind_widget vicmd '^B' backward-char
   _zbind_widget vicmd '^D' delete-char
   _zbind_widget vicmd '^K' kill-line
@@ -84,7 +86,7 @@ _zbind_vicmd() {
   _zbind_widget vicmd '^Y' yank
 
   # History.
-  _zbind_widget vicmd '^R' history-incremental-search-backward
+  _zbind_widget vicmd '^X^R' history-incremental-search-backward
   _zbind_widget vicmd '^S' history-incremental-search-forward
   _zbind_widget vicmd '^P' up-history
   _zbind_widget vicmd '^N' down-history
@@ -117,12 +119,36 @@ _zbind_optional_widgets() {
   fi
 }
 
+_zbind_fzf_widgets() {
+  if (( $+widgets[_fzf_file_no_hidden] )); then
+    _zbind_widget viins '^F' _fzf_file_no_hidden
+    _zbind_widget vicmd '^F' _fzf_file_no_hidden
+  fi
+
+  if (( $+widgets[fzf-history-widget] )); then
+    _zbind_widget viins '^R' fzf-history-widget
+    _zbind_widget vicmd '^R' fzf-history-widget
+  fi
+
+  if (( $+widgets[fzf-file-widget] )); then
+    _zbind_widget viins '^T' fzf-file-widget
+    _zbind_widget vicmd '^T' fzf-file-widget
+  fi
+
+  if (( $+widgets[fzf-cd-widget] )); then
+    _zbind_widget viins '\ec' fzf-cd-widget
+    _zbind_widget vicmd '\ec' fzf-cd-widget
+  fi
+}
+
 zvm_after_init() {
   _zbind_viins
   _zbind_optional_widgets
+  _zbind_fzf_widgets
 }
 
 zvm_after_lazy_keybindings() {
   _zbind_vicmd
   _zbind_optional_widgets
+  _zbind_fzf_widgets
 }
