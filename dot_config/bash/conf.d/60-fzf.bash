@@ -5,6 +5,8 @@ else
 fi
 
 : "${BASH_FZF_COMPLETION:=0}"
+: "${BASH_FZF_KEY_BINDINGS:=1}"
+: "${BASH_FZF_CTRL_F:=1}"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='--height=60% --layout=reverse --border=rounded --preview-window=right:65%:wrap:border-left'
 
@@ -27,7 +29,11 @@ if command -v fzf >/dev/null 2>&1 && [[ $- == *i* && -t 0 && -t 1 ]]; then
 
   for _fzf_dir in "${_fzf_dirs[@]}"; do
     [[ -r "$_fzf_dir/key-bindings.bash" || -r "$_fzf_dir/completion.bash" ]] || continue
-    [[ -r "$_fzf_dir/key-bindings.bash" ]] && source "$_fzf_dir/key-bindings.bash"
+    case ${BASH_FZF_KEY_BINDINGS,,} in
+      1|yes|true|on)
+        [[ -r "$_fzf_dir/key-bindings.bash" ]] && source "$_fzf_dir/key-bindings.bash"
+        ;;
+    esac
     case ${BASH_FZF_COMPLETION,,} in
       1|yes|true|on)
         [[ -r "$_fzf_dir/completion.bash" ]] && source "$_fzf_dir/completion.bash"
@@ -40,7 +46,7 @@ if command -v fzf >/dev/null 2>&1 && [[ $- == *i* && -t 0 && -t 1 ]]; then
   if [[ -z ${_fzf_loaded:-} ]]; then
     _fzf_ver=$(fzf --version 2>/dev/null)
     _fzf_ver=${_fzf_ver%% *}
-    if _bver_ge "$_fzf_ver" "0.48.0"; then
+    if _bver_ge "$_fzf_ver" "0.48.0" && [[ ${BASH_FZF_KEY_BINDINGS,,} =~ ^(1|yes|true|on)$ ]]; then
       eval "$(fzf --bash)"
     fi
   fi
@@ -59,5 +65,11 @@ if command -v fzf >/dev/null 2>&1 && [[ $- == *i* && -t 0 && -t 1 ]]; then
     READLINE_POINT=$(( READLINE_POINT + ${#result} ))
   }
 
-  bind -x '"\C-f": _fzf_file_no_hidden'
+  case ${BASH_FZF_CTRL_F,,} in
+    1|yes|true|on)
+      bind -m emacs-standard -x '"\C-f": _fzf_file_no_hidden'
+      bind -m vi-insert -x '"\C-f": _fzf_file_no_hidden'
+      bind -m vi-command -x '"\C-f": _fzf_file_no_hidden'
+      ;;
+  esac
 fi
