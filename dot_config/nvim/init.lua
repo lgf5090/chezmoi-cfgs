@@ -576,7 +576,6 @@ local mason_lsp_servers = {
   "docker_compose_language_service",
   "marksman",
   "taplo",
-  "sqlls",
   "jdtls",
 }
 
@@ -727,7 +726,6 @@ local lsp_server_settings = {
   docker_compose_language_service = {},
   marksman = {},
   taplo = {},
-  sqlls = {},
   cmake = {},
 }
 
