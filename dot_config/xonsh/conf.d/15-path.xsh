@@ -17,6 +17,7 @@ def _xenv_paths(name):
 
 _xpath_append(
     _xhome / ".lmstudio" / "bin",
+    _xhome / ".mimocode" / "bin",
     _xhome / ".local" / "bin",
     _xhome / "bin",
     _xhome / "Applications",

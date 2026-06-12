@@ -1,5 +1,6 @@
 mut path_append_dirs = [
     ($nu.home-dir | path join ".lmstudio" "bin")
+    ($nu.home-dir | path join ".mimocode" "bin")
     ($nu.home-dir | path join ".local" "bin")
     ($nu.home-dir | path join "bin")
     ($nu.home-dir | path join "Applications")

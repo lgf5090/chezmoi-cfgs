@@ -3,6 +3,7 @@ $cargoHome = if ($env:CARGO_HOME) { $env:CARGO_HOME } else { Join-Path $homeDir 
 
 $pathAppend = @(
     Join-Path $homeDir '.lmstudio/bin'
+    Join-Path $homeDir '.mimocode/bin'
     Join-Path $homeDir '.local/bin'
     Join-Path $homeDir 'bin'
     Join-Path $homeDir 'Applications'

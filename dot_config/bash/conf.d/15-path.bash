@@ -1,5 +1,6 @@
 __bash_path_append=(
   "$HOME/.lmstudio/bin" \
+  "$HOME/.mimocode/bin" \
   "$HOME/.local/bin" \
   "$HOME/bin" \
   "$HOME/Applications" \
