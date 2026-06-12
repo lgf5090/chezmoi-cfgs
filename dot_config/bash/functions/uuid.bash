@@ -1,14 +1,13 @@
 _uuid_usage() {
-  cat <<'EOF'
-usage:
-  uuid
-  uuid -n COUNT
-  uuid -h | --help
-
-Generate RFC 4122 version 4 UUIDs using shell builtins. On Linux, this reads
-/proc/sys/kernel/random/uuid with the shell builtin read; otherwise it falls
-back to bash's RANDOM.
-EOF
+  printf '%s\n' \
+    'usage:' \
+    '  uuid' \
+    '  uuid -n COUNT' \
+    '  uuid -h | --help' \
+    '' \
+    'Generate RFC 4122 version 4 UUIDs using shell builtins. On Linux, this reads' \
+    '/proc/sys/kernel/random/uuid with the shell builtin read; otherwise it falls' \
+    "back to bash's RANDOM."
 }
 
 _uuid_rand16() {
