@@ -12,6 +12,7 @@ function _github_usage
         '  github -o ORG [org-option] [field ...]' \
         '  github -g GIST_ID [field ...]' \
         '  github --api PATH [field ...]' \
+        '  github -s QUERY [--limit N] [--pages N] [field ...]' \
         '  github --search-repos QUERY [field ...]' \
         '  github --search-users QUERY [field ...]' \
         '  github --search-issues QUERY [field ...]' \
@@ -33,7 +34,10 @@ function _github_usage
         '  -o, --org ORG               organization endpoint' \
         '  -g, --gist GIST_ID          gist endpoint' \
         '  -a, --api PATH              raw GitHub API path' \
+        '  -s, --search QUERY          search repositories and show a ranked summary' \
         '  -q, --query KEY=VALUE       append query parameter, repeatable' \
+        '  --limit N                   limit displayed search rows, default: 15' \
+        '  --pages N                   fetch N search result pages before ranking, default: 1' \
         '  --jq FILTER                 run a raw jq filter against the response' \
         '  --url                       print the API URL instead of requesting it' \
         '  -h, --help                  show this help' \
@@ -52,6 +56,9 @@ function _github_usage
         '  --repos, --members, --teams, --events' \
         '' \
         'search options:' \
+        '  -s, --search QUERY          ranked repo search, default: --limit 15 --pages 1' \
+        '  github -s wsl --limit 30 --pages 2' \
+        '      Fetch two search pages, rank locally by stars, updated_at, created_at.' \
         '  --search-repos QUERY, --search-users QUERY, --search-issues QUERY, --search-code QUERY' \
         '' \
         'fields:' \
@@ -101,6 +108,9 @@ function github --description 'GitHub REST API helper'
     set -l raw_path
     set -l jq_filter
     set -l print_url 0
+    set -l search_display 0
+    set -l search_limit 15
+    set -l search_pages 1
     set -l query
     set -l fields
 
@@ -153,6 +163,22 @@ function github --description 'GitHub REST API helper'
                 set kind raw
                 set raw_path (string replace -r '^/+' '' -- "$argv[2]")
                 set endpoint_path
+                set -e argv[1..2]
+            case -s --search
+                if test (count $argv) -lt 2; or test -z "$argv[2]"
+                    echo "github: $argv[1] requires QUERY" >&2
+                    return 2
+                end
+                set kind raw
+                set raw_path search/repositories
+                set endpoint_path
+                set search_display 1
+                set -l encoded_value (_github_urlencode "$argv[2]")
+                if test -n "$query"
+                    set query "$query&q=$encoded_value"
+                else
+                    set query "q=$encoded_value"
+                end
                 set -e argv[1..2]
             case --search-repos
                 if test (count $argv) -lt 2; or test -z "$argv[2]"
@@ -224,6 +250,20 @@ function github --description 'GitHub REST API helper'
                 else
                     set query "$encoded_key=$encoded_value"
                 end
+                set -e argv[1..2]
+            case --limit
+                if test (count $argv) -lt 2; or not string match -qr '^[0-9]+$' -- "$argv[2]"; or test "$argv[2]" -le 0
+                    echo 'github: --limit requires a positive integer' >&2
+                    return 2
+                end
+                set search_limit "$argv[2]"
+                set -e argv[1..2]
+            case --pages
+                if test (count $argv) -lt 2; or not string match -qr '^[0-9]+$' -- "$argv[2]"; or test "$argv[2]" -le 0
+                    echo 'github: --pages requires a positive integer' >&2
+                    return 2
+                end
+                set search_pages "$argv[2]"
                 set -e argv[1..2]
             case --jq
                 if test (count $argv) -lt 2; or test -z "$argv[2]"
@@ -352,7 +392,15 @@ function github --description 'GitHub REST API helper'
     set raw_path (string replace -r '^/+' '' -- "$raw_path")
 
     set -l url $_github_api_base/$raw_path
-    set url (_github_join_query "$url" "$query")
+    set -l url_query "$query"
+    if test $search_display -eq 1
+        if test -n "$url_query"
+            set url_query "$url_query&per_page=100&page=1"
+        else
+            set url_query 'per_page=100&page=1'
+        end
+    end
+    set url (_github_join_query "$url" "$url_query")
 
     if test $print_url -eq 1
         printf '%s\n' "$url"
@@ -366,6 +414,103 @@ function github --description 'GitHub REST API helper'
         set curl_args $curl_args -H "Authorization: Bearer $GITHUB_TOKEN"
     else if set -q GH_TOKEN; and test -n "$GH_TOKEN"
         set curl_args $curl_args -H "Authorization: Bearer $GH_TOKEN"
+    end
+
+    if test $search_display -eq 1
+        command -q jq; or begin
+            echo 'github: jq is required for formatted search output' >&2
+            return 127
+        end
+
+        set -l responses
+        for page in (seq 1 $search_pages)
+            set -l page_query "$query"
+            if test -n "$page_query"
+                set page_query "$page_query&per_page=100&page=$page"
+            else
+                set page_query "per_page=100&page=$page"
+            end
+            set -l page_url (_github_join_query "$_github_api_base/$raw_path" "$page_query")
+            set -l page_response (curl $curl_args "$page_url" | string collect)
+            set -l curl_status $pipestatus[1]
+            if test $curl_status -ne 0
+                return $curl_status
+            end
+            set responses $responses "$page_response"
+        end
+
+        set -l response (printf '%s\n' $responses | jq -c -s '{total_count: ((map(.total_count // 0) | max) // 0), incomplete_results: (map(.incomplete_results // false) | any), items: (map(.items // []) | add)}' | string collect)
+        set -l statuses $pipestatus
+        if test $statuses[1] -ne 0
+            return $statuses[1]
+        end
+        if test $statuses[2] -ne 0
+            return $statuses[2]
+        end
+
+        if test -n "$jq_filter"
+            printf '%s\n' "$response" | jq -r "$jq_filter"
+            set statuses $pipestatus
+            if test $statuses[1] -ne 0
+                return $statuses[1]
+            end
+            return $statuses[2]
+        end
+
+        if test (count $fields) -gt 0
+            if test (count $fields) -eq 1
+                set -l search_field "$fields[1]"
+                if string match -q 'items.*' -- "$search_field"
+                    set search_field (string replace -r '^items\.' '' -- "$search_field")
+                end
+                if test "$search_field" = items
+                    set jq_filter '.items | sort_by([(.stargazers_count // 0), (.updated_at // ""), (.created_at // "")]) | reverse | .[:$limit][] | .'
+                else
+                    set -l expr (_github_jq_expr "$search_field")
+                    or begin
+                        echo "github: invalid field: $fields[1]" >&2
+                        return 2
+                    end
+                    set jq_filter ".items | sort_by([(.stargazers_count // 0), (.updated_at // \"\"), (.created_at // \"\")]) | reverse | .[:\$limit][] | $expr"
+                end
+            else
+                set jq_filter '.items | sort_by([(.stargazers_count // 0), (.updated_at // ""), (.created_at // "")]) | reverse | .[:$limit][] | {'
+                set -l sep
+                for field in $fields
+                    set -l search_field "$field"
+                    if string match -q 'items.*' -- "$search_field"
+                        set search_field (string replace -r '^items\.' '' -- "$search_field")
+                    end
+                    if test "$search_field" = items
+                        echo "github: invalid field with other fields: $field" >&2
+                        return 2
+                    end
+                    set -l expr (_github_jq_expr "$search_field")
+                    or begin
+                        echo "github: invalid field: $field" >&2
+                        return 2
+                    end
+                    set -l key (_github_json_string "$field")
+                    set jq_filter "$jq_filter$sep$key: $expr"
+                    set sep ', '
+                end
+                set jq_filter "$jq_filter}"
+            end
+
+            printf '%s\n' "$response" | jq -r --argjson limit "$search_limit" "$jq_filter"
+            set statuses $pipestatus
+            if test $statuses[1] -ne 0
+                return $statuses[1]
+            end
+            return $statuses[2]
+        end
+
+        printf '%s\n' "$response" | jq -r --argjson limit "$search_limit" '(["stars","updated","created","repo","url","description"], (.items | sort_by([(.stargazers_count // 0), (.updated_at // ""), (.created_at // "")]) | reverse | .[:$limit][] | [((.stargazers_count // 0) | tostring), ((.updated_at // "")[0:10]), ((.created_at // "")[0:10]), (.full_name // ""), (.html_url // ""), ((.description // "") | gsub("[\t\r\n]+"; " "))])) | @tsv'
+        set statuses $pipestatus
+        if test $statuses[1] -ne 0
+            return $statuses[1]
+        end
+        return $statuses[2]
     end
 
     if test -n "$jq_filter"; or test (count $fields) -gt 0
@@ -438,7 +583,7 @@ function _github_complete_fields
                 set sub commit
             case --contents
                 set sub contents
-            case '--search-*'
+            case -s --search '--search-*'
                 set kind search
         end
     end
@@ -453,7 +598,7 @@ function _github_complete_fields
     set -l branch_fields name commit protected protection protection_url commit.sha commit.url
     set -l commit_fields sha node_id commit url html_url comments_url author committer parents stats files commit.author.name commit.author.email commit.author.date commit.committer.name commit.committer.email commit.committer.date commit.message commit.tree commit.url commit.comment_count author.login committer.login
     set -l contents_fields type encoding size name path content sha url git_url html_url download_url links _links.self _links.git _links.html
-    set -l search_fields total_count incomplete_results items items.id items.node_id items.name items.full_name items.login items.html_url items.description items.score
+    set -l search_fields total_count incomplete_results items items.id items.node_id items.name items.full_name items.login items.html_url items.description items.stargazers_count items.updated_at items.created_at items.language items.score
 
     switch "$kind:$sub"
         case 'user:*'
@@ -488,7 +633,10 @@ complete -c github -s u -l user -x -a 'lgf-136 torvalds github actions' -d 'User
 complete -c github -s o -l org -x -a 'github kubernetes openai microsoft' -d 'Organization endpoint'
 complete -c github -s g -l gist -x -d 'Gist endpoint'
 complete -c github -s a -l api -x -a 'repos/ollama/ollama users/lgf-136 orgs/github gists search/repositories search/users search/issues search/code rate_limit meta' -d 'Raw API path'
+complete -c github -s s -l search -x -d 'Ranked repository search'
 complete -c github -s q -l query -x -a 'per_page=100 page=1 state=open state=closed state=all sort=updated direction=desc type=owner type=member' -d 'Query parameter'
+complete -c github -l limit -x -a '15 30 50 100' -d 'Search result limit'
+complete -c github -l pages -x -a '1 2 3 5' -d 'Search pages to fetch'
 complete -c github -l jq -x -d 'jq filter'
 complete -c github -l url -d 'Print URL'
 complete -c github -l issues -d 'Repo issues'

@@ -1,7 +1,8 @@
 const github_api_base = 'https://api.github.com'
 
 const github_global_options = [
-    -h --help -r --repo -u --user -o --org -g --gist -a --api -q --query --jq --url
+    -h --help -r --repo -u --user -o --org -g --gist -a --api -s --search
+    -q --query --limit --pages --jq --url
 ]
 const github_repo_options = [
     --issues --issue --pulls --pull --releases --release --latest-release
@@ -10,7 +11,7 @@ const github_repo_options = [
 ]
 const github_user_options = [--repos --followers --following --gists --starred --orgs --events]
 const github_org_options = [--repos --members --teams --events]
-const github_search_options = [--search-repos --search-users --search-issues --search-code]
+const github_search_options = [-s --search --search-repos --search-users --search-issues --search-code]
 
 const github_repo_fields = [
     id node_id name full_name owner private html_url description fork url forks_url keys_url
@@ -70,7 +71,7 @@ const github_contents_fields = [
 ]
 const github_search_fields = [
     total_count incomplete_results items items.id items.node_id items.name items.full_name items.login items.html_url
-    items.description items.score
+    items.description items.stargazers_count items.updated_at items.created_at items.language items.score
 ]
 
 def _github-usage []: nothing -> nothing {
@@ -85,6 +86,7 @@ def _github-usage []: nothing -> nothing {
         '  github -o ORG [org-option] [field ...]'
         '  github -g GIST_ID [field ...]'
         '  github --api PATH [field ...]'
+        '  github -s QUERY [--limit N] [--pages N] [field ...]'
         '  github --search-repos QUERY [field ...]'
         '  github --search-users QUERY [field ...]'
         '  github --search-issues QUERY [field ...]'
@@ -106,7 +108,10 @@ def _github-usage []: nothing -> nothing {
         '  -o, --org ORG               organization endpoint'
         '  -g, --gist GIST_ID          gist endpoint'
         '  -a, --api PATH              raw GitHub API path'
+        '  -s, --search QUERY          search repositories and show a ranked summary'
         '  -q, --query KEY=VALUE       append query parameter, repeatable'
+        '  --limit N                   limit displayed search rows, default: 15'
+        '  --pages N                   fetch N search result pages before ranking, default: 1'
         '  --jq FILTER                 run a raw jq filter against the response'
         '  --url                       print the API URL instead of requesting it'
         '  -h, --help                  show this help'
@@ -125,6 +130,9 @@ def _github-usage []: nothing -> nothing {
         '  --repos, --members, --teams, --events'
         ''
         'search options:'
+        '  -s, --search QUERY          ranked repo search, default: --limit 15 --pages 1'
+        '  github -s wsl --limit 30 --pages 2'
+        '      Fetch two search pages, rank locally by stars, updated_at, created_at.'
         '  --search-repos QUERY, --search-users QUERY, --search-issues QUERY, --search-code QUERY'
         ''
         'fields:'
@@ -191,6 +199,59 @@ def _github-select-fields [data: any, fields: list<string>]: nothing -> any {
     }
 }
 
+def _github-positive-int [value: string, option: string]: nothing -> int {
+    let parsed = try {
+        $value | into int
+    } catch {
+        error make {msg: $'github: ($option) requires a positive integer'}
+    }
+
+    if $parsed <= 0 {
+        error make {msg: $'github: ($option) requires a positive integer'}
+    }
+
+    $parsed
+}
+
+def _github-search-field [field: string]: nothing -> string {
+    if $field == 'items' {
+        '.'
+    } else if ($field | str starts-with 'items.') {
+        $field | str replace --regex '^items\.' ''
+    } else {
+        $field
+    }
+}
+
+def _github-sort-search-items [items: list, limit: int]: nothing -> list {
+    $items | sort-by stargazers_count updated_at created_at | reverse | first $limit
+}
+
+def _github-select-search-fields [items: list, fields: list<string>]: nothing -> any {
+    let item_fields = ($fields | each {|field| _github-search-field $field })
+
+    if (($item_fields | length) == 1) and (($item_fields | first) == '.') {
+        $items
+    } else {
+        if ($item_fields | where {|field| $field == '.' } | is-not-empty) {
+            error make {msg: 'github: items cannot be selected with other search fields'}
+        }
+
+        $items | each {|item| _github-select-fields $item $item_fields }
+    }
+}
+
+def _github-format-search-items [items: list]: nothing -> list {
+    $items | each {|repo| {
+        stars: ($repo.stargazers_count? | default 0)
+        updated_at: ($repo.updated_at? | default '')
+        created_at: ($repo.created_at? | default '')
+        full_name: ($repo.full_name? | default '')
+        html_url: ($repo.html_url? | default '')
+        description: ($repo.description? | default '')
+    }}
+}
+
 def "nu-complete github-args" [context: string]: nothing -> list<string> {
     let words = ($context | split row ' ' | where {|word| $word != '' })
     let prev = (if ($words | is-empty) { '' } else { $words | last })
@@ -201,6 +262,8 @@ def "nu-complete github-args" [context: string]: nothing -> list<string> {
         '-o' | '--org' => { [github kubernetes openai microsoft] }
         '-a' | '--api' => { [repos/ollama/ollama users/lgf-136 orgs/github gists search/repositories search/users search/issues search/code rate_limit meta] }
         '-q' | '--query' => { [per_page=100 page=1 state=open state=closed state=all sort=updated direction=desc type=owner type=member] }
+        '--limit' => { [15 30 50 100] }
+        '--pages' => { [1 2 3 5] }
         '--issue' | '--pull' => { [1 2 3 4 5 10 100] }
         '--release' => { [latest v1.0.0] }
         '--branch' => { [main master develop] }
@@ -219,7 +282,7 @@ def "nu-complete github-args" [context: string]: nothing -> list<string> {
                     '--branches' | '--branch' => { $sub = 'branch' }
                     '--commits' | '--commit' => { $sub = 'commit' }
                     '--contents' => { $sub = 'contents' }
-                    '--search-repos' | '--search-users' | '--search-issues' | '--search-code' => { $kind = 'search' }
+                    '-s' | '--search' | '--search-repos' | '--search-users' | '--search-issues' | '--search-code' => { $kind = 'search' }
                     _ => {}
                 }
             }
@@ -256,6 +319,9 @@ def --wrapped github [
     mut fields = []
     mut jq_filter = ''
     mut print_url = false
+    mut search_display = false
+    mut search_limit = 15
+    mut search_pages = 1
 
     while (($rest | length) > 0) {
         let arg = ($rest | first)
@@ -309,6 +375,17 @@ def --wrapped github [
                 $endpoint_path = ''
                 $rest = ($rest | skip 2)
             }
+            '-s' | '--search' => {
+                if (($rest | length) < 2) or (($rest | get 1 | is-empty)) {
+                    error make {msg: $'github: ($arg) requires QUERY'}
+                }
+                $kind = 'raw'
+                $raw_path = 'search/repositories'
+                $endpoint_path = ''
+                $search_display = true
+                $query_params = ($query_params | append $'q=(_github-urlencode ($rest | get 1))')
+                $rest = ($rest | skip 2)
+            }
             '--search-repos' => {
                 if (($rest | length) < 2) or (($rest | get 1 | is-empty)) {
                     error make {msg: 'github: --search-repos requires QUERY'}
@@ -350,6 +427,20 @@ def --wrapped github [
                     error make {msg: $'github: ($arg) requires KEY=VALUE'}
                 }
                 $query_params = ($query_params | append (_github-query-pair ($rest | get 1)))
+                $rest = ($rest | skip 2)
+            }
+            '--limit' => {
+                if (($rest | length) < 2) or (($rest | get 1 | is-empty)) {
+                    error make {msg: 'github: --limit requires a positive integer'}
+                }
+                $search_limit = (_github-positive-int ($rest | get 1) '--limit')
+                $rest = ($rest | skip 2)
+            }
+            '--pages' => {
+                if (($rest | length) < 2) or (($rest | get 1 | is-empty)) {
+                    error make {msg: 'github: --pages requires a positive integer'}
+                }
+                $search_pages = (_github-positive-int ($rest | get 1) '--pages')
                 $rest = ($rest | skip 2)
             }
             '--jq' => {
@@ -489,11 +580,46 @@ def --wrapped github [
     }
 
     $raw_path = ($raw_path | str replace --regex '^/+' '')
-    let query = ($query_params | str join '&')
+    let url_query_params = if $search_display {
+        $query_params | append 'per_page=100' | append 'page=1'
+    } else {
+        $query_params
+    }
+    let query = ($url_query_params | str join '&')
     let url = (_github-join-query $'($github_api_base)/($raw_path)' $query)
 
     if $print_url {
         return $url
+    }
+
+    if $search_display {
+        let search_query_params = $query_params
+        let search_base_url = $'($github_api_base)/($raw_path)'
+        let pages = (1..$search_pages | each {|page|
+            let page_query = ($search_query_params | append 'per_page=100' | append $'page=($page)' | str join '&')
+            let page_url = (_github-join-query $search_base_url $page_query)
+            http get --headers (_github-headers) $page_url
+        })
+        let items = ($pages | each {|page| $page.items? | default [] } | flatten)
+        let response = {
+            total_count: (($pages | each {|page| $page.total_count? | default 0 } | math max) | default 0)
+            incomplete_results: ($pages | each {|page| $page.incomplete_results? | default false } | where {|value| $value == true } | is-not-empty)
+            items: $items
+        }
+
+        if ($jq_filter | is-not-empty) {
+            if (which jq | is-empty) {
+                error make {msg: 'github: jq is required when using --jq'}
+            }
+            return ($response | to json | ^jq -r $jq_filter)
+        }
+
+        let sorted = (_github-sort-search-items $items $search_limit)
+        if (($fields | length) > 0) {
+            return (_github-select-search-fields $sorted $fields)
+        }
+
+        return (_github-format-search-items $sorted)
     }
 
     let response = (http get --headers (_github-headers) $url)

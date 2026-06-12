@@ -14,7 +14,7 @@ _GITHUB_API_BASE = "https://api.github.com"
 
 _GITHUB_GLOBAL_OPTIONS = (
     "-h", "--help", "-r", "--repo", "-u", "--user", "-o", "--org", "-g", "--gist",
-    "-a", "--api", "-q", "--query", "--jq", "--url",
+    "-a", "--api", "-s", "--search", "-q", "--query", "--limit", "--pages", "--jq", "--url",
 )
 _GITHUB_REPO_OPTIONS = (
     "--issues", "--issue", "--pulls", "--pull", "--releases", "--release",
@@ -24,7 +24,7 @@ _GITHUB_REPO_OPTIONS = (
 )
 _GITHUB_USER_OPTIONS = ("--repos", "--followers", "--following", "--gists", "--starred", "--orgs", "--events")
 _GITHUB_ORG_OPTIONS = ("--repos", "--members", "--teams", "--events")
-_GITHUB_SEARCH_OPTIONS = ("--search-repos", "--search-users", "--search-issues", "--search-code")
+_GITHUB_SEARCH_OPTIONS = ("-s", "--search", "--search-repos", "--search-users", "--search-issues", "--search-code")
 
 _GITHUB_REPO_FIELDS = (
     "id", "node_id", "name", "full_name", "owner", "private", "html_url", "description", "fork", "url",
@@ -95,7 +95,8 @@ _GITHUB_CONTENTS_FIELDS = (
 )
 _GITHUB_SEARCH_FIELDS = (
     "total_count", "incomplete_results", "items", "items.id", "items.node_id", "items.name", "items.full_name",
-    "items.login", "items.html_url", "items.description", "items.score",
+    "items.login", "items.html_url", "items.description", "items.stargazers_count", "items.updated_at",
+    "items.created_at", "items.language", "items.score",
 )
 
 
@@ -111,6 +112,7 @@ usage:
   github -o ORG [org-option] [field ...]
   github -g GIST_ID [field ...]
   github --api PATH [field ...]
+  github -s QUERY [--limit N] [--pages N] [field ...]
   github --search-repos QUERY [field ...]
   github --search-users QUERY [field ...]
   github --search-issues QUERY [field ...]
@@ -132,7 +134,10 @@ common options:
   -o, --org ORG               organization endpoint
   -g, --gist GIST_ID          gist endpoint
   -a, --api PATH              raw GitHub API path
+  -s, --search QUERY          search repositories and show a ranked summary
   -q, --query KEY=VALUE       append query parameter, repeatable
+  --limit N                   limit displayed search rows, default: 15
+  --pages N                   fetch N search result pages before ranking, default: 1
   --jq FILTER                 run a raw jq filter against the response
   --url                       print the API URL instead of requesting it
   -h, --help                  show this help
@@ -151,6 +156,9 @@ org options:
   --repos, --members, --teams, --events
 
 search options:
+  -s, --search QUERY          ranked repo search, default: --limit 15 --pages 1
+  github -s wsl --limit 30 --pages 2
+      Fetch two search pages, rank locally by stars, updated_at, created_at.
   --search-repos QUERY, --search-users QUERY, --search-issues QUERY, --search-code QUERY
 
 fields:
@@ -224,6 +232,74 @@ def _github_need_value(args, index, option, label):
     return args[index + 1]
 
 
+def _github_positive_int(value, option):
+    try:
+        number = int(value)
+    except ValueError as exc:
+        raise ValueError(f"github: {option} requires a positive integer") from exc
+    if number <= 0:
+        raise ValueError(f"github: {option} requires a positive integer")
+    return number
+
+
+def _github_search_field(field):
+    if field == "items":
+        return "."
+    if field.startswith("items."):
+        return field[6:]
+    return field
+
+
+def _github_search_items(items, limit):
+    return sorted(
+        items,
+        key=lambda item: (
+            item.get("stargazers_count") or 0,
+            item.get("updated_at") or "",
+            item.get("created_at") or "",
+        ),
+        reverse=True,
+    )[:limit]
+
+
+def _github_select_search_fields(items, fields):
+    item_fields = [_github_search_field(field) for field in fields]
+    if len(item_fields) == 1 and item_fields[0] == ".":
+        return items
+    if "." in item_fields:
+        raise ValueError("github: items cannot be selected with other search fields")
+    return [_github_select_fields(item, item_fields) for item in items]
+
+
+def _github_clean_cell(value):
+    if value is None:
+        return ""
+    return str(value).replace("\t", " ").replace("\r", " ").replace("\n", " ")
+
+
+def _github_print_search_items(items):
+    print("\t".join(("stars", "updated", "created", "repo", "url", "description")))
+    for item in items:
+        print(
+            "\t".join(
+                (
+                    str(item.get("stargazers_count") or 0),
+                    _github_clean_cell(item.get("updated_at"))[:10],
+                    _github_clean_cell(item.get("created_at"))[:10],
+                    _github_clean_cell(item.get("full_name")),
+                    _github_clean_cell(item.get("html_url")),
+                    _github_clean_cell(item.get("description")),
+                )
+            )
+        )
+
+
+def _github_request_json(url):
+    request = urllib.request.Request(url, headers=_github_headers())
+    with urllib.request.urlopen(request) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
 def _github(args, stdin=None):
     args = list(args)
     kind = "repo"
@@ -234,6 +310,9 @@ def _github(args, stdin=None):
     fields = []
     jq_filter = ""
     print_url = False
+    search_display = False
+    search_limit = 15
+    search_pages = 1
 
     try:
         index = 0
@@ -272,6 +351,14 @@ def _github(args, stdin=None):
                 endpoint_path = ""
                 index += 2
                 continue
+            if arg in ("-s", "--search"):
+                raw_path = "search/repositories"
+                kind = "raw"
+                endpoint_path = ""
+                search_display = True
+                query.append(f"q={_github_urlencode(_github_need_value(args, index, arg, 'QUERY'))}")
+                index += 2
+                continue
             if arg in ("--search-repos", "--search-users", "--search-issues", "--search-code"):
                 search_path = {
                     "--search-repos": "search/repositories",
@@ -286,6 +373,14 @@ def _github(args, stdin=None):
                 continue
             if arg in ("-q", "--query"):
                 query.append(_github_query_pair(_github_need_value(args, index, arg, "KEY=VALUE")))
+                index += 2
+                continue
+            if arg == "--limit":
+                search_limit = _github_positive_int(_github_need_value(args, index, arg, "N"), arg)
+                index += 2
+                continue
+            if arg == "--pages":
+                search_pages = _github_positive_int(_github_need_value(args, index, arg, "N"), arg)
                 index += 2
                 continue
             if arg == "--jq":
@@ -348,9 +443,48 @@ def _github(args, stdin=None):
         if endpoint_path:
             raw_path = f"{raw_path}/{endpoint_path}"
 
-        url = _github_join_query(f"{_GITHUB_API_BASE}/{raw_path.lstrip('/')}", query)
+        url_query = list(query)
+        if search_display:
+            url_query.extend(("per_page=100", "page=1"))
+        url = _github_join_query(f"{_GITHUB_API_BASE}/{raw_path.lstrip('/')}", url_query)
         if print_url:
             print(url)
+            return 0
+
+        if search_display:
+            responses = []
+            for page in range(1, search_pages + 1):
+                page_query = [*query, "per_page=100", f"page={page}"]
+                page_url = _github_join_query(f"{_GITHUB_API_BASE}/{raw_path.lstrip('/')}", page_query)
+                responses.append(_github_request_json(page_url))
+
+            items = []
+            for response in responses:
+                items.extend(response.get("items") or [])
+            data = {
+                "total_count": max((response.get("total_count") or 0 for response in responses), default=0),
+                "incomplete_results": any(response.get("incomplete_results") or False for response in responses),
+                "items": items,
+            }
+
+            if jq_filter:
+                if not shutil.which("jq"):
+                    print("github: jq is required when using --jq", file=sys.stderr)
+                    return 127
+                result = subprocess.run(
+                    ["jq", "-r", jq_filter],
+                    input=json.dumps(data),
+                    text=True,
+                    check=False,
+                )
+                return result.returncode
+
+            sorted_items = _github_search_items(items, search_limit)
+            if fields:
+                _github_print_value(_github_select_search_fields(sorted_items, fields))
+                return 0
+
+            _github_print_search_items(sorted_items)
             return 0
 
         request = urllib.request.Request(url, headers=_github_headers())
@@ -415,6 +549,8 @@ def _github_completion_fields(completed):
             sub = "commit"
         elif item == "--contents":
             sub = "contents"
+        elif item in ("-s", "--search"):
+            kind = "search"
         elif item.startswith("--search-"):
             kind = "search"
 
@@ -460,13 +596,17 @@ def _github_completion(context):
         return _github_filter(("repos/ollama/ollama", "users/lgf-136", "orgs/github", "gists", "search/repositories", "search/users", "search/issues", "search/code", "rate_limit", "meta"), current)
     if previous in ("-q", "--query"):
         return _github_filter(("per_page=100", "page=1", "state=open", "state=closed", "state=all", "sort=updated", "direction=desc", "type=owner", "type=member"), current)
+    if previous == "--limit":
+        return _github_filter(("15", "30", "50", "100"), current)
+    if previous == "--pages":
+        return _github_filter(("1", "2", "3", "5"), current)
     if previous in ("--issue", "--pull"):
         return _github_filter(("1", "2", "3", "4", "5", "10", "100"), current)
     if previous == "--release":
         return _github_filter(("latest", "v1.0.0"), current)
     if previous == "--branch":
         return _github_filter(("main", "master", "develop"), current)
-    if previous in ("-g", "--gist", "--jq", "--search-repos", "--search-users", "--search-issues", "--search-code"):
+    if previous in ("-g", "--gist", "--jq", "-s", "--search", "--search-repos", "--search-users", "--search-issues", "--search-code"):
         return None
 
     if current.startswith("-"):

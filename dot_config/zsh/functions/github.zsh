@@ -12,6 +12,7 @@ usage:
   github -o ORG [org-option] [field ...]
   github -g GIST_ID [field ...]
   github --api PATH [field ...]
+  github -s QUERY [--limit N] [--pages N] [field ...]
   github --search-repos QUERY [field ...]
   github --search-users QUERY [field ...]
   github --search-issues QUERY [field ...]
@@ -36,7 +37,10 @@ common options:
   -o, --org ORG               organization endpoint
   -g, --gist GIST_ID          gist endpoint
   -a, --api PATH              raw GitHub API path
+  -s, --search QUERY          search repositories and show a ranked summary
   -q, --query KEY=VALUE       append query parameter, repeatable
+  --limit N                   limit displayed search rows, default: 15
+  --pages N                   fetch N search result pages before ranking, default: 1
   --jq FILTER                 run a raw jq filter against the response
   --url                       print the API URL instead of requesting it
   -h, --help                  show this help
@@ -55,6 +59,11 @@ org options:
   --repos, --members, --teams, --events
 
 search options:
+  -s, --search QUERY
+      Search repositories, fetch one page, rank by stars, updated_at,
+      created_at, and show the first 15 rows.
+  github -s wsl --limit 30 --pages 2
+      Fetch two search pages, rank locally, and show the first 30 rows.
   --search-repos QUERY, --search-users QUERY, --search-issues QUERY, --search-code QUERY
 
 fields:
@@ -132,6 +141,7 @@ github() {
 
   local kind=repo target=ollama/ollama endpoint_path= raw_path= jq_filter= print_url=0
   local query= key value encoded_key encoded_value response field expr sep url
+  local search_display=0 search_limit=15 search_pages=1
   local -a fields curl_args
 
   while (( $# )); do
@@ -175,6 +185,16 @@ github() {
         endpoint_path=
         shift 2
         ;;
+      -s | --search)
+        [[ $# -ge 2 && -n $2 ]] || { print -u2 -- "github: $1 requires QUERY"; return 2; }
+        kind=raw
+        raw_path=search/repositories
+        endpoint_path=
+        search_display=1
+        encoded_value=$(_github_urlencode "$2")
+        query="${query:+$query&}q=$encoded_value"
+        shift 2
+        ;;
       --search-repos)
         [[ $# -ge 2 && -n $2 ]] || { print -u2 -- "github: $1 requires QUERY"; return 2; }
         kind=raw
@@ -214,6 +234,16 @@ github() {
         encoded_key=$(_github_urlencode "$key")
         encoded_value=$(_github_urlencode "$value")
         query="${query:+$query&}$encoded_key=$encoded_value"
+        shift 2
+        ;;
+      --limit)
+        [[ $# -ge 2 && $2 == <-> && $2 -gt 0 ]] || { print -u2 -- 'github: --limit requires a positive integer'; return 2; }
+        search_limit=$2
+        shift 2
+        ;;
+      --pages)
+        [[ $# -ge 2 && $2 == <-> && $2 -gt 0 ]] || { print -u2 -- 'github: --pages requires a positive integer'; return 2; }
+        search_pages=$2
         shift 2
         ;;
       --jq)
@@ -333,7 +363,11 @@ github() {
 
   raw_path=${raw_path#/}
   url="$_github_api_base/$raw_path"
-  url=$(_github_join_query "$url" "$query")
+  local url_query=$query
+  if (( search_display )); then
+    url_query="${query:+$query&}per_page=100&page=1"
+  fi
+  url=$(_github_join_query "$url" "$url_query")
 
   if (( print_url )); then
     print -r -- "$url"
@@ -347,6 +381,60 @@ github() {
     curl_args+=(-H "Authorization: Bearer $GITHUB_TOKEN")
   elif [[ -n ${GH_TOKEN:-} ]]; then
     curl_args+=(-H "Authorization: Bearer $GH_TOKEN")
+  fi
+
+  if (( search_display )); then
+    command -v jq >/dev/null 2>&1 || { print -u2 -- 'github: jq is required for formatted search output'; return 127; }
+
+    local page page_query page_url page_response search_field
+    local -a search_responses
+
+    for (( page = 1; page <= search_pages; page++ )); do
+      page_query="${query:+$query&}per_page=100&page=$page"
+      page_url=$(_github_join_query "$_github_api_base/$raw_path" "$page_query")
+      page_response=$(curl "${curl_args[@]}" "$page_url") || return
+      search_responses+=("$page_response")
+    done
+
+    response=$(
+      printf '%s\n' "${search_responses[@]}" |
+        jq -s '{total_count: ((map(.total_count // 0) | max) // 0), incomplete_results: (map(.incomplete_results // false) | any), items: (map(.items // []) | add)}'
+    ) || return
+
+    if [[ -n $jq_filter ]]; then
+      jq -r "$jq_filter" <<< "$response"
+      return
+    fi
+
+    if (( ${#fields[@]} > 0 )); then
+      if (( ${#fields[@]} == 1 )); then
+        search_field=${fields[1]}
+        [[ $search_field == items.* ]] && search_field=${search_field#items.}
+        if [[ $search_field == items ]]; then
+          expr=.
+        else
+          expr=$(_github_jq_expr "$search_field") || { print -u2 -- "github: invalid field: ${fields[1]}"; return 2; }
+        fi
+        jq_filter=".items | sort_by([(.stargazers_count // 0), (.updated_at // \"\"), (.created_at // \"\")]) | reverse | .[:\$limit][] | $expr"
+      else
+        jq_filter='.items | sort_by([(.stargazers_count // 0), (.updated_at // ""), (.created_at // "")]) | reverse | .[:$limit][] | {'
+        sep=
+        for field in "${fields[@]}"; do
+          search_field=$field
+          [[ $search_field == items.* ]] && search_field=${search_field#items.}
+          [[ $search_field != items ]] || { print -u2 -- "github: invalid field with other fields: $field"; return 2; }
+          expr=$(_github_jq_expr "$search_field") || { print -u2 -- "github: invalid field: $field"; return 2; }
+          jq_filter+="$sep$(_github_json_string "$field"): $expr"
+          sep=', '
+        done
+        jq_filter+='}'
+      fi
+      jq -r --argjson limit "$search_limit" "$jq_filter" <<< "$response"
+      return
+    fi
+
+    jq -r --argjson limit "$search_limit" '(["stars","updated","created","repo","url","description"], (.items | sort_by([(.stargazers_count // 0), (.updated_at // ""), (.created_at // "")]) | reverse | .[:$limit][] | [((.stargazers_count // 0) | tostring), ((.updated_at // "")[0:10]), ((.created_at // "")[0:10]), (.full_name // ""), (.html_url // ""), ((.description // "") | gsub("[\t\r\n]+"; " "))])) | @tsv' <<< "$response"
+    return
   fi
 
   if [[ -n $jq_filter || ${#fields[@]} -gt 0 ]]; then
@@ -382,11 +470,11 @@ _github_completion() {
   local -a options fields
 
   local -a global_options repo_options user_options org_options search_options
-  global_options=(-h --help -r --repo -u --user -o --org -g --gist -a --api -q --query --jq --url)
+  global_options=(-h --help -r --repo -u --user -o --org -g --gist -a --api -s --search -q --query --limit --pages --jq --url)
   repo_options=(--issues --issue --pulls --pull --releases --release --latest-release --branches --branch --commits --commit --contents --contributors --languages --tags --topics --stargazers --subscribers --forks --workflows)
   user_options=(--repos --followers --following --gists --starred --orgs --events)
   org_options=(--repos --members --teams --events)
-  search_options=(--search-repos --search-users --search-issues --search-code)
+  search_options=(-s --search --search-repos --search-users --search-issues --search-code)
 
   local -a repo_fields user_fields org_fields gist_fields issue_fields pull_fields release_fields branch_fields commit_fields contents_fields search_fields
   repo_fields=(id node_id name full_name owner private html_url description fork url forks_url keys_url collaborators_url teams_url hooks_url issue_events_url events_url assignees_url branches_url tags_url blobs_url git_tags_url git_refs_url trees_url statuses_url languages_url stargazers_url contributors_url subscribers_url subscription_url commits_url git_commits_url comments_url issue_comment_url contents_url compare_url merges_url archive_url downloads_url issues_url pulls_url milestones_url notifications_url labels_url releases_url deployments_url created_at updated_at pushed_at git_url ssh_url clone_url svn_url homepage size stargazers_count watchers_count language has_issues has_projects has_downloads has_wiki has_pages has_discussions forks_count mirror_url archived disabled open_issues_count license allow_forking is_template web_commit_signoff_required topics visibility forks open_issues watchers default_branch network_count subscribers_count organization parent source owner.login owner.id owner.node_id owner.avatar_url owner.html_url owner.type license.key license.name license.spdx_id)
@@ -399,7 +487,7 @@ _github_completion() {
   branch_fields=(name commit protected protection protection_url commit.sha commit.url)
   commit_fields=(sha node_id commit url html_url comments_url author committer parents stats files commit.author.name commit.author.email commit.author.date commit.committer.name commit.committer.email commit.committer.date commit.message commit.tree commit.url commit.comment_count author.login committer.login)
   contents_fields=(type encoding size name path content sha url git_url html_url download_url links _links.self _links.git _links.html)
-  search_fields=(total_count incomplete_results items items.id items.node_id items.name items.full_name items.login items.html_url items.description items.score)
+  search_fields=(total_count incomplete_results items items.id items.node_id items.name items.full_name items.login items.html_url items.description items.stargazers_count items.updated_at items.created_at items.language items.score)
 
   for word in "${words[@]:1:CURRENT-2}"; do
     case $word in
@@ -414,7 +502,7 @@ _github_completion() {
       --branches | --branch) sub=branch ;;
       --commits | --commit) sub=commit ;;
       --contents) sub=contents ;;
-      --search-*) kind=search ;;
+      -s | --search | --search-*) kind=search ;;
     esac
   done
 
@@ -429,7 +517,9 @@ _github_completion() {
     --release) compadd -Q -- latest v1.0.0; return 0 ;;
     --branch) compadd -Q -- main master develop; return 0 ;;
     --contents) _files; return 0 ;;
-    --jq | --search-repos | --search-users | --search-issues | --search-code) return 0 ;;
+    --limit) compadd -Q -- 15 30 50 100; return 0 ;;
+    --pages) compadd -Q -- 1 2 3 5; return 0 ;;
+    --jq | -s | --search | --search-repos | --search-users | --search-issues | --search-code) return 0 ;;
   esac
 
   if [[ $cur == -* ]]; then
