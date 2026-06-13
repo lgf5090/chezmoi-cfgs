@@ -1,11 +1,3 @@
-{{- if eq .chezmoi.os "windows" }}
-generate-nushell-autoload.sh
-run_onchange_after_generate-nushell-autoload.sh.tmpl
-{{- else }}
-generate-nushell-autoload.cmd
-run_onchange_after_generate-nushell-autoload.cmd.tmpl
-{{- end }}
-
 **/*.tmp
 **/.DS_Store
 **/.idea/

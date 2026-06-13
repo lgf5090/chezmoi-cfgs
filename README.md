@@ -14,16 +14,13 @@
 │   ├── zsh/
 │   ├── nushell/
 │   └── powershell/
-├── dot_ssh/
-├── run_onchange_after_generate-nushell-autoload.sh.tmpl
-└── run_onchange_after_generate-nushell-autoload.cmd.tmpl
+└── dot_ssh/
 ```
 
 - `dot_bashrc`、`dot_zshrc`：轻量入口，只负责加载 `~/.config/bash/config.bash` 和 `~/.config/zsh/config.zsh`。
 - `dot_config/{bash,zsh,nushell,powershell}`：按 `functions/`、`conf.d/`、`completions/` 分层组织 shell 配置。
 - `dot_ssh/`：加密后的 SSH 文件，例如私钥、known_hosts、config。
 - `.chezmoi.toml.tmpl`：生成本机 `chezmoi.toml`，当前启用 GPG 对称加密。
-- `run_onchange_after_generate-nushell-autoload.{sh,cmd}.tmpl`：为 Nushell 自动生成 vendor autoload 入口，Unix 使用 `.sh`，Windows 使用 `.cmd`。
 
 ## 前置依赖
 
@@ -46,7 +43,7 @@ sh -c "$(curl -fsLS https://get.chezmoi.io)"
 nu / pwsh / starship / fzf / zoxide / lf / nvm / git
 ```
 
-Nushell 自动加载文件的生成依赖 `nu` 命令。如果机器上没有 Nushell，`chezmoi apply` 会跳过生成，不影响其它 shell 配置。
+Nushell 自动加载文件由 `config.nu` 在 Nushell 启动时生成，不依赖 chezmoi 脚本。
 
 ## 首次安装
 
@@ -165,19 +162,17 @@ chezmoi diff --exclude=encrypted
 
 ## Nushell 自动加载
 
-Nushell 的 `source` 是 parse-time 关键字，不能像 bash/zsh 那样在运行时循环目录并动态 `source` 一批文件。因此本仓库采用“chezmoi 生成静态加载器”的方式：
+Nushell 的 `source` 是 parse-time 关键字，不能像 bash/zsh 那样在运行时循环目录并动态 `source` 一批文件。因此本仓库采用“`config.nu` 生成静态加载器”的方式：
 
-1. `chezmoi apply` 通过 `.chezmoiignore` 按系统选择 `run_onchange_after_generate-nushell-autoload.sh.tmpl` 或 `.cmd.tmpl`。
-2. chezmoi 先渲染模板，模板用 `glob` 枚举仓库里的 Nushell 文件。
-3. 渲染后的脚本写入 Nushell 会扫描的 vendor autoload 目录；Windows 默认写入 `%APPDATA%\nushell\vendor\autoload`，同时兼容 XDG data-dir。
-4. 脚本写入 `chezmoi-dotfiles.nu` 到 Nushell vendor autoload 目录。
-5. Nushell 启动时自动加载该文件。
+1. Nushell 启动时加载 `config.nu`。
+2. `config.nu` 用内置 `glob` 枚举 `completions/`、`functions/`、`conf.d/`。
+3. `config.nu` 写入 `auto-generate-autoload.nu` 到 `$nu.data-dir/vendor/autoload`。
+4. 下次 `nu` 启动时自动加载该文件。
 
 常见生成位置：
 
 ```text
-Windows: %APPDATA%\nushell\vendor\autoload\chezmoi-dotfiles.nu
-Unix/XDG: $nu.data-dir/vendor/autoload/chezmoi-dotfiles.nu
+$nu.data-dir/vendor/autoload/auto-generate-autoload.nu
 ```
 
 生成的加载顺序固定为：
@@ -190,14 +185,12 @@ conf.d/*.nu
 
 注意事项：
 
-- 新增、删除、重命名 `dot_config/nushell/**/*.nu` 后，运行 `chezmoi apply` 即可刷新 autoload 文件。
-- 不需要手动修改 `dot_config/nushell/config.nu`，它只保留为 Nushell 原生配置入口。
+- 新增、删除、重命名 `dot_config/nushell/**/*.nu` 后，运行 `exec nu` 即可刷新 autoload 文件。
+- 不需要手动修改 `auto-generate-autoload.nu`，它由 `config.nu` 自动生成。
 - `conf.d/` 依赖文件名排序加载，继续使用 `00-`、`10-`、`90-` 这类前缀控制顺序。
 - completion 会先于 function 加载，避免函数引用 completion 时找不到定义。
-- 生成脚本使用临时文件加 `cmp`/`fc`，内容没有变化时不会反复改写 autoload 文件。
-- 生成脚本会创建 `zz-local-aliases.nu` 占位文件；`conf.d/45-local-aliases.nu` 会根据 `~/.aliases` 刷新它，让本地 alias 在
-  `chezmoi-dotfiles.nu` 之后加载。
-- 如果机器没有 `nu`，生成脚本会打印提示并跳过。
+- `config.nu` 会创建 `zz-local-aliases.nu` 占位文件；`conf.d/45-local-aliases.nu` 会根据 `~/.aliases` 刷新它，让本地 alias 在
+  `auto-generate-autoload.nu` 之后加载。
 
 ## 添加普通配置
 

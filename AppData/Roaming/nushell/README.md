@@ -12,18 +12,18 @@ nushell/
   completions/
 ```
 
-- `config.nu`: small placeholder loaded by Nushell.
+- `config.nu`: generates the vendor autoload loader at startup.
 - `conf.d/*.nu`: startup config, tools, prompt.
 - `functions/*.nu`: shell functions.
 - `completions/*.nu`: custom completion functions.
 
 ## Autoload
 
-Nushell parses `source` at parse time. This project keeps `config.nu` small and
-uses a chezmoi `run_onchange` template to generate a static loader at:
+Nushell parses `source` at parse time. `config.nu` uses Nushell built-ins to
+generate a static loader in Nushell's vendor autoload directory:
 
-```nu
-$nu.data-dir | path join "vendor" "autoload" "chezmoi-dotfiles.nu"
+```text
+$nu.data-dir/vendor/autoload/auto-generate-autoload.nu
 ```
 
 The generated loader sources files in this order:
@@ -37,11 +37,10 @@ conf.d/*.nu
 When you add, rename, or remove a file, run:
 
 ```sh
-chezmoi apply
+exec nu
 ```
 
-The autoload file is regenerated automatically. No manual edit to `config.nu`
-is needed.
+The autoload file is regenerated automatically. Do not edit it manually.
 
 ## Use
 
@@ -56,8 +55,8 @@ nu
 ln -s /tmp/nushell ~/.config/nushell
 ```
 
-Interactive `nu` will load `~/.config/nushell/config.nu` and the generated
-vendor autoload file.
+Interactive `nu` will load `config.nu` from its active config directory and the
+generated vendor autoload file.
 
 For non-interactive checks, use:
 
@@ -97,8 +96,8 @@ PATH={HOME}/.local/custom/bin:{PATH}
 
 `conf.d/45-local-aliases.nu` checks `~/.aliases` and regenerates:
 
-```nu
-$nu.data-dir | path join "vendor" "autoload" "zz-local-aliases.nu"
+```text
+$nu.data-dir/vendor/autoload/zz-local-aliases.nu
 ```
 
 Example `~/.aliases`:
@@ -114,10 +113,10 @@ cache, `shells-regen-aliases` rewrites the vendor autoload file. Run `exec nu`
 after editing `~/.aliases` to start a fresh parse with the new aliases.
 
 The cache filename starts with `zz-` so it is loaded after
-`chezmoi-dotfiles.nu`; local aliases can override defaults from
-`conf.d/40-aliases.nu`. The chezmoi autoload generator creates a placeholder
-cache file when it is missing, so the first interactive `nu` startup after
-`chezmoi apply` can regenerate and then load the cache in the same startup.
+`auto-generate-autoload.nu`; local aliases can override defaults from
+`conf.d/40-aliases.nu`. `config.nu` creates a placeholder cache file when it is
+missing, so the first interactive `nu` startup can regenerate and then load the
+cache in the same startup.
 
 Alias bodies are Nushell command text. POSIX-only forms such as inline
 `NAME=value command` assignments may need a Nushell-specific alias body.
