@@ -1,4 +1,2 @@
-
--- load(io.popen('starship init cmd'):read("*a"))()
-
-
+-- Starship is intentionally disabled for this Clink profile.
+-- The Shells Clink configuration does not run external prompt initializers.
