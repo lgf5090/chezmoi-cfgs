@@ -1,3 +1,0 @@
-def paths [] {
-    $env.PATH
-}
