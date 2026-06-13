@@ -13,8 +13,10 @@
 AppData/Local/clink/
   00-shells-core.lua
   10-shells-env.lua
+  20-completions-core.lua
   40-shells-commands.lua
   90-shells-prompt.lua
+  *-completions.lua
   starship.lua
   README.md
 ```
@@ -23,8 +25,10 @@ AppData/Local/clink/
 | --- | --- |
 | `00-shells-core.lua` | 公共 helper、PATH 处理、Clink 错误码设置 |
 | `10-shells-env.lua` | `.envs`、开发环境变量、PATH 迁移 |
+| `20-completions-core.lua` | 静态补全公共 helper |
 | `40-shells-commands.lua` | 用 `clink.onfilterinput()` 实现 Clink 原生命令 |
 | `90-shells-prompt.lua` | Clink fallback prompt |
+| `*-completions.lua` | 常见开发命令的静态补全 |
 | `starship.lua` | 明确禁用 starship 外部初始化 |
 
 flexprompt 相关脚本不保留。这样不会再出现：
@@ -40,7 +44,7 @@ Run "flexprompt configure" to configure the prompt.
 
 - Clink Lua API，例如 `os.setenv()`、`os.chdir()`、`os.mkdir()`、
   `os.findfiles()`、`os.createguid()`、`clink.promptfilter()`、
-  `clink.onfilterinput()`。
+  `clink.onfilterinput()`、`clink.argmatcher()`。
 - Lua 内置能力，例如 `io.open()` 读取文本文件、`string`、`table`、`os.date()`。
 
 本配置不会调用：
@@ -243,6 +247,47 @@ Chocolatey、WindowsApps、nix、mise/asdf shims、NVM、Java、rbenv/nodenv/goe
 - `unproxy` 通过把变量设为空字符串实现；对大多数命令等价于未设置。
 - PowerShell 里的 `reload` 没有迁移；Clink/cmd 配置变更后重新打开 `cmd.exe` 最干净。
 
+## 静态补全
+
+补全使用 Clink 当前推荐的 `clink.argmatcher()` API，不使用旧版
+`clink.arg.new_parser()`。所有补全都是静态表、Clink 内置文件补全或目录补全，
+不会执行对应命令，也不会访问网络。
+
+| 文件 | 命令 |
+| --- | --- |
+| `git-completions.lua` | `git` |
+| `docker-completions.lua` | `docker`、`docker-compose` |
+| `npm-completions.lua` | `npm`、`npx` |
+| `pnpm-completions.lua` | `pnpm` |
+| `yarn-completions.lua` | `yarn` |
+| `bun-completions.lua` | `bun` |
+| `deno-completions.lua` | `deno` |
+| `pip-completions.lua` | `pip`、`pip3` |
+| `python-completions.lua` | `python`、`python3`、`py` |
+| `node-completions.lua` | `node` |
+| `go-completions.lua` | `go` |
+| `cargo-completions.lua` | `cargo`、`rustup` |
+
+补全范围：
+
+| 类型 | 行为 |
+| --- | --- |
+| 子命令 | 静态列出常用子命令，例如 `git commit`、`docker compose up`、`npm install` |
+| flag | 静态列出常用短/长参数 |
+| flag 参数 | 静态值、Clink 文件补全或目录补全 |
+| 文件路径 | 使用 `clink.filematches` |
+| 目录路径 | 使用 `clink.dirmatches` |
+
+不会做这些动态补全：
+
+| 动态对象 | 原因 |
+| --- | --- |
+| Git 分支完整列表 | 准确枚举通常需要 `git` 或完整解析 refs/packed-refs |
+| Docker 容器、镜像、volume、network | 需要调用 Docker API 或 `docker` |
+| npm/pnpm/yarn/bun package registry | 需要访问 registry 或执行包管理器 |
+| package.json scripts 动态列表 | Clink 内置 Lua 没有 JSON parser；避免脆弱解析 |
+| Python package / Go module / Cargo crate 在线列表 | 需要外部命令或网络 |
+
 ## Prompt
 
 Prompt 迁移了 `dot_config/powershell/conf.d/90-prompt.ps1` fallback 部分中不依赖外部
@@ -274,7 +319,7 @@ Git dirty 状态没有迁移，因为准确判断需要执行 `git status` 或 `
 | PowerShell 函数 | 支持高级函数和参数绑定 | 只支持 Clink 输入拦截命令 | 改造 | Clink 不能定义 PowerShell 函数 |
 | PowerShell 模块 | 支持 | 不支持 | 删除 | Clink 不能加载 PowerShell 模块 |
 | PSReadLine | 支持 | Clink 自带 readline 能力 | 替代 | API 和键位语义不同 |
-| 参数补全 | `Register-ArgumentCompleter` | 保留 Clink 默认补全 | 精简 | 未迁移 PowerShell AST 补全 |
+| 参数补全 | `Register-ArgumentCompleter` 和补全脚本 | `clink.argmatcher()` 静态补全 | 改造 | 不迁移 PowerShell AST 和外部命令动态补全 |
 | XDG 变量 | 支持 | 支持 | 保留 | `os.setenv()` 可实现 |
 | `.envs` | 支持 | 支持 | 保留 | Lua 文件读取可实现 |
 | `.aliases` | 生成 PowerShell 函数 | 注册 doskey 宏 | 改造 | 语法必须改为 cmd/doskey |
