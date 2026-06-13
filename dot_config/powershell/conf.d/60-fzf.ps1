@@ -2,7 +2,7 @@
 function Find-FzfTool {
     param(
         [Parameter(Mandatory)][string]$Name,
-        [Parameter(Mandatory)][string[]]$Path
+        [AllowEmptyCollection()][AllowEmptyString()][string[]]$Path = @()
     )
 
     foreach ($candidate in $Path) {

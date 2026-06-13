@@ -16,12 +16,22 @@ function Get-PathEntries {
     if ([string]::IsNullOrEmpty($current)) {
         return @()
     }
-    $current -split [Regex]::Escape([IO.Path]::PathSeparator)
+
+    foreach ($entry in ($current -split [Regex]::Escape([IO.Path]::PathSeparator))) {
+        if ([string]::IsNullOrWhiteSpace($entry)) { continue }
+        $entry
+    }
 }
 
 function Set-PathEntries {
-    param([Parameter(Mandatory)][string[]]$Entries)
-    $env:PATH = ($Entries -join [IO.Path]::PathSeparator)
+    param([AllowEmptyCollection()][AllowEmptyString()][string[]]$Entries = @())
+
+    $cleanEntries = foreach ($entry in $Entries) {
+        if ([string]::IsNullOrWhiteSpace($entry)) { continue }
+        $entry
+    }
+
+    $env:PATH = ($cleanEntries -join [IO.Path]::PathSeparator)
 }
 
 function Get-ExistingDirectoryPath {
@@ -41,7 +51,7 @@ function Add-PathPrepend {
     param([Parameter(ValueFromRemainingArguments)][string[]]$Path)
 
     $entries = [System.Collections.Generic.List[string]]::new()
-    $entries.AddRange([string[]](Get-PathEntries))
+    $entries.AddRange([string[]]@(Get-PathEntries))
     $comparer = Get-PathComparer
 
     foreach ($item in $Path) {
@@ -62,7 +72,7 @@ function Add-PathAppend {
     param([Parameter(ValueFromRemainingArguments)][string[]]$Path)
 
     $entries = [System.Collections.Generic.List[string]]::new()
-    $entries.AddRange([string[]](Get-PathEntries))
+    $entries.AddRange([string[]]@(Get-PathEntries))
     $comparer = Get-PathComparer
 
     foreach ($item in $Path) {
@@ -88,7 +98,7 @@ function Add-PathPrependValue {
     $seen = [System.Collections.Generic.HashSet[string]]::new((Get-PathComparer))
     $separatorPattern = if ($script:IsWindowsPlatform) { ';' } else { '[:;]' }
 
-    foreach ($item in (($Value -split $separatorPattern) + (Get-PathEntries))) {
+    foreach ($item in (($Value -split $separatorPattern) + @(Get-PathEntries))) {
         if ([string]::IsNullOrWhiteSpace($item)) { continue }
         $resolved = Get-ExistingDirectoryPath -Path $item
         if ([string]::IsNullOrWhiteSpace($resolved)) { continue }
