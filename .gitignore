@@ -11,3 +11,5 @@
 tmp/
 plugins/
 .agents/
+
+# **/vendor/

@@ -20,10 +20,12 @@ nushell/
 ## Autoload
 
 Nushell parses `source` at parse time. This project keeps `config.nu` small and
-uses a chezmoi `run_onchange` template to generate a static loader at:
+uses a chezmoi `run_onchange` template to generate a static loader in Nushell's
+vendor autoload directory:
 
-```nu
-$nu.data-dir | path join "vendor" "autoload" "chezmoi-dotfiles.nu"
+```text
+Windows: %APPDATA%\nushell\vendor\autoload\chezmoi-dotfiles.nu
+Unix/XDG: $nu.data-dir/vendor/autoload/chezmoi-dotfiles.nu
 ```
 
 The generated loader sources files in this order:
@@ -56,8 +58,8 @@ nu
 ln -s /tmp/nushell ~/.config/nushell
 ```
 
-Interactive `nu` will load `~/.config/nushell/config.nu` and the generated
-vendor autoload file.
+Interactive `nu` will load `config.nu` from its active config directory and the
+generated vendor autoload file.
 
 For non-interactive checks, use:
 
@@ -97,8 +99,9 @@ PATH={HOME}/.local/custom/bin:{PATH}
 
 `conf.d/45-local-aliases.nu` checks `~/.aliases` and regenerates:
 
-```nu
-$nu.data-dir | path join "vendor" "autoload" "zz-local-aliases.nu"
+```text
+Windows: %APPDATA%\nushell\vendor\autoload\zz-local-aliases.nu
+Unix/XDG: $nu.data-dir/vendor/autoload/zz-local-aliases.nu
 ```
 
 Example `~/.aliases`:

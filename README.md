@@ -15,14 +15,15 @@
 │   ├── nushell/
 │   └── powershell/
 ├── dot_ssh/
-└── run_onchange_after_generate-nushell-autoload.sh.tmpl
+├── run_onchange_after_generate-nushell-autoload.sh.tmpl
+└── run_onchange_after_generate-nushell-autoload.cmd.tmpl
 ```
 
 - `dot_bashrc`、`dot_zshrc`：轻量入口，只负责加载 `~/.config/bash/config.bash` 和 `~/.config/zsh/config.zsh`。
 - `dot_config/{bash,zsh,nushell,powershell}`：按 `functions/`、`conf.d/`、`completions/` 分层组织 shell 配置。
 - `dot_ssh/`：加密后的 SSH 文件，例如私钥、known_hosts、config。
 - `.chezmoi.toml.tmpl`：生成本机 `chezmoi.toml`，当前启用 GPG 对称加密。
-- `run_onchange_after_generate-nushell-autoload.sh.tmpl`：为 Nushell 自动生成 vendor autoload 入口。
+- `run_onchange_after_generate-nushell-autoload.{sh,cmd}.tmpl`：为 Nushell 自动生成 vendor autoload 入口，Unix 使用 `.sh`，Windows 使用 `.cmd`。
 
 ## 前置依赖
 
@@ -166,16 +167,17 @@ chezmoi diff --exclude=encrypted
 
 Nushell 的 `source` 是 parse-time 关键字，不能像 bash/zsh 那样在运行时循环目录并动态 `source` 一批文件。因此本仓库采用“chezmoi 生成静态加载器”的方式：
 
-1. `chezmoi apply` 发现 `run_onchange_after_generate-nushell-autoload.sh.tmpl`。
+1. `chezmoi apply` 通过 `.chezmoiignore` 按系统选择 `run_onchange_after_generate-nushell-autoload.sh.tmpl` 或 `.cmd.tmpl`。
 2. chezmoi 先渲染模板，模板用 `glob` 枚举仓库里的 Nushell 文件。
-3. 渲染后的脚本调用 `nu --no-config-file` 获取 `$nu.data-dir/vendor/autoload`。
+3. 渲染后的脚本写入 Nushell 会扫描的 vendor autoload 目录；Windows 默认写入 `%APPDATA%\nushell\vendor\autoload`，同时兼容 XDG data-dir。
 4. 脚本写入 `chezmoi-dotfiles.nu` 到 Nushell vendor autoload 目录。
 5. Nushell 启动时自动加载该文件。
 
-生成位置：
+常见生成位置：
 
-```nu
-$nu.data-dir | path join "vendor" "autoload" "chezmoi-dotfiles.nu"
+```text
+Windows: %APPDATA%\nushell\vendor\autoload\chezmoi-dotfiles.nu
+Unix/XDG: $nu.data-dir/vendor/autoload/chezmoi-dotfiles.nu
 ```
 
 生成的加载顺序固定为：
@@ -192,7 +194,7 @@ conf.d/*.nu
 - 不需要手动修改 `dot_config/nushell/config.nu`，它只保留为 Nushell 原生配置入口。
 - `conf.d/` 依赖文件名排序加载，继续使用 `00-`、`10-`、`90-` 这类前缀控制顺序。
 - completion 会先于 function 加载，避免函数引用 completion 时找不到定义。
-- 生成脚本使用临时文件加 `cmp`，内容没有变化时不会反复改写 autoload 文件。
+- 生成脚本使用临时文件加 `cmp`/`fc`，内容没有变化时不会反复改写 autoload 文件。
 - 生成脚本会创建 `zz-local-aliases.nu` 占位文件；`conf.d/45-local-aliases.nu` 会根据 `~/.aliases` 刷新它，让本地 alias 在
   `chezmoi-dotfiles.nu` 之后加载。
 - 如果机器没有 `nu`，生成脚本会打印提示并跳过。
