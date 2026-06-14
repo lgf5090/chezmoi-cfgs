@@ -125,14 +125,17 @@ if exist "%filepath%\" (
 )
 
 :: Read and output first N lines
+if %lines% LEQ 0 exit /b 0
 set "count=0"
 for /f "usebackq delims=" %%L in ("%filepath%") do (
     if !count! LSS %lines% (
         echo %%L
         set /a count+=1
+        if !count! GEQ %lines% goto :head_done
     )
 )
 
+:head_done
 exit /b 0
 
 :show_help
