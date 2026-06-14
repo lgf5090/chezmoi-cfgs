@@ -75,6 +75,8 @@ if %file_count%==0 (
     exit /b 1
 )
 
+if %file_count%==1 if %unique%==0 if %reverse%==0 goto :sort_single_file
+
 :: Create temp file for combined input
 set "temp_input=%TEMP%\sort_input_%RANDOM%.txt"
 set "temp_output=%TEMP%\sort_output_%RANDOM%.txt"
@@ -122,6 +124,20 @@ del "%temp_output%" 2>nul
 
 endlocal
 exit /b 0
+
+:sort_single_file
+for %%f in ("%files:|=" "%") do set "single_file=%%~f"
+if not exist "%single_file%" (
+    echo sort: cannot read: '%single_file%': No such file or directory
+    exit /b 1
+)
+if exist "%single_file%\" (
+    echo sort: read failed: '%single_file%': Is a directory
+    exit /b 1
+)
+sort "%single_file%"
+endlocal
+exit /b %errorlevel%
 
 :show_help
 echo Usage: sort [OPTION]... [FILE]...
