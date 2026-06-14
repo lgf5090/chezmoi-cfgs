@@ -125,6 +125,12 @@ if %file_count%==0 (
     exit /b 0
 )
 
+if %file_count%==1 if %force%==0 if %recursive%==0 if %verbose%==0 if %interactive%==0 (
+    set "single_target=%files%"
+    echo.!single_target! | findstr /r "[*?]" >nul 2>nul
+    if errorlevel 1 if exist "!single_target!" if not exist "!single_target!\" goto :fast_remove_regular_file
+)
+
 :: Process each file pattern - expand wildcards for each pattern
 :: Split by pipe delimiter and process each pattern
 set "remaining=%files%"
@@ -175,6 +181,15 @@ goto :process_loop
 
 :done_processing
 
+endlocal
+exit /b 0
+
+:fast_remove_regular_file
+del /f /q "%single_target%" >nul 2>nul
+if errorlevel 1 (
+    echo Error: cannot remove '%single_target%': Permission denied
+    exit /b 1
+)
 endlocal
 exit /b 0
 
