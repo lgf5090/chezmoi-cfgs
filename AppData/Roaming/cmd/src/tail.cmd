@@ -124,14 +124,9 @@ if exist "%filepath%\" (
     exit /b 1
 )
 
-:: Create a temporary file to store all lines
-set "temp_file=%TEMP%\tail_%RANDOM%.txt"
-
 :: Count total lines in file
 set "total_lines=0"
-for /f "usebackq delims=" %%L in ("%filepath%") do (
-    set /a total_lines+=1
-)
+for /f "tokens=3" %%A in ('find /c /v "" "%filepath%"') do set "total_lines=%%A"
 
 :: Calculate starting line
 set /a start_line=total_lines-lines+1
