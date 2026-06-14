@@ -105,6 +105,12 @@ if exist "%filepath%\" (
     exit /b 1
 )
 
+:: Fast path for plain concatenation.
+if %number_lines%==0 if %number_nonblank%==0 if %squeeze_blank%==0 (
+    type "%filepath%"
+    exit /b %errorlevel%
+)
+
 :: Read and output file
 for /f "usebackq delims=" %%L in ("%filepath%") do (
     call :output_line "%%L"
