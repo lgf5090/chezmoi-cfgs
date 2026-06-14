@@ -123,6 +123,10 @@ set "total_words=0"
 set "total_bytes=0"
 set "total_max_len=0"
 
+if %count_lines%==1 if %count_words%==0 if %count_bytes%==0 if %count_chars%==0 if %max_length%==0 goto :fast_count_lines
+if %count_lines%==0 if %count_words%==0 if %max_length%==0 if %count_bytes%==1 goto :fast_count_bytes
+if %count_lines%==0 if %count_words%==0 if %max_length%==0 if %count_chars%==1 goto :fast_count_bytes
+
 :: Process each file
 for %%f in ("%files:|=" "%") do (
     call :count_file "%%~f"
@@ -135,6 +139,59 @@ if %file_count% GTR 1 (
 )
 
 endlocal
+exit /b 0
+
+:fast_count_lines
+for %%f in ("%files:|=" "%") do (
+    call :count_lines_file "%%~f"
+    if errorlevel 1 exit /b 1
+)
+if %file_count% GTR 1 (
+    call :display_counts !total_lines! 0 0 0 "total"
+)
+endlocal
+exit /b 0
+
+:fast_count_bytes
+for %%f in ("%files:|=" "%") do (
+    call :count_bytes_file "%%~f"
+    if errorlevel 1 exit /b 1
+)
+if %file_count% GTR 1 (
+    call :display_counts 0 0 !total_bytes! 0 "total"
+)
+endlocal
+exit /b 0
+
+:count_lines_file
+set "filepath=%~1"
+if not exist "%filepath%" (
+    echo wc: %filepath%: No such file or directory
+    exit /b 1
+)
+if exist "%filepath%\" (
+    echo wc: %filepath%: Is a directory
+    exit /b 1
+)
+set "lines=0"
+for /f "tokens=3" %%A in ('find /c /v "" "%filepath%"') do set "lines=%%A"
+set /a total_lines+=lines
+call :display_counts %lines% 0 0 0 "%filepath%"
+exit /b 0
+
+:count_bytes_file
+set "filepath=%~1"
+if not exist "%filepath%" (
+    echo wc: %filepath%: No such file or directory
+    exit /b 1
+)
+if exist "%filepath%\" (
+    echo wc: %filepath%: Is a directory
+    exit /b 1
+)
+for %%A in ("%filepath%") do set "bytes=%%~zA"
+set /a total_bytes+=bytes
+call :display_counts 0 0 %bytes% 0 "%filepath%"
 exit /b 0
 
 :: Function to count a file
