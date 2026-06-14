@@ -21,6 +21,11 @@ set "targets="
 set "link_name="
 set "target_count=0"
 
+if not "%~1"=="" if not "%~2"=="" if "%~3"=="" (
+    set "first_arg=%~1"
+    if not "!first_arg:~0,1!"=="-" goto :fast_file_hardlink
+)
+
 :: Parse arguments
 :parse_args
 if "%~1"=="" goto :check_args
@@ -171,6 +176,34 @@ for %%t in (%all_targets%) do (
     call :create_link "!target!" "%link_name%\!target_name!"
 )
 goto :end
+
+:fast_file_hardlink
+set "src=%~1"
+set "dst=%~2"
+if not exist "%src%" (
+    echo Error: failed to access '%src%': No such file or directory
+    exit /b 1
+)
+dir /ad "%src%" >nul 2>nul
+if not errorlevel 1 (
+    echo Error: cannot create hard link '%dst%': Is a directory
+    echo Use -d option to allow directory hard links
+    exit /b 1
+)
+dir /a "%dst%" >nul 2>nul
+if not errorlevel 1 (
+    echo Error: Destination '%dst%' already exists
+    exit /b 1
+)
+for %%A in ("%src%") do set "src_abs=%%~fA"
+for %%A in ("%dst%") do set "dst_abs=%%~fA"
+mklink /H "%dst_abs%" "%src_abs%" >nul
+if errorlevel 1 (
+    echo Error: failed to create hard link '%dst%' =^> '%src%'
+    exit /b 1
+)
+endlocal
+exit /b 0
 
 :create_single_link
 :: Extract the single target
