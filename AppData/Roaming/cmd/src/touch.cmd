@@ -27,6 +27,11 @@ if not errorlevel 1 (
     set "cmdline=!cmdline:--verbose=!"
 )
 
+if %verbose%==0 if not "%~1"=="" if "%~2"=="" (
+    set "first_arg=%~1"
+    if not "!first_arg:~0,1!"=="-" if "!first_arg!"=="!first_arg:{=!" goto :fast_touch_file
+)
+
 :: Trim spaces
 for /f "tokens=*" %%a in ("!cmdline!") do set "cmdline=%%a"
 
@@ -52,6 +57,28 @@ for %%f in ("%files:|=" "%") do (
     call :touch_file "%%~f"
 )
 
+endlocal
+exit /b 0
+
+:fast_touch_file
+set "target=%first_arg%"
+for %%D in ("%target%") do set "target_dir=%%~dpD"
+if defined target_dir if not exist "%target_dir%" (
+    mkdir "%target_dir%" >nul 2>nul
+    if errorlevel 1 (
+        echo Error: cannot create directory '%target_dir%': Permission denied or invalid path
+        exit /b 1
+    )
+)
+if exist "%target%" (
+    copy /b "%target%"+,, "%target%" >nul 2>nul
+) else (
+    type nul > "%target%" 2>nul
+)
+if errorlevel 1 (
+    echo Error: cannot create file '%target%': Permission denied or invalid path
+    exit /b 1
+)
 endlocal
 exit /b 0
 
