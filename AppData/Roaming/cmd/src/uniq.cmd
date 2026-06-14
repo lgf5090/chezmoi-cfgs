@@ -98,6 +98,8 @@ if exist "%input_file%\" (
     exit /b 1
 )
 
+if %show_count%==0 if %only_repeated%==0 if %only_unique%==0 if %ignore_case%==0 goto :process_default
+
 :: Process file
 set "prev_line="
 set "prev_line_lower="
@@ -141,6 +143,23 @@ if defined prev_line (
     call :output_line "!prev_line!" !count!
 )
 
+endlocal
+exit /b 0
+
+:process_default
+set "prev_line="
+for /f "usebackq delims=" %%L in ("%input_file%") do (
+    set "line=%%L"
+    if defined prev_line (
+        if not "!line!"=="!prev_line!" (
+            echo !prev_line!
+            set "prev_line=!line!"
+        )
+    ) else (
+        set "prev_line=!line!"
+    )
+)
+if defined prev_line echo !prev_line!
 endlocal
 exit /b 0
 
