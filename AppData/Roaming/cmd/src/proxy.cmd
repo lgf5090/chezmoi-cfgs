@@ -21,8 +21,10 @@ if /i "%input%"=="hiddify" set "port=2334"
 if not defined port set "port=%input%"
 
 :: Validate port is numeric
-echo %port%| findstr /r "^[0-9][0-9]*$" >nul
-if errorlevel 1 (
+set "invalid_port="
+if "%port%"=="" set "invalid_port=1"
+for /f "delims=0123456789" %%P in ("%port%") do set "invalid_port=1"
+if defined invalid_port (
     echo Error: Invalid port '%input%'
     echo.
     echo Usage: proxy [port^|client_name]
