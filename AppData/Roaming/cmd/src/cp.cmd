@@ -25,6 +25,11 @@ set "cmdline=%*"
 echo.%cmdline% | findstr /i "\-h \-\-help" >nul
 if not errorlevel 1 goto :show_help
 
+if not "%~1"=="" if not "%~2"=="" if "%~3"=="" (
+    set "first_arg=%~1"
+    if not "!first_arg:~0,1!"=="-" goto :fast_copy_file
+)
+
 :: Parse options
 :parse_args
 if "%~1"=="" goto :check_args
@@ -148,6 +153,29 @@ for %%s in ("%sources:|=" "%") do (
     if errorlevel 1 exit /b 1
 )
 
+endlocal
+exit /b 0
+
+:fast_copy_file
+set "source=%~1"
+set "destination=%~2"
+if not exist "%source%" (
+    echo Error: cannot stat '%source%': No such file or directory
+    exit /b 1
+)
+if exist "%source%\" (
+    echo Error: -r not specified; omitting directory '%source%'
+    exit /b 1
+)
+set "final_dest=%destination%"
+if exist "%destination%\" (
+    for %%f in ("%source%") do set "final_dest=%destination%\%%~nxf"
+)
+copy /Y "%source%" "%final_dest%" >nul 2>nul
+if errorlevel 1 (
+    echo Error: cannot copy '%source%' to '%final_dest%'
+    exit /b 1
+)
 endlocal
 exit /b 0
 
