@@ -2,6 +2,8 @@
 cdws=cd ~/workspace
 cdcd=cd ~/code
 
+cdcm=cd ~/.local/share/chezmoi
+
 cdcfg=cd ~/.config
 cdlc=cd ~/.local
 cdls=cd ~/.local/share
