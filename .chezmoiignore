@@ -197,6 +197,9 @@ scripts/
 **/*.log
 **/logs/
 
+# 文档
+**/docs/
+
 # 临时文件
 **/tmp/
 **/temp/

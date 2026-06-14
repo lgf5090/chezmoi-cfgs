@@ -25,6 +25,15 @@
 ## 前置依赖
 
 最小依赖：
+### windows
+```powershell
+winget install twpayne.chezmoi Chocolatey.Chocolatey Devolutions.UniGetUI Atuinsh.Atuin marlocarlo.psmux marlocarlo.psnet marlocarlo.pstop Helvesec.RMUX vim.vim Neovim.Neovim Neovide.Neovide Helix.Helix Microsoft.Edit zyedidia.micro Microsoft.PowerShell Microsoft.WindowsTerminal Microsoft.VisualStudioCode Microsoft.VisualStudioCode.Insiders 7zip.7zip Git.Git Microsoft.Coreutils junegunn.fzf JFLarvoire.Ag ajeetdsouza.zoxide Schniz.fnm sxyazi.yazi yorukot.superfile gokcehan.lf BurntSushi.ripgrep.MSVC jqlang.jq JesseDuffield.lazygit sharkdp.bat Microsoft.PowerToys voidtools.Everything zTools.zTools Obsidian.Obsidian codexu.NoteGen Logseq.Logseq Joplin.Joplin wez.wezterm.nightly kangfenmao.CherryStudio Bin-Huang.Chatbox NickeManarin.ScreenToGif VideoLAN.VLC Daum.PotPlayer Starpine.Screenbox PeterPawlowski.foobar2000 Alacritty.Alacritty Mobatek.MobaXterm Zellij.Zellij Fastfetch-cli.Fastfetch Warp.Warp 
+```
+
+详细安装列表
+[winget_install_list](docs/winget_install_list.md)
+
+### unix
 
 ```bash
 sudo apt update
