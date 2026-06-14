@@ -27,6 +27,11 @@ if not errorlevel 1 (
     set "cmdline=!cmdline:--verbose=!"
 )
 
+if %verbose%==0 if not "%~1"=="" if "%~2"=="" (
+    set "first_arg=%~1"
+    if not "!first_arg:~0,1!"=="-" if "!first_arg!"=="!first_arg:{=!" goto :fast_create_dir
+)
+
 :: Trim spaces
 for /f "tokens=*" %%a in ("!cmdline!") do set "cmdline=%%a"
 
@@ -57,6 +62,19 @@ if %dir_count%==0 (
     )
 )
 
+endlocal
+exit /b 0
+
+:fast_create_dir
+if exist "%first_arg%\" (
+    endlocal
+    exit /b 0
+)
+mkdir "%first_arg%" >nul 2>nul
+if errorlevel 1 (
+    echo Error: cannot create directory '%first_arg%': Permission denied or invalid path
+    exit /b 1
+)
 endlocal
 exit /b 0
 
