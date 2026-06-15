@@ -15,3 +15,10 @@ config_file="$HOME/.config/bash/config.bash"
 # echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
 # export USER=$(id -un)
 # source -- ~/.local/share/blesh/ble.sh
+
+# 仅在非 Windows 环境（非 msys/cygwin/mingw）下加载 ble.sh
+# if [[ "$OSTYPE" != "msys" && "$OSTYPE" != "cygwin" && "$OSTYPE" != "win32" && "$OSTYPE" != "mingw"* ]]; then
+#   if [[ -r "$HOME/.local/share/blesh/ble.sh" ]]; then
+#     source -- "$HOME/.local/share/blesh/ble.sh"
+#   fi
+# fi
