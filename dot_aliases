@@ -35,9 +35,10 @@ hist=history
 ff=fastfetch
 
 nv=nvim
-nvl=NVIM_APPNAME=nvim-lite nvim
-nvd=NVIM_APPNAME=nvim-dev nvim
-nvlz=NVIM_APPNAME=nvim-lazy nvim
+# only supprt bash/zsh, not support fish,powershell,cmd,nushell
+# nvl=NVIM_APPNAME=nvim-lite nvim
+# nvd=NVIM_APPNAME=nvim-dev nvim
+# nvlz=NVIM_APPNAME=nvim-lazy nvim
 
 els=eza --color=always --icons=always --reverse --sort=size
 elsd=eza --color=always --icons=always --reverse --sort=size --only-dirs
