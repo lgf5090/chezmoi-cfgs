@@ -2,7 +2,8 @@
 -- Clink-native command helpers.
 --
 -- Commands here are handled by clink.onfilterinput() before CMD runs the line.
--- They do not call external programs.
+-- Most run natively or rewrite to CMD builtins; launchers may call external
+-- programs through isolated CMD child processes.
 
 local S = shells
 if not S or not clink or type(clink.onfilterinput) ~= "function" then
@@ -91,6 +92,14 @@ end
 local function cmd_quote(value)
     value = tostring(value or ""):gsub('"', '\\"')
     return '"' .. value .. '"'
+end
+
+local function nvim_app_command(appname, rest)
+    local command = "cmd /d /c set NVIM_APPNAME=" .. appname .. "^&^& nvim"
+    if not S.is_blank(rest) then
+        command = command .. " " .. rest
+    end
+    return command
 end
 
 local function positive_int(value, label)
@@ -341,6 +350,18 @@ commands["cls"] = function()
 end
 
 commands["clear"] = commands["cls"]
+
+commands["nvl"] = function(_, rest)
+    return nvim_app_command("nvim-lite", rest)
+end
+
+commands["nvd"] = function(_, rest)
+    return nvim_app_command("nvim-dev", rest)
+end
+
+commands["nvlz"] = function(_, rest)
+    return nvim_app_command("nvim-lazy", rest)
+end
 
 commands["proxy"] = function(args)
     local host = args[2] or S.env("PROXY_HOST") or "127.0.0.1"
