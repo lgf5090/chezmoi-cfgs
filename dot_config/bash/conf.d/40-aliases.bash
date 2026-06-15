@@ -20,6 +20,6 @@ alias now='date +%Y-%m-%dT%H:%M:%S%z'
 alias cls='clear'
 alias reload='source "$BASH_CONFIG_DIR/config.bash"'
 
-alias nvl=NVIM_APPNAME=nvim-lite nvim
-alias nvd=NVIM_APPNAME=nvim-dev nvim
-alias nvlz=NVIM_APPNAME=nvim-lazy nvim
+alias nvl='NVIM_APPNAME=nvim-lite nvim'
+alias nvd='NVIM_APPNAME=nvim-dev nvim'
+alias nvlz='NVIM_APPNAME=nvim-lazy nvim'
