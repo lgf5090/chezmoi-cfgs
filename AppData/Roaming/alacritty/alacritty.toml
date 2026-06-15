@@ -141,6 +141,13 @@ thickness = 0.15
 [terminal]
 osc52 = "OnlyCopy"
 
+[terminal.shell]
+program = "cmd"
+args = ["/k", "cd /d %USERPROFILE%"]
+# program = "pwsh"
+# args = ["-l"]
+# working_directory = "~"
+
 [mouse]
 hide_when_typing = true
 bindings = [
