@@ -27,28 +27,32 @@ npm install -g --ignore-scripts `
   @qwen-code/qwen-code `
   @tencent-ai/codebuddy-code `
   groq-code-cli `
-  opencode-ai
+  opencode-ai `
+  codewhale `
+  reasonix `
+  @moonshot-ai/kimi-code@
 ```
 
-如需精确复现当前机器上的版本：
-
-```powershell
-npm install -g --ignore-scripts `
-  @anthropic-ai/claude-code@2.1.177 `
-  @augmentcode/auggie@0.29.0 `
-  @deveco/deveco-code@0.1.0 `
-  @earendil-works/pi-coding-agent@0.79.4 `
-  @github/copilot@1.0.62 `
-  @google/gemini-cli@0.46.0 `
-  @mimo-ai/cli@0.1.1 `
-  @moonshot-ai/kimi-code@0.14.3 `
-  @musistudio/claude-code-router@2.0.0 `
-  @oh-my-pi/pi-coding-agent@15.13.3 `
-  @openai/codex@0.139.0 `
-  @qwen-code/qwen-code@0.18.0 `
-  @tencent-ai/codebuddy-code@2.106.3 `
-  groq-code-cli@1.0.2 `
-  opencode-ai@1.17.7
+```bash
+npm install -g --ignore-scripts \
+  @anthropic-ai/claude-code \
+  @augmentcode/auggie \
+  @deveco/deveco-code \
+  @earendil-works/pi-coding-agent \
+  @github/copilot \
+  @google/gemini-cli \
+  @mimo-ai/cli \
+  @moonshot-ai/kimi-code \
+  @musistudio/claude-code-router \
+  @oh-my-pi/pi-coding-agent \
+  @openai/codex \
+  @qwen-code/qwen-code \
+  @tencent-ai/codebuddy-code \
+  groq-code-cli \
+  opencode-ai \
+  codewhale \
+  reasonix \
+  @moonshot-ai/kimi-code
 ```
 
 > `--ignore-scripts` 适合安全优先的全局安装。若某个 CLI 首次运行提示缺少二进制、权限或 postinstall 产物，确认包来源后再单独重装该包并移除 `--ignore-scripts`。
