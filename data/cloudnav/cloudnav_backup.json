@@ -1,0 +1,2154 @@
+{
+  "links": [
+    {
+      "id": "1782098587008",
+      "title": "刷金币",
+      "url": "https://docs.qq.com/sheet/DZEVCU1pQenBiWWp5?tab=m0blcg",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://docs.qq.com",
+      "description": "刷金币表格记录-腾讯文档",
+      "categoryId": "1782058268591",
+      "pinned": true,
+      "createdAt": 1782098587008,
+      "order": 0,
+      "pinnedOrder": 0
+    },
+    {
+      "id": "1782098524834",
+      "title": "telegram",
+      "url": "https://web.telegram.org/k/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://web.telegram.org",
+      "description": "Telegram网页版即时通讯工具。",
+      "categoryId": "1782098442871",
+      "pinned": true,
+      "createdAt": 1782098524834,
+      "order": 0,
+      "pinnedOrder": 1
+    },
+    {
+      "id": "1782099955681",
+      "title": "chrome web store",
+      "url": "https://chromewebstore.google.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chromewebstore.google.com",
+      "description": "Chrome浏览器扩展和主题的官方下载平台。",
+      "categoryId": "1782072083126",
+      "pinned": true,
+      "createdAt": 1782099955681,
+      "order": 0,
+      "pinnedOrder": 7
+    },
+    {
+      "id": "1782058407551",
+      "title": "Github",
+      "url": "https://github.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "分布式版本控制与代码托管平台",
+      "categoryId": "1782058305283",
+      "pinned": false,
+      "createdAt": 1782058407551,
+      "order": 0
+    },
+    {
+      "id": "1782097917290",
+      "title": "React",
+      "url": "https://react.dev",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://react.dev",
+      "description": "React官方文档与组件开发指南",
+      "categoryId": "1782096267655",
+      "pinned": false,
+      "createdAt": 1782097917290,
+      "order": 0
+    },
+    {
+      "id": "1782098119177",
+      "title": "dribbble",
+      "url": "https://dribbble.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://dribbble.com",
+      "description": "设计师作品展示与灵感社区。",
+      "categoryId": "1782096360379",
+      "pinned": false,
+      "createdAt": 1782098119177,
+      "order": 0
+    },
+    {
+      "id": "1782098162019",
+      "title": "steam",
+      "url": "https://store.steampowered.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://store.steampowered.com",
+      "description": "Steam游戏平台，购买、下载、游玩和社区交流。",
+      "categoryId": "1782069738356",
+      "pinned": false,
+      "createdAt": 1782098162019,
+      "order": 0
+    },
+    {
+      "id": "1782098285716",
+      "title": "oh-my-pi",
+      "url": "https://omp.sh",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://omp.sh",
+      "description": "树莓派便捷配置管理命令行工具",
+      "categoryId": "1782097125852",
+      "pinned": false,
+      "createdAt": 1782098285716,
+      "order": 0
+    },
+    {
+      "id": "1782099008451",
+      "title": "discord-开发门户",
+      "url": "https://discord.com/developers/home",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://discord.com",
+      "description": "Discord开发者门户，用于创建和管理应用与机器人。",
+      "categoryId": "1782096348217",
+      "pinned": false,
+      "createdAt": 1782099008451,
+      "order": 0
+    },
+    {
+      "id": "1782099089939",
+      "title": "linux.do",
+      "url": "https://linux.do",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://linux.do",
+      "description": "Linux 技术交流社区，提供教程与讨论。",
+      "categoryId": "1782099050058",
+      "pinned": false,
+      "createdAt": 1782099089939,
+      "order": 0
+    },
+    {
+      "id": "1782099260451",
+      "title": "podman-desktop",
+      "url": "https://podman-desktop.io/downloads",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://podman-desktop.io",
+      "description": "Podman Desktop下载页面，提供容器管理工具。",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782099260451,
+      "order": 0
+    },
+    {
+      "id": "1782100089521",
+      "title": "AIChatIndex",
+      "url": "https://chromewebstore.google.com/detail/kgaaloljjidblambloblebocaobjjmlb?utm_source=item-share-cb",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chromewebstore.google.com",
+      "description": "AIChatIndex- 为ChatGPT、豆包、KIMI、千问、Gemini生成聊天目录",
+      "categoryId": "1782097160311",
+      "pinned": false,
+      "createdAt": 1782100089521,
+      "order": 0
+    },
+    {
+      "id": "1782101935296",
+      "title": "ollama",
+      "url": "https://ollama.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://ollama.com",
+      "description": "本地运行大语言模型的工具平台",
+      "categoryId": "1782058293215",
+      "pinned": false,
+      "createdAt": 1782101935296,
+      "order": 0
+    },
+    {
+      "id": "1782102065738",
+      "title": "cherry-studio",
+      "url": "https://cherryai.com.cn/download",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://cherryai.com.cn",
+      "description": "Cherry AI 客户端官方下载页面",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782102065738,
+      "order": 0
+    },
+    {
+      "id": "1782104694590",
+      "title": "Xime",
+      "url": "https://github.com/ximeiorg/Xime",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "我的自用安卓输入法，基于Rime 构建，部分功能由本人设计的本地AI模型驱动，支持五笔/拼音/自定义方案。",
+      "categoryId": "1782072168552",
+      "pinned": false,
+      "createdAt": 1782104694590,
+      "order": 0
+    },
+    {
+      "id": "1782105997085",
+      "title": "deno deploy",
+      "url": "https://console.deno.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://console.deno.com",
+      "description": "deno官方托管平台",
+      "categoryId": "1782105947160",
+      "pinned": false,
+      "createdAt": 1782105997085,
+      "order": 0
+    },
+    {
+      "id": "1782118897490",
+      "title": "speedtest - google fiber",
+      "url": "https://fiber.google.com/speedtest/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://fiber.google.com",
+      "description": "谷歌网络测速",
+      "categoryId": "1782118834307",
+      "pinned": false,
+      "createdAt": 1782118897490,
+      "order": 0
+    },
+    {
+      "id": "1782070841916",
+      "title": "谷歌搜索",
+      "url": "https://www.google.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.google.com",
+      "description": "全球最大的搜索引擎，提供信息检索服务。",
+      "categoryId": "1782058286233",
+      "pinned": false,
+      "createdAt": 1782070841916,
+      "order": 0
+    },
+    {
+      "id": "1782120452840",
+      "title": "lmarena",
+      "url": "https://lmarena.ai/#/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://lmarena.ai",
+      "description": "AI模型竞技场，在线对比不同语言模型性能。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120452840,
+      "order": 0
+    },
+    {
+      "id": "1782171127332",
+      "title": "flathub",
+      "url": "https://flathub.org",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://flathub.org",
+      "description": "Flathub: Linux Flatpak 应用商店",
+      "categoryId": "1782072043962",
+      "pinned": false,
+      "createdAt": 1782171127332,
+      "order": 0
+    },
+    {
+      "id": "1782171296868",
+      "title": "坚果云",
+      "url": "https://www.jianguoyun.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.jianguoyun.com",
+      "description": "坚果云：提供文件同步、备份与共享的云存储服务。",
+      "categoryId": "1782096467711",
+      "pinned": false,
+      "createdAt": 1782171296868,
+      "order": 0
+    },
+    {
+      "id": "1782171801146",
+      "title": "oh-my-pi",
+      "url": "https://github.com/can1357/oh-my-pi",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "oh-my-pi",
+      "categoryId": "1782171613008",
+      "pinned": false,
+      "createdAt": 1782171801146,
+      "order": 0
+    },
+    {
+      "id": "1782171845245",
+      "title": "NavSphere",
+      "url": "https://github.com/tianyaxiang/NavSphere",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "NavSphere： 一个基于 Github 存储的网址导航程序支持部署至cloudflare，一键部署至 Vercel，数据存储在 Github，零成本搭建一个网站导航！",
+      "categoryId": "1782171625476",
+      "pinned": false,
+      "createdAt": 1782171845245,
+      "order": 0
+    },
+    {
+      "id": "1782171921821",
+      "title": "MeowNote-Worker",
+      "url": "https://github.com/ethgan/MeowNote-Worker",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "MeowNote 是一款运行于 Cloudflare Workers 边缘网络的私有笔记应用，前后端全部封装在一个单 JS 文件中，无需服务器，无需数据库购买，零运营成本即可拥有属于自己的笔记空间。已开源，欢迎➕🌟~",
+      "categoryId": "1782171726622",
+      "pinned": false,
+      "createdAt": 1782171921821,
+      "order": 0
+    },
+    {
+      "id": "1782172861253",
+      "title": "mise",
+      "url": "https://github.com/jdx/mise",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "mise是一个多语言开发环境版本管理工具。",
+      "categoryId": "1782172838254",
+      "pinned": false,
+      "createdAt": 1782172861253,
+      "order": 0
+    },
+    {
+      "id": "1782173696282",
+      "title": "everywhere",
+      "url": "https://everywhere.sylinko.com/zh",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://everywhere.sylinko.com",
+      "description": "Everywhere 致力于将 AI 从标签页和独立应用中解放出来， 使其成为您操作系统中无处不在的原生能力。 我们相信，真正的生产力提升源于 AI 与您当前任务的无缝结合。",
+      "categoryId": "1782072020046",
+      "pinned": false,
+      "createdAt": 1782173696282,
+      "order": 0
+    },
+    {
+      "id": "1782177563319",
+      "title": "KugouMusic.NET",
+      "url": "https://github.com/Linsxyx/KugouMusic.NET",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "最好用最轻量的第三方酷狗概念版音乐播放器",
+      "categoryId": "1782171709633",
+      "pinned": false,
+      "createdAt": 1782177563319,
+      "order": 0
+    },
+    {
+      "id": "1782195402379",
+      "title": "karing",
+      "url": "https://karing.app/download/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://karing.app",
+      "description": "karing, 基于flutter开发的VPN软件",
+      "categoryId": "1782195364490",
+      "pinned": false,
+      "createdAt": 1782195402379,
+      "order": 0
+    },
+    {
+      "id": "1782195619566",
+      "title": "WailBrew ",
+      "url": "https://www.wailbrew.app",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.wailbrew.app",
+      "description": "WailBrew - A Minimalistic Homebrew GUI",
+      "categoryId": "1782072032773",
+      "pinned": false,
+      "createdAt": 1782195619566,
+      "order": 0
+    },
+    {
+      "id": "1782195994732",
+      "title": "Spaceship",
+      "url": "https://www.spaceship.com/application/domain-list-application/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.spaceship.com",
+      "description": "Domain Manager App - Spaceship， 域名管理",
+      "categoryId": "1782195948361",
+      "pinned": false,
+      "createdAt": 1782195994732,
+      "order": 0
+    },
+    {
+      "id": "1782208344274",
+      "title": "神秘电影",
+      "url": "https://ahgkh.sm377.vip",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://ahgkh.sm377.vip",
+      "description": "神秘电影",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782208344274,
+      "order": 0
+    },
+    {
+      "id": "1782208707226",
+      "title": "GPT_API_free",
+      "url": "https://github.com/chatanywhere/GPT_API_free",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "Free ChatGPT&DeepSeek API Key，免费ChatGPT&DeepSeek API。免费接入DeepSeek API和GPT4 API，支持 gpt | deepseek | claude | gemini | grok 等排名靠前的常用大模型。",
+      "categoryId": "1782105614645",
+      "pinned": false,
+      "createdAt": 1782208707226,
+      "order": 0
+    },
+    {
+      "id": "1782118537238",
+      "title": "anyrouter",
+      "url": "https://anyrouter.top/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://anyrouter.top",
+      "description": "免费使用官方claude code, codex模型， 注意：不能在第三方客户端使用api",
+      "categoryId": "1782105614645",
+      "pinned": false,
+      "createdAt": 1782118537238,
+      "order": 1
+    },
+    {
+      "id": "1782098499248",
+      "title": "discord",
+      "url": "https://discord.com/store",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://discord.com",
+      "description": "Discord平台上的游戏和数字商品商店。",
+      "categoryId": "1782098442871",
+      "pinned": true,
+      "createdAt": 1782098499248,
+      "order": 1,
+      "pinnedOrder": 2
+    },
+    {
+      "id": "1782068958335",
+      "title": "Gitee",
+      "url": "https://gitee.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://gitee.com",
+      "description": "中国领先的代码托管与协作平台。",
+      "categoryId": "1782058305283",
+      "pinned": false,
+      "createdAt": 1782068958335,
+      "order": 1
+    },
+    {
+      "id": "1782098058269",
+      "title": "tailwindcss",
+      "url": "https://tailwindcss.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://tailwindcss.com",
+      "description": "一个实用优先的CSS框架，用于快速构建界面。",
+      "categoryId": "1782096267655",
+      "pinned": false,
+      "createdAt": 1782098058269,
+      "order": 1
+    },
+    {
+      "id": "1782100259731",
+      "title": "ChatTOC",
+      "url": "https://chromewebstore.google.com/detail/nbjpbbhfnhcobhebkobmfddfnjlmlfgc?utm_source=item-share-cb",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chromewebstore.google.com",
+      "description": "ChatTOC：快速生成AI网页版聊天目录的工具。",
+      "categoryId": "1782097160311",
+      "pinned": false,
+      "createdAt": 1782100259731,
+      "order": 1
+    },
+    {
+      "id": "1782099533124",
+      "title": "蜗牛个人导航",
+      "url": "https://s.eallion.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://s.eallion.com",
+      "description": "个人收藏的网址导航页面",
+      "categoryId": "1782058281281",
+      "pinned": false,
+      "createdAt": 1782099533124,
+      "order": 1
+    },
+    {
+      "id": "1782101983151",
+      "title": "llama.app",
+      "url": "https://llama.app/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://llama.app",
+      "description": "llama.cpp大语言模型官方网站",
+      "categoryId": "1782058293215",
+      "pinned": false,
+      "createdAt": 1782101983151,
+      "order": 1
+    },
+    {
+      "id": "1782102103579",
+      "title": "cherry-studio",
+      "url": "https://cherryai.com.cn/download",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://cherryai.com.cn",
+      "description": "下载Cherry Studio AI桌面应用",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782102103579,
+      "order": 1
+    },
+    {
+      "id": "1782102198800",
+      "title": "cc-switch",
+      "url": "https://github.com/farion1231/cc-switch",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "A cross-platform desktop All-in-One assistant for Claude Code, Codex, OpenCode, OpenClaw, Gemini CLI & Hermes Agent. Only official website: ccswitch.io",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782102198800,
+      "order": 1
+    },
+    {
+      "id": "1782119148077",
+      "title": "Obsidian 中文论坛",
+      "url": "https://forum-zh.obsidian.md",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://forum-zh.obsidian.md",
+      "description": "Obsidian 中文论坛 - Obsidian 知识管理 笔记",
+      "categoryId": "1782099050058",
+      "pinned": false,
+      "createdAt": 1782119148077,
+      "order": 1
+    },
+    {
+      "id": "1782119647179",
+      "title": "bing",
+      "url": "https://www.bing.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.bing.com",
+      "description": "必应，微软搜索引擎",
+      "categoryId": "1782058286233",
+      "pinned": false,
+      "createdAt": 1782119647179,
+      "order": 1
+    },
+    {
+      "id": "1782120498629",
+      "title": "web.lmarena",
+      "url": "https://web.lmarena.ai",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://web.lmarena.ai",
+      "description": "大语言模型在线竞技与评测平台。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120498629,
+      "order": 1
+    },
+    {
+      "id": "1782170552827",
+      "title": "oh-my-pi",
+      "url": "https://github.com/can1357/oh-my-pi",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "oh-my-pi",
+      "categoryId": "1782097125852",
+      "pinned": false,
+      "createdAt": 1782170552827,
+      "order": 1
+    },
+    {
+      "id": "1782170669147",
+      "title": "hoppscotch",
+      "url": "https://hoppscotch.io",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://hoppscotch.io",
+      "description": "开源API调试工具，替代Postman的网页版。",
+      "categoryId": "1782118834307",
+      "pinned": false,
+      "createdAt": 1782170669147,
+      "order": 1
+    },
+    {
+      "id": "1782173856310",
+      "title": "Rikka",
+      "url": "https://docs.rikka-ai.com/zh/quickstart",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://docs.rikka-ai.com",
+      "description": "Rikka 是一款原生 Android 应用，将 OpenAI、Google Gemini、Anthropic Claude 以及任何兼容 OpenAI 的服务商整合在一个精美的界面中。",
+      "categoryId": "1782072168552",
+      "pinned": false,
+      "createdAt": 1782173856310,
+      "order": 1
+    },
+    {
+      "id": "1782208522112",
+      "title": "nekoray",
+      "url": "https://en.nekoray.org/download/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://en.nekoray.org",
+      "description": "nekoray, 基于QT框架开发的VPN跨平台代理软件",
+      "categoryId": "1782195364490",
+      "pinned": false,
+      "createdAt": 1782208522112,
+      "order": 1
+    },
+    {
+      "id": "1782208668725",
+      "title": "lxserver",
+      "url": "https://github.com/XCQ0607/lxserver",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "LX Music 数据同步服务端，同时支持了部分lx-music-desktop的网页端实现。",
+      "categoryId": "1782171709633",
+      "pinned": false,
+      "createdAt": 1782208668725,
+      "order": 1
+    },
+    {
+      "id": "1782208757650",
+      "title": " 舔狗AV",
+      "url": "https://xvp.tglx721.vip:8701/video/19373.html",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://xvp.tglx721.vip",
+      "description": " 舔狗AV",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782208757650,
+      "order": 1
+    },
+    {
+      "id": "1782209341232",
+      "title": "openrouter",
+      "url": "https://openrouter.ai/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://openrouter.ai",
+      "description": "访问多种AI模型的一站式平台。",
+      "categoryId": "1782105614645",
+      "pinned": false,
+      "createdAt": 1782209341232,
+      "order": 2
+    },
+    {
+      "id": "1782119837234",
+      "title": "魔搭社区",
+      "url": "https://www.modelscope.cn/home",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.modelscope.cn",
+      "description": "魔搭社区",
+      "categoryId": "1782058293215",
+      "pinned": true,
+      "createdAt": 1782119837234,
+      "order": 2,
+      "pinnedOrder": 8
+    },
+    {
+      "id": "1782120037574",
+      "title": "chatboxai-web",
+      "url": "https://web.chatboxai.app",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://web.chatboxai.app",
+      "description": "网页版chatboxai",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120037574,
+      "order": 2
+    },
+    {
+      "id": "1782098004622",
+      "title": "Gitlab",
+      "url": "https://gitlab.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://gitlab.com",
+      "description": "代码托管与DevOps平台",
+      "categoryId": "1782096970312",
+      "pinned": false,
+      "createdAt": 1782098004622,
+      "order": 2
+    },
+    {
+      "id": "1782069576442",
+      "title": "Gitlab",
+      "url": "https://gitlab.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://gitlab.com",
+      "description": "GitLab代码托管与协作平台。",
+      "categoryId": "1782058305283",
+      "pinned": false,
+      "createdAt": 1782069576442,
+      "order": 2
+    },
+    {
+      "id": "1782102238594",
+      "title": "deepseek-reasonix",
+      "url": "https://github.com/esengine/deepseek-reasonix",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "DeepSeek-native AI coding agent for your terminal. Engineered around prefix-cache stability — leave it running.",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782102238594,
+      "order": 2
+    },
+    {
+      "id": "1782104749399",
+      "title": "dbx",
+      "url": "https://github.com/t8y2/dbx",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "15MB，轻量级跨平台数据库客户端、数据库管理工具。支持 MySQL、PostgreSQL、SQLite、Redis、MongoDB、DuckDB、ClickHouse、SQL Server 等。",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782104749399,
+      "order": 2
+    },
+    {
+      "id": "1782118979382",
+      "title": "iori-nav",
+      "url": "https://iori-nav.090918.xyz/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://iori-nav.090918.xyz",
+      "description": "基于cloudflare部署的轻量化个人导航",
+      "categoryId": "1782058281281",
+      "pinned": false,
+      "createdAt": 1782118979382,
+      "order": 2
+    },
+    {
+      "id": "1782097449921",
+      "title": "百度",
+      "url": "https://www.baidu.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.baidu.com",
+      "description": "百度搜索引擎，提供网页、图片、视频搜索。",
+      "categoryId": "1782058286233",
+      "pinned": false,
+      "createdAt": 1782097449921,
+      "order": 2
+    },
+    {
+      "id": "1782120569247",
+      "title": "llmpricecheck",
+      "url": "https://llmpricecheck.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://llmpricecheck.com",
+      "description": "查询对比各大语言模型价格",
+      "categoryId": "1782058293215",
+      "pinned": false,
+      "createdAt": 1782120569247,
+      "order": 2
+    },
+    {
+      "id": "1782171166400",
+      "title": "gnome extensions",
+      "url": "https://extensions.gnome.org",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://extensions.gnome.org",
+      "description": "GNOME桌面扩展下载与管理平台。",
+      "categoryId": "1782072043962",
+      "pinned": false,
+      "createdAt": 1782171166400,
+      "order": 2
+    },
+    {
+      "id": "1782171437458",
+      "title": "pi",
+      "url": "https://pi.dev/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://pi.dev",
+      "description": "pi agent",
+      "categoryId": "1782097125852",
+      "pinned": false,
+      "createdAt": 1782171437458,
+      "order": 2
+    },
+    {
+      "id": "1782195162252",
+      "title": "chatui",
+      "url": "https://chatui.io/design/introduce",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chatui.io",
+      "description": "专门为ai agent开发的web UI",
+      "categoryId": "1782096267655",
+      "pinned": false,
+      "createdAt": 1782195162252,
+      "order": 2
+    },
+    {
+      "id": "1782196089301",
+      "title": "美国地址生成器",
+      "url": "https://www.meiguodizhi.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.meiguodizhi.com",
+      "description": "美国地址生成器",
+      "categoryId": "1782118834307",
+      "pinned": false,
+      "createdAt": 1782196089301,
+      "order": 2
+    },
+    {
+      "id": "1782208824457",
+      "title": "pornhub-CN",
+      "url": "https://cn.pornhub.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://cn.pornhub.com",
+      "description": "pornhub-CN",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782208824457,
+      "order": 2
+    },
+    {
+      "id": "1782105686697",
+      "title": "siliconflow",
+      "url": "https://siliconflow.cn/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://siliconflow.cn",
+      "description": "siliconflow, 硅基流动, token工厂",
+      "categoryId": "1782105614645",
+      "pinned": false,
+      "createdAt": 1782105686697,
+      "order": 3
+    },
+    {
+      "id": "1782098890457",
+      "title": "腾讯文档",
+      "url": "https://docs.qq.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://docs.qq.com",
+      "description": "腾讯推出的在线文档协作与编辑平台。",
+      "categoryId": "1782096936964",
+      "pinned": false,
+      "createdAt": 1782098890457,
+      "order": 3
+    },
+    {
+      "id": "1782102309500",
+      "title": "KunAgent(DeepSeek-GUI)",
+      "url": "https://github.com/KunAgent/Kun",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "AI agent workspace with Code and Write modes built into your application.",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782102309500,
+      "order": 3
+    },
+    {
+      "id": "1782104794483",
+      "title": "rmux",
+      "url": "https://github.com/Helvesec/rmux",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "Universal Rust multiplexer with a typed SDK — drive any CLI or TUI app from code. Native on Linux, macOS, and Windows.",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782104794483,
+      "order": 3
+    },
+    {
+      "id": "1782120302014",
+      "title": "ninjachat",
+      "url": "https://www.ninjachat.ai",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.ninjachat.ai",
+      "description": "AI聊天工具，智能对话解决问题。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120302014,
+      "order": 3
+    },
+    {
+      "id": "1782120663817",
+      "title": "cerebras",
+      "url": "https://inference.cerebras.ai",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://inference.cerebras.ai",
+      "description": "Cerebras AI推理平台，提供快速模型部署服务。",
+      "categoryId": "1782058293215",
+      "pinned": false,
+      "createdAt": 1782120663817,
+      "order": 3
+    },
+    {
+      "id": "1782194653927",
+      "title": "ctool",
+      "url": "https://ctool.dev",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://ctool.dev",
+      "description": "网页开发工具集合",
+      "categoryId": "1782096970312",
+      "pinned": false,
+      "createdAt": 1782194653927,
+      "order": 3
+    },
+    {
+      "id": "1782208485180",
+      "title": "21st.dev",
+      "url": "https://21st.dev/home",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://21st.dev",
+      "description": "21st: Infrastructure and UI building blocks for the agentic internet | 21st",
+      "categoryId": "1782096267655",
+      "pinned": false,
+      "createdAt": 1782208485180,
+      "order": 3
+    },
+    {
+      "id": "1782208839703",
+      "title": "pornhub",
+      "url": "https://pornhub.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://pornhub.com",
+      "description": "pornhub",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782208839703,
+      "order": 3
+    },
+    {
+      "id": "1782170330963",
+      "title": "deepseek api",
+      "url": "https://platform.deepseek.com/usage",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://platform.deepseek.com",
+      "description": "deepseek 开放api",
+      "categoryId": "1782105614645",
+      "pinned": false,
+      "createdAt": 1782170330963,
+      "order": 4
+    },
+    {
+      "id": "1782069672964",
+      "title": "Gmail",
+      "url": "https://mail.google.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://mail.google.com",
+      "description": "谷歌提供的免费电子邮件服务，用于收发邮件。",
+      "categoryId": "1782058268591",
+      "pinned": true,
+      "createdAt": 1782069672964,
+      "order": 4,
+      "pinnedOrder": 3
+    },
+    {
+      "id": "1782170757649",
+      "title": "MEMOS-WORKER",
+      "url": "https://notes.090918.xyz",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://notes.090918.xyz",
+      "description": "基于cloudflare不是的memos版本",
+      "categoryId": "1782096936964",
+      "pinned": true,
+      "createdAt": 1782170757649,
+      "order": 4,
+      "pinnedOrder": 10
+    },
+    {
+      "id": "1782120252035",
+      "title": "POE",
+      "url": "https://poe.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://poe.com",
+      "description": "AI模型对话与创作平台",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120252035,
+      "order": 4
+    },
+    {
+      "id": "1782099195489",
+      "title": "icons-lucide",
+      "url": "https://lucide.dev/icons/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://lucide.dev",
+      "description": "Lucide开源图标库，提供简洁美观的图标。",
+      "categoryId": "1782096954138",
+      "pinned": false,
+      "createdAt": 1782099195489,
+      "order": 4
+    },
+    {
+      "id": "1782102379885",
+      "title": "EchoBird",
+      "url": "https://github.com/edison7009/EchoBird",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "EchoBird offers 4 scenarios sharing a unified model data hub — configure once, used everywhere.",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782102379885,
+      "order": 4
+    },
+    {
+      "id": "1782104838930",
+      "title": "zoxide",
+      "url": "https://github.com/ajeetdsouza/zoxide",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "A smarter cd command. Supports all major shells.",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782104838930,
+      "order": 4
+    },
+    {
+      "id": "1782208104468",
+      "title": "Firebase Studio",
+      "url": "https://idx.google.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://idx.google.com",
+      "description": "Google在线编程平台，用于开发应用",
+      "categoryId": "1782096970312",
+      "pinned": false,
+      "createdAt": 1782208104468,
+      "order": 4
+    },
+    {
+      "id": "1782208908421",
+      "title": "spankbang",
+      "url": "https://la.spankbang.com/#/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://la.spankbang.com",
+      "description": "spankbang",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782208908421,
+      "order": 4
+    },
+    {
+      "id": "1782208408028",
+      "title": "阶跃星辰开放平台",
+      "url": "https://platform.stepfun.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://platform.stepfun.com",
+      "description": "阶跃星辰开放平台",
+      "categoryId": "1782105614645",
+      "pinned": false,
+      "createdAt": 1782208408028,
+      "order": 5
+    },
+    {
+      "id": "1782100403575",
+      "title": "huggingface",
+      "url": "https://huggingface.co/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://huggingface.co",
+      "description": "机器学习模型和数据集托管平台。",
+      "categoryId": "1782058293215",
+      "pinned": true,
+      "createdAt": 1782100403575,
+      "order": 5
+    },
+    {
+      "id": "1782120203171",
+      "title": "v0 app",
+      "url": "https://v0.dev/chat",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://v0.dev",
+      "description": "vercel AI聊天生成前端UI代码",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120203171,
+      "order": 5
+    },
+    {
+      "id": "1782099348117",
+      "title": "docker-hub",
+      "url": "https://hub.docker.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://hub.docker.com",
+      "description": "Docker镜像的官方托管与分发平台",
+      "categoryId": "1782096990142",
+      "pinned": false,
+      "createdAt": 1782099348117,
+      "order": 5
+    },
+    {
+      "id": "1782104581080",
+      "title": "shimmy",
+      "url": "https://github.com/Michael-A-Kuykendall/shimmy",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "⚡ Pure-Rust WebGPU inference engine — OpenAI-API compatible, GGUF native, runs on any GPU. No Python. No llama.cpp. Single binary.",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782104581080,
+      "order": 5
+    },
+    {
+      "id": "1782104912635",
+      "title": "x-music-desktop",
+      "url": "https://github.com/lyswhut/lx-music-desktop",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "落雪音乐，一个基于 Electron 的音乐软件",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782104912635,
+      "order": 5
+    },
+    {
+      "id": "1782171354348",
+      "title": "excalidraw",
+      "url": "https://excalidraw.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://excalidraw.com",
+      "description": "免费在线绘图工具，支持协作和白板风格图表。",
+      "categoryId": "1782096954138",
+      "pinned": false,
+      "createdAt": 1782171354348,
+      "order": 5
+    },
+    {
+      "id": "1782208935062",
+      "title": "3dhentai",
+      "url": "https://3dhentai.co/#/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://3dhentai.co",
+      "description": "3dhentai",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782208935062,
+      "order": 5
+    },
+    {
+      "id": "1782195484024",
+      "title": "fyra.im",
+      "url": "https://fyra.im/models",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://fyra.im",
+      "description": "展示和分享各类模型的平台，支持AI与3D模型。",
+      "categoryId": "1782105614645",
+      "pinned": false,
+      "createdAt": 1782195484024,
+      "order": 6
+    },
+    {
+      "id": "1782058509057",
+      "title": "Github",
+      "url": "https://github.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "全球最大的代码托管与协作开发平台",
+      "categoryId": "1782058268591",
+      "pinned": true,
+      "createdAt": 1782058509057,
+      "order": 6,
+      "pinnedOrder": 4
+    },
+    {
+      "id": "1782120120945",
+      "title": "bolt.new",
+      "url": "https://bolt.new",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://bolt.new",
+      "description": "AI驱动的全栈Web应用在线开发与部署平台。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120120945,
+      "order": 6
+    },
+    {
+      "id": "1782104626123",
+      "title": "CLIProxyAPI",
+      "url": "https://github.com/lgf5090/CLIProxyAPI",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "Wrap Gemini CLI, Antigravity, ChatGPT Codex, Claude Code, Grok Build as an OpenAI/Gemini/Claude/Codex compatible API service, allowing you to enjoy the free Gemini 3.1 Pro, GPT 5.5, Grok 4.3, Claude model through API",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782104626123,
+      "order": 6
+    },
+    {
+      "id": "1782104964865",
+      "title": "omniget",
+      "url": "https://github.com/tonhowtf/omniget",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "Open-source desktop app for downloading, organizing and studying media. Native cross-platform (Tauri + Rust + Svelte). PDF/EPUB reader with focus mode, timestamped notes and spaced repetition. Media downloads via yt-dlp (1.800+ sites). Extensible plugin system.",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782104964865,
+      "order": 6
+    },
+    {
+      "id": "1782208988180",
+      "title": "xvideos",
+      "url": "https://www.xvideos.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.xvideos.com",
+      "description": "xvideos",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782208988180,
+      "order": 6
+    },
+    {
+      "id": "1782097565211",
+      "title": "ChatGPT",
+      "url": "https://chat.openai.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chat.openai.com",
+      "description": "OpenAI 开发的智能对话 AI 助手。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782097565211,
+      "order": 7
+    },
+    {
+      "id": "1782069010284",
+      "title": "Gitee",
+      "url": "https://gitee.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://gitee.com",
+      "description": "代码托管与协作平台",
+      "categoryId": "1782058268591",
+      "pinned": false,
+      "createdAt": 1782069010284,
+      "order": 7
+    },
+    {
+      "id": "1782105033658",
+      "title": "hexhub",
+      "url": "https://www.hexhub.cn/#download",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.hexhub.cn",
+      "description": "HexHub - 数据库、SSH、SFTP、Docker 与 AI 开发运维桌面客户端",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782105033658,
+      "order": 7
+    },
+    {
+      "id": "1782173821460",
+      "title": "Rikka",
+      "url": "https://docs.rikka-ai.com/zh/quickstart",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://docs.rikka-ai.com",
+      "description": "Rikka 是一款原生 Android 应用，将 OpenAI、Google Gemini、Anthropic Claude 以及任何兼容 OpenAI 的服务商整合在一个精美的界面中。",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782173821460,
+      "order": 7
+    },
+    {
+      "id": "1782209061193",
+      "title": "jable.tv",
+      "url": "https://jable.tv/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://jable.tv",
+      "description": "jable.tv",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782209061193,
+      "order": 7
+    },
+    {
+      "id": "1782069942902",
+      "title": "YouTube",
+      "url": "https://www.youtube.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.youtube.com",
+      "description": "全球最大的视频分享与观看平台。",
+      "categoryId": "1782058268591",
+      "pinned": true,
+      "createdAt": 1782069942902,
+      "order": 8,
+      "pinnedOrder": 5
+    },
+    {
+      "id": "1782097617515",
+      "title": "Gemini",
+      "url": "https://gemini.google.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://gemini.google.com",
+      "description": "谷歌Gemini AI对话平台",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782097617515,
+      "order": 8
+    },
+    {
+      "id": "1782105107215",
+      "title": "AlgerMusicPlayer",
+      "url": "https://music.alger.fun",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://music.alger.fun",
+      "description": "AlgerMusicPlayer， 开源免费音乐下载软件",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782105107215,
+      "order": 8
+    },
+    {
+      "id": "1782194708655",
+      "title": "zcode",
+      "url": "https://zcode.z.ai/cn",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://zcode.z.ai",
+      "description": "Zcode AI代码生成与协作平台",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782194708655,
+      "order": 8
+    },
+    {
+      "id": "1782209086696",
+      "title": "missav.ws",
+      "url": "https://missav.ws",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://missav.ws",
+      "description": "missav.ws",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782209086696,
+      "order": 8
+    },
+    {
+      "id": "1782070069006",
+      "title": "哔哩哔哩",
+      "url": "https://www.bilibili.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.bilibili.com",
+      "description": "中国知名的视频弹幕网站，涵盖动漫、游戏和直播等内容。",
+      "categoryId": "1782058268591",
+      "pinned": true,
+      "createdAt": 1782070069006,
+      "order": 9,
+      "pinnedOrder": 6
+    },
+    {
+      "id": "1782097673523",
+      "title": "Claude",
+      "url": "https://claude.ai/new",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://claude.ai",
+      "description": "与Claude AI对话的智能助手平台",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782097673523,
+      "order": 9
+    },
+    {
+      "id": "1782105135780",
+      "title": "落雪音乐",
+      "url": "https://lxmusic.toside.cn/download",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://lxmusic.toside.cn",
+      "description": "落雪音乐",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782105135780,
+      "order": 9
+    },
+    {
+      "id": "1782194790322",
+      "title": "claude desktop",
+      "url": "https://claude.com/download",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://claude.com",
+      "description": "claude desktop",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782194790322,
+      "order": 9
+    },
+    {
+      "id": "1782209113120",
+      "title": "javlibrary",
+      "url": "https://www.javlibrary.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.javlibrary.com",
+      "description": "javlibrary",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782209113120,
+      "order": 9
+    },
+    {
+      "id": "1782097728633",
+      "title": "Grok",
+      "url": "https://grok.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://grok.com",
+      "description": "AI聊天助手，智能对话与信息查询。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782097728633,
+      "order": 10
+    },
+    {
+      "id": "1782070649069",
+      "title": "it之家",
+      "url": "https://www.ithome.com",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.ithome.com",
+      "description": "IT科技新闻与数码产品资讯门户。",
+      "categoryId": "1782058268591",
+      "pinned": false,
+      "createdAt": 1782070649069,
+      "order": 10
+    },
+    {
+      "id": "1782105230265",
+      "title": "helix",
+      "url": "https://docs.helix-editor.com/remapping.html",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://docs.helix-editor.com",
+      "description": "helix，rust开发的类vim软件",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782105230265,
+      "order": 10
+    },
+    {
+      "id": "1782194931487",
+      "title": "codex",
+      "url": "https://openai.com/zh-Hans-CN/codex/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://openai.com",
+      "description": "OpenAI Codex，将自然语言转化为代码的AI工具。",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782194931487,
+      "order": 10
+    },
+    {
+      "id": "1782209138096",
+      "title": "91porn",
+      "url": "https://91porn.com/index.php",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://91porn.com",
+      "description": "91porn",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782209138096,
+      "order": 10
+    },
+    {
+      "id": "1782097759946",
+      "title": "DeepSeek",
+      "url": "https://chat.deepseek.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chat.deepseek.com",
+      "description": "DeepSeek AI聊天助手，提供智能问答服务。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782097759946,
+      "order": 11
+    },
+    {
+      "id": "1782105300455",
+      "title": "Yazi",
+      "url": "https://yazi-rs.github.io/docs/quick-start/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://yazi-rs.github.io",
+      "description": "基于rust开发的终端文件管理器",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782105300455,
+      "order": 11
+    },
+    {
+      "id": "1782196162860",
+      "title": "qoder",
+      "url": "https://qoder.com/download",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://qoder.com",
+      "description": "Qoder软件官方下载页面。",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782196162860,
+      "order": 11
+    },
+    {
+      "id": "1782209224740",
+      "title": "FC2电子市场成人",
+      "url": "https://adult.contents.fc2.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://adult.contents.fc2.com",
+      "description": "FC2电子市场成人",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782209224740,
+      "order": 11
+    },
+    {
+      "id": "1782120347441",
+      "title": "智谱清言",
+      "url": "https://chatglm.cn",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chatglm.cn",
+      "description": "智谱清言：AI对话助手，提供智能问答与创作。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120347441,
+      "order": 12
+    },
+    {
+      "id": "1782105350468",
+      "title": "xonsh",
+      "url": "https://xon.sh/install.html",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://xon.sh",
+      "description": "xonsh shell, 基于python开发的shell",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782105350468,
+      "order": 12
+    },
+    {
+      "id": "1782207556712",
+      "title": "workbuddy",
+      "url": "https://www.workbuddy.ai/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.workbuddy.ai",
+      "description": "WorkBuddy 是腾讯出品的全场景 AI 办公工作台。说出要求、开始执行任务、交付完整成果。完美连接腾讯办公生态，你的办公好搭子",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782207556712,
+      "order": 12
+    },
+    {
+      "id": "1782209284811",
+      "title": "chaturbate",
+      "url": "https://chaturbate.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chaturbate.com",
+      "description": "chaturbate",
+      "categoryId": "1782208303834",
+      "pinned": false,
+      "createdAt": 1782209284811,
+      "order": 12
+    },
+    {
+      "id": "1782100328219",
+      "title": "z.ai",
+      "url": "https://chat.z.ai/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chat.z.ai",
+      "description": "智谱AI国外版",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782100328219,
+      "order": 13
+    },
+    {
+      "id": "1782105432934",
+      "title": "atuin",
+      "url": "https://atuin.sh/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://atuin.sh",
+      "description": "Making your\nterminal magical\nSync, search and backup shell history with end-to-end encryption. Available for macOS and Linux.",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782105432934,
+      "order": 13
+    },
+    {
+      "id": "1782208601355",
+      "title": "Skywork",
+      "url": "https://skywork.ai",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://skywork.ai",
+      "description": "Skywork：由深度研究驱动的一体化超级智能体",
+      "categoryId": "1782097142462",
+      "pinned": false,
+      "createdAt": 1782208601355,
+      "order": 13
+    },
+    {
+      "id": "1782099632023",
+      "title": "千问",
+      "url": "https://www.qianwen.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.qianwen.com",
+      "description": "阿里云智能问答平台，提供AI对话服务。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782099632023,
+      "order": 14
+    },
+    {
+      "id": "1782105497652",
+      "title": "positron",
+      "url": "https://positron.posit.co/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://positron.posit.co",
+      "description": "Posit公司出品的新一代数据科学集成开发环境。",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782105497652,
+      "order": 14
+    },
+    {
+      "id": "1782099719101",
+      "title": "qwen",
+      "url": "https://chat.qwen.ai/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chat.qwen.ai",
+      "description": "阿里云通义千问AI聊天机器人对话平台",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782099719101,
+      "order": 15
+    },
+    {
+      "id": "1782172774011",
+      "title": "mise",
+      "url": "https://github.com/jdx/mise",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "mise是一个多语言开发环境版本管理工具。",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782172774011,
+      "order": 15
+    },
+    {
+      "id": "1782099770107",
+      "title": "腾讯元宝",
+      "url": "https://yuanbao.tencent.com/chat",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://yuanbao.tencent.com",
+      "description": "腾讯元宝AI聊天助手",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782099770107,
+      "order": 16
+    },
+    {
+      "id": "1782177542143",
+      "title": "KugouMusic.NET",
+      "url": "https://github.com/Linsxyx/KugouMusic.NET",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://github.com",
+      "description": "最好用最轻量的第三方酷狗概念版音乐播放器",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782177542143,
+      "order": 16
+    },
+    {
+      "id": "1782099839477",
+      "title": "阶跃AI",
+      "url": "https://chat.stepfun.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chat.stepfun.com",
+      "description": "阶跃AI提供智能对话服务，支持多种功能。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782099839477,
+      "order": 17
+    },
+    {
+      "id": "1782194817274",
+      "title": "claude desktop",
+      "url": "https://claude.com/download",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://claude.com",
+      "description": "claude desktop",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782194817274,
+      "order": 17
+    },
+    {
+      "id": "1782101793053",
+      "title": "kimi",
+      "url": "https://www.kimi.com/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.kimi.com",
+      "description": "月之暗面-kimi AI智能助手，提供对话与信息查询服务。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782101793053,
+      "order": 18
+    },
+    {
+      "id": "1782194859189",
+      "title": "zcode",
+      "url": "https://zcode.z.ai/cn",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://zcode.z.ai",
+      "description": "智谱AI代码编写与协作平台",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782194859189,
+      "order": 18
+    },
+    {
+      "id": "1782101856509",
+      "title": "longcat",
+      "url": "https://longcat.chat/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://longcat.chat",
+      "description": "美团龙猫AI聊天工具，提供互动对话体验。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782101856509,
+      "order": 19
+    },
+    {
+      "id": "1782194960340",
+      "title": "codex",
+      "url": "https://openai.com/zh-Hans-CN/codex/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://openai.com",
+      "description": "OpenAI的AI代码生成工具，将自然语言转为代码。",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782194960340,
+      "order": 19
+    },
+    {
+      "id": "1782099486015",
+      "title": "scnet-chatbot",
+      "url": "https://www.scnet.cn/ui/chatbot/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.scnet.cn",
+      "description": "SCNet聊天机器人交互界面",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782099486015,
+      "order": 20
+    },
+    {
+      "id": "1782195548513",
+      "title": "维克日记",
+      "url": "https://vic-diary.netlify.app",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://vic-diary.netlify.app",
+      "description": "维克日记",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782195548513,
+      "order": 20
+    },
+    {
+      "id": "1782120729779",
+      "title": "le chat(mistral)",
+      "url": "https://chat.mistral.ai/chat",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://chat.mistral.ai",
+      "description": "Mistral AI 在线聊天助手",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120729779,
+      "order": 21
+    },
+    {
+      "id": "1782197524828",
+      "title": "tiez",
+      "url": "https://tiez.name666.top/zh/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://tiez.name666.top",
+      "description": "剪切板管理工具： 极简而不简单。捕捉每一份灵感，赋能每一次粘贴。",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782197524828,
+      "order": 21
+    },
+    {
+      "id": "1782120798323",
+      "title": "huggingface chat",
+      "url": "https://huggingface.co/chat/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://huggingface.co",
+      "description": "Hugging Face 的 AI 聊天平台",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782120798323,
+      "order": 22
+    },
+    {
+      "id": "1782207575786",
+      "title": "workbuddy",
+      "url": "https://www.workbuddy.ai/",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.workbuddy.ai",
+      "description": "WorkBuddy 是腾讯出品的全场景 AI 办公工作台。说出要求、开始执行任务、交付完整成果。完美连接腾讯办公生态，你的办公好搭子",
+      "categoryId": "1782072010049",
+      "pinned": false,
+      "createdAt": 1782207575786,
+      "order": 22
+    },
+    {
+      "id": "1782170985462",
+      "title": "duck.ai",
+      "url": "https://duck.ai",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://duck.ai",
+      "description": "安全匿名AI聊天服务",
+      "categoryId": "1782097087688",
+      "pinned": true,
+      "createdAt": 1782170985462,
+      "order": 23
+    },
+    {
+      "id": "1782171046911",
+      "title": "perplexity",
+      "url": "https://www.perplexity.ai",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://www.perplexity.ai",
+      "description": "AI智能搜索引擎，提供实时答案和深度研究。",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782171046911,
+      "order": 23
+    },
+    {
+      "id": "1782171079342",
+      "title": "chathub",
+      "url": "https://app.chathub.gg",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://app.chathub.gg",
+      "description": "多模型AI聊天助手平台",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782171079342,
+      "order": 24
+    },
+    {
+      "id": "1782208184543",
+      "title": "xiaomi mimo",
+      "url": "https://aistudio.xiaomimimo.com/#/c",
+      "icon": "https://t3.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=128&url=https://aistudio.xiaomimimo.com",
+      "description": "小米AI Studio创作平台",
+      "categoryId": "1782097087688",
+      "pinned": false,
+      "createdAt": 1782208184543,
+      "order": 25
+    }
+  ],
+  "categories": [
+    {
+      "id": "1782058268591",
+      "name": "常用推荐",
+      "icon": "Star"
+    },
+    {
+      "id": "1782058281281",
+      "name": "导航",
+      "icon": "Folder",
+      "parentId": "1782058268591"
+    },
+    {
+      "id": "1782058286233",
+      "name": "搜索",
+      "icon": "Folder",
+      "parentId": "1782058268591"
+    },
+    {
+      "id": "1782096821620",
+      "name": "在线工具",
+      "icon": "CloudCog"
+    },
+    {
+      "id": "1782098442871",
+      "name": "社交",
+      "icon": "Folder",
+      "parentId": "1782096821620"
+    },
+    {
+      "id": "1782096936964",
+      "name": "办公",
+      "icon": "Folder",
+      "parentId": "1782096821620"
+    },
+    {
+      "id": "1782096954138",
+      "name": "设计",
+      "icon": "Folder",
+      "parentId": "1782096821620"
+    },
+    {
+      "id": "1782096970312",
+      "name": "开发",
+      "icon": "Folder",
+      "parentId": "1782096821620"
+    },
+    {
+      "id": "1782096990142",
+      "name": "运维",
+      "icon": "Folder",
+      "parentId": "1782096821620"
+    },
+    {
+      "id": "1782118834307",
+      "name": "网络",
+      "icon": "Folder",
+      "parentId": "1782096821620"
+    },
+    {
+      "id": "1782058293215",
+      "name": "人工智能",
+      "icon": "Bot"
+    },
+    {
+      "id": "1782097087688",
+      "name": "网页",
+      "icon": "Folder",
+      "parentId": "1782058293215"
+    },
+    {
+      "id": "1782097125852",
+      "name": "终端",
+      "icon": "Folder",
+      "parentId": "1782058293215"
+    },
+    {
+      "id": "1782097142462",
+      "name": "应用",
+      "icon": "Folder",
+      "parentId": "1782058293215"
+    },
+    {
+      "id": "1782097160311",
+      "name": "插件",
+      "icon": "Folder",
+      "parentId": "1782058293215"
+    },
+    {
+      "id": "1782105614645",
+      "name": "API",
+      "icon": "Folder",
+      "parentId": "1782058293215"
+    },
+    {
+      "id": "1782058305283",
+      "name": "项目管理",
+      "icon": "FolderLock"
+    },
+    {
+      "id": "1782073044305",
+      "name": "设计",
+      "icon": "DraftingCompass",
+      "parentId": "1782058305283"
+    },
+    {
+      "id": "1782073154979",
+      "name": "开发",
+      "icon": "GitBranch",
+      "parentId": "1782058305283"
+    },
+    {
+      "id": "1782073302846",
+      "name": "运维",
+      "icon": "Wrench",
+      "parentId": "1782058305283"
+    },
+    {
+      "id": "1782105947160",
+      "name": "部署",
+      "icon": "Server",
+      "parentId": "1782058305283"
+    },
+    {
+      "id": "1782069744379",
+      "name": "学习|输出",
+      "icon": "BookOpenText"
+    },
+    {
+      "id": "1782096267655",
+      "name": "编程",
+      "icon": "Folder",
+      "parentId": "1782069744379"
+    },
+    {
+      "id": "1782096310761",
+      "name": "运维",
+      "icon": "Folder",
+      "parentId": "1782069744379"
+    },
+    {
+      "id": "1782096348217",
+      "name": "开发",
+      "icon": "Folder",
+      "parentId": "1782069744379"
+    },
+    {
+      "id": "1782096360379",
+      "name": "设计",
+      "icon": "Folder",
+      "parentId": "1782069744379"
+    },
+    {
+      "id": "1782096411355",
+      "name": "语言",
+      "icon": "Folder",
+      "parentId": "1782069744379"
+    },
+    {
+      "id": "1782096368697",
+      "name": "笔记",
+      "icon": "Folder",
+      "parentId": "1782069744379"
+    },
+    {
+      "id": "1782096387847",
+      "name": "博客",
+      "icon": "Folder",
+      "parentId": "1782069744379"
+    },
+    {
+      "id": "1782099050058",
+      "name": "论坛",
+      "icon": "Folder",
+      "parentId": "1782069744379"
+    },
+    {
+      "id": "1782069696684",
+      "name": "工作|职场",
+      "icon": "MonitorCloud"
+    },
+    {
+      "id": "1782096436665",
+      "name": "邮箱",
+      "icon": "Folder",
+      "parentId": "1782069696684"
+    },
+    {
+      "id": "1782096467711",
+      "name": "网盘",
+      "icon": "Folder",
+      "parentId": "1782069696684"
+    },
+    {
+      "id": "1782096599306",
+      "name": "工具",
+      "icon": "PocketKnife",
+      "parentId": "1782069696684"
+    },
+    {
+      "id": "1782069706486",
+      "name": "生活娱乐",
+      "icon": "Plane"
+    },
+    {
+      "id": "1782069738356",
+      "name": "游戏",
+      "icon": "Folder",
+      "parentId": "1782069706486"
+    },
+    {
+      "id": "1782069714239",
+      "name": "旅游",
+      "icon": "Folder",
+      "parentId": "1782069706486"
+    },
+    {
+      "id": "1782069732813",
+      "name": "购物",
+      "icon": "Folder",
+      "parentId": "1782069706486"
+    },
+    {
+      "id": "1782070699741",
+      "name": "新闻|咨询",
+      "icon": "Newspaper"
+    },
+    {
+      "id": "1782095356206",
+      "name": "科技",
+      "icon": "Folder",
+      "parentId": "1782070699741"
+    },
+    {
+      "id": "1782095368065",
+      "name": "数码",
+      "icon": "Folder",
+      "parentId": "1782070699741"
+    },
+    {
+      "id": "1782095381978",
+      "name": "手机",
+      "icon": "Folder",
+      "parentId": "1782070699741"
+    },
+    {
+      "id": "1782095398898",
+      "name": "电脑",
+      "icon": "Folder",
+      "parentId": "1782070699741"
+    },
+    {
+      "id": "1782095427049",
+      "name": "军事",
+      "icon": "Folder",
+      "parentId": "1782070699741"
+    },
+    {
+      "id": "1782095434635",
+      "name": "体育",
+      "icon": "Folder",
+      "parentId": "1782070699741"
+    },
+    {
+      "id": "1782071972796",
+      "name": "软件|插件",
+      "icon": "Package"
+    },
+    {
+      "id": "1782072010049",
+      "name": "通用",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072020046",
+      "name": "windows",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072032773",
+      "name": "macos",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072043962",
+      "name": "linux",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072083126",
+      "name": "chrome",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072097420",
+      "name": "edge",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072117133",
+      "name": "firefox",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072130962",
+      "name": "safari",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072168552",
+      "name": "android",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072183312",
+      "name": "ios",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782072221434",
+      "name": "鸿蒙",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782195364490",
+      "name": "VPN",
+      "icon": "Folder",
+      "parentId": "1782071972796"
+    },
+    {
+      "id": "1782095646027",
+      "name": "视频|影音",
+      "icon": "Video"
+    },
+    {
+      "id": "1782095821968",
+      "name": "资源|素材",
+      "icon": "Layers"
+    },
+    {
+      "id": "1782072346328",
+      "name": "Self Hosted",
+      "icon": "User"
+    },
+    {
+      "id": "1782069858079",
+      "name": "VPS",
+      "icon": "Folder",
+      "parentId": "1782072346328"
+    },
+    {
+      "id": "1782069862632",
+      "name": "NAS",
+      "icon": "Folder",
+      "parentId": "1782072346328"
+    },
+    {
+      "id": "1782069868577",
+      "name": "VPN",
+      "icon": "Folder",
+      "parentId": "1782072346328"
+    },
+    {
+      "id": "1782171577416",
+      "name": "开源项目",
+      "icon": "Github"
+    },
+    {
+      "id": "1782171613008",
+      "name": "AI",
+      "icon": "Folder",
+      "parentId": "1782171577416"
+    },
+    {
+      "id": "1782171625476",
+      "name": "导航",
+      "icon": "Folder",
+      "parentId": "1782171577416"
+    },
+    {
+      "id": "1782171652868",
+      "name": "网络",
+      "icon": "Folder",
+      "parentId": "1782171577416"
+    },
+    {
+      "id": "1782171709633",
+      "name": "音乐",
+      "icon": "Folder",
+      "parentId": "1782171577416"
+    },
+    {
+      "id": "1782171718609",
+      "name": "视频",
+      "icon": "Folder",
+      "parentId": "1782171577416"
+    },
+    {
+      "id": "1782171726622",
+      "name": "笔记",
+      "icon": "Folder",
+      "parentId": "1782171577416"
+    },
+    {
+      "id": "1782172838254",
+      "name": "开发",
+      "icon": "Folder",
+      "parentId": "1782171577416"
+    },
+    {
+      "id": "1782195828863",
+      "name": "系统|网络",
+      "icon": "Computer"
+    },
+    {
+      "id": "1782195850618",
+      "name": "windows",
+      "icon": "Folder",
+      "parentId": "1782195828863"
+    },
+    {
+      "id": "1782195868418",
+      "name": "macos",
+      "icon": "Folder",
+      "parentId": "1782195828863"
+    },
+    {
+      "id": "1782195877970",
+      "name": "linux",
+      "icon": "Folder",
+      "parentId": "1782195828863"
+    },
+    {
+      "id": "1782195904281",
+      "name": "BSD",
+      "icon": "Folder",
+      "parentId": "1782195828863"
+    },
+    {
+      "id": "1782195920698",
+      "name": "android",
+      "icon": "Folder",
+      "parentId": "1782195828863"
+    },
+    {
+      "id": "1782195926891",
+      "name": "ios",
+      "icon": "Folder",
+      "parentId": "1782195828863"
+    },
+    {
+      "id": "1782195938535",
+      "name": "鸿蒙",
+      "icon": "Folder",
+      "parentId": "1782195828863"
+    },
+    {
+      "id": "1782195948361",
+      "name": "网络",
+      "icon": "Folder",
+      "parentId": "1782195828863"
+    },
+    {
+      "id": "1782208303834",
+      "name": "神秘电影",
+      "icon": "Folder",
+      "password": "25090"
+    }
+  ],
+  "searchConfig": {
+    "mode": "internal",
+    "externalSources": []
+  },
+  "aiConfig": {
+    "provider": "openai",
+    "apiKey": "sk-7101f93f64274f229fc3526277f381e9",
+    "baseUrl": "https://api.deepseek.com/v1",
+    "model": "deepseek-v4-flash"
+  }
+}
