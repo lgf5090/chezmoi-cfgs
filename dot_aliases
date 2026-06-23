@@ -3,6 +3,11 @@ cdws=cd ~/workspace
 cdcd=cd ~/code
 
 cdcm=cd ~/.local/share/chezmoi
+cma=chezmoi apply
+cmaf=chezmoi apply --force
+cmaen=chezmoi apply --exclude=encrypted
+cmup=chezmoi update
+cms=chezmoi status
 
 cdcfg=cd ~/.config
 cdlc=cd ~/.local
