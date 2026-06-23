@@ -15,9 +15,11 @@ DEFAULT_TAG_PREFIX="desktop-v"
 DEFAULT_INSTALL_METHOD="apt"
 
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/update-deb"
-CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/update-deb/config"
+CONFIG_FILE="$HOME/.config/common/config/update-deb.conf"
 
 REPO="$DEFAULT_REPO"
+REPOS=()
+REPO_ARGS_SEEN=0
 TARGET_VERSION=""
 TARGET_TAG=""
 TAG_PREFIX="$DEFAULT_TAG_PREFIX"
@@ -40,6 +42,7 @@ KEEP_TEMP=0
 HTTP_CLIENT=""
 JSON_PARSER=""
 TEMP_FILES=()
+TEMP_DIRS=()
 
 if [[ -t 2 && -z "${NO_COLOR:-}" ]]; then
     RED=$'\033[0;31m'
@@ -68,12 +71,17 @@ cleanup() {
         return 0
     fi
 
-    [[ ${#TEMP_FILES[@]} -eq 0 ]] && return 0
-
     local file
     for file in "${TEMP_FILES[@]}"; do
         if [[ -n "$file" && -f "$file" ]]; then
             rm -f -- "$file"
+        fi
+    done
+
+    local dir
+    for dir in "${TEMP_DIRS[@]}"; do
+        if [[ -n "$dir" && -d "$dir" ]]; then
+            rm -rf -- "$dir"
         fi
     done
 
@@ -91,6 +99,7 @@ usage() {
 
 常用选项:
   -r, --repo OWNER/REPO       GitHub 仓库，默认: ${DEFAULT_REPO}
+                            可重复指定，或用逗号分隔多个仓库
   -v, --version VERSION       指定版本，会尝试 tag-prefix/v/release-/rel- 等 tag
   -t, --tag TAG               直接指定 release tag
   -p, --package NAME          指定本地 Debian 包名
@@ -135,8 +144,13 @@ usage() {
 示例:
   ${SCRIPT_NAME}
   ${SCRIPT_NAME} -r edison7009/EchoBird --tag-prefix v
+  ${SCRIPT_NAME} -r owner/app1 -r owner/app2
+  ${SCRIPT_NAME} -r owner/app1,owner/app2 --dry-run
   ${SCRIPT_NAME} --tag desktop-v1.2.3 --list-assets
   ${SCRIPT_NAME} --asset-regex 'amd64.*\\.deb$' --download-only -o /tmp
+
+注意:
+  多仓库模式只能更新到各仓库最新版，不能与 --version 或 --tag 一起使用。
 EOF
 }
 
@@ -159,10 +173,31 @@ mktemp_tracked() {
     printf '%s\n' "$file"
 }
 
+mktemp_dir_tracked() {
+    local dir
+    dir=$(mktemp -d /tmp/update-deb.XXXXXX)
+    TEMP_DIRS+=("$dir")
+    printf '%s\n' "$dir"
+}
+
 load_config() {
     [[ -f "$CONFIG_FILE" ]] || return 0
     # shellcheck disable=SC1090
     source "$CONFIG_FILE"
+}
+
+add_repo_arg() {
+    local value="$1"
+    local part
+    local parts=()
+
+    IFS=',' read -r -a parts <<<"$value"
+    for part in "${parts[@]}"; do
+        part="${part#"${part%%[![:space:]]*}"}"
+        part="${part%"${part##*[![:space:]]}"}"
+        [[ -n "$part" ]] || die "仓库列表中包含空值: $value"
+        REPOS+=("$part")
+    done
 }
 
 parse_args() {
@@ -170,7 +205,11 @@ parse_args() {
         case "$1" in
             -r|--repo)
                 [[ -n "${2:-}" ]] || die "参数 $1 缺少值"
-                REPO="$2"
+                if [[ "$REPO_ARGS_SEEN" -eq 0 ]]; then
+                    REPOS=()
+                    REPO_ARGS_SEEN=1
+                fi
+                add_repo_arg "$2"
                 shift 2
                 ;;
             -v|--version)
@@ -280,11 +319,26 @@ parse_args() {
     [[ $# -eq 0 ]] || die "未知参数: $*"
 }
 
+resolve_repos() {
+    if [[ ${#REPOS[@]} -eq 0 ]]; then
+        add_repo_arg "$REPO"
+    fi
+}
+
 validate_options() {
-    [[ "$REPO" =~ ^[^/[:space:]]+/[^/[:space:]]+$ ]] || die "仓库格式错误: $REPO，应为 owner/repo"
+    resolve_repos
+
+    local repo
+    for repo in "${REPOS[@]}"; do
+        [[ "$repo" =~ ^[^/[:space:]]+/[^/[:space:]]+$ ]] || die "仓库格式错误: $repo，应为 owner/repo"
+    done
 
     if [[ -n "$TARGET_VERSION" && -n "$TARGET_TAG" ]]; then
         die "--version 和 --tag 不能同时使用"
+    fi
+
+    if [[ ${#REPOS[@]} -gt 1 && ( -n "$TARGET_VERSION" || -n "$TARGET_TAG" ) ]]; then
+        die "多个 --repo 只能更新到各仓库最新版，不能同时使用 --version 或 --tag"
     fi
 
     case "$INSTALL_METHOD" in
@@ -820,6 +874,19 @@ run_root() {
     fi
 }
 
+stage_deb_for_apt() {
+    local deb_file="$1"
+    local stage_dir staged_file
+
+    stage_dir=$(mktemp_dir_tracked)
+    staged_file="$stage_dir/$(basename "$deb_file")"
+
+    cp -f -- "$deb_file" "$staged_file"
+    chmod 0644 "$staged_file"
+
+    printf '%s\n' "$staged_file"
+}
+
 install_deb() {
     local deb_file="$1"
 
@@ -827,7 +894,7 @@ install_deb() {
 
     if [[ "$DRY_RUN" -eq 1 ]]; then
         if [[ "$INSTALL_METHOD" == "apt" ]]; then
-            log_info "dry-run: apt-get install -y $deb_file"
+            log_info "dry-run: 会复制到 /tmp 后执行 apt-get install -y $(basename "$deb_file")"
         else
             log_info "dry-run: dpkg -i $deb_file"
         fi
@@ -835,7 +902,10 @@ install_deb() {
     fi
 
     if [[ "$INSTALL_METHOD" == "apt" ]]; then
-        run_root apt-get install -y "$deb_file"
+        local staged_deb
+        staged_deb=$(stage_deb_for_apt "$deb_file")
+        log_info "apt 安装文件: $staged_deb"
+        run_root apt-get install -y "$staged_deb"
         return
     fi
 
@@ -857,30 +927,9 @@ clean_cache() {
     log_success "缓存清理完毕"
 }
 
-main() {
-    # --config needs to be honored before loading defaults from the config file.
-    local early_arg
-    for ((early_arg = 1; early_arg <= $#; early_arg++)); do
-        if [[ "${!early_arg}" == "--config" ]]; then
-            local next_index=$((early_arg + 1))
-            [[ "$next_index" -le $# ]] || die "参数 --config 缺少值"
-            CONFIG_FILE="${!next_index}"
-            break
-        fi
-    done
+update_one_repo() {
+    REPO="$1"
 
-    load_config
-    parse_args "$@"
-    validate_options
-
-    if [[ "$CLEAN_CACHE" -eq 1 ]]; then
-        clean_cache
-        exit 0
-    fi
-
-    init_dependencies
-
-    ARCH=$(detect_arch)
     local release_file
     release_file=$(mktemp_tracked)
 
@@ -899,7 +948,7 @@ main() {
 
     if [[ "$LIST_ASSETS" -eq 1 ]]; then
         print_deb_assets "$release_file"
-        exit 0
+        return 0
     fi
 
     local selected asset_name download_url
@@ -929,11 +978,11 @@ main() {
         cmp=$(version_compare "$current" "$target_version")
         if [[ "$cmp" -eq 0 ]]; then
             log_success "已是目标版本: $current"
-            exit 0
+            return 0
         elif [[ "$cmp" -eq 1 ]]; then
             confirm "当前版本 $current 高于目标版本 $target_version，确认降级安装？" || {
                 log_info "已取消"
-                exit 0
+                return 0
             }
         else
             log_info "发现可更新版本: $current -> $target_version"
@@ -943,7 +992,7 @@ main() {
     if [[ "$DRY_RUN" -eq 1 ]]; then
         log_info "dry-run: 将下载 $download_url"
         [[ "$DOWNLOAD_ONLY" -eq 1 ]] || install_deb "$CACHE_DIR/$asset_name"
-        exit 0
+        return 0
     fi
 
     local deb_file deb_package deb_version deb_arch
@@ -959,22 +1008,66 @@ main() {
         cmp=$(version_compare "$current" "$deb_version")
         if [[ "$cmp" -eq 0 ]]; then
             log_success "已安装的 Debian 包版本与下载包一致: $current"
-            exit 0
+            return 0
         elif [[ "$cmp" -eq 1 ]]; then
             confirm "当前版本 $current 高于下载包版本 $deb_version，确认降级安装？" || {
                 log_info "已取消"
-                exit 0
+                return 0
             }
         fi
     fi
 
     if [[ "$DOWNLOAD_ONLY" -eq 1 ]]; then
         log_success "下载完成: $deb_file"
-        exit 0
+        return 0
     fi
 
     install_deb "$deb_file"
     log_success "安装完成"
+}
+
+main() {
+    # --config needs to be honored before loading defaults from the config file.
+    local early_arg
+    for ((early_arg = 1; early_arg <= $#; early_arg++)); do
+        if [[ "${!early_arg}" == "--config" ]]; then
+            local next_index=$((early_arg + 1))
+            [[ "$next_index" -le $# ]] || die "参数 --config 缺少值"
+            CONFIG_FILE="${!next_index}"
+            break
+        fi
+    done
+
+    load_config
+    parse_args "$@"
+    validate_options
+
+    if [[ "$CLEAN_CACHE" -eq 1 ]]; then
+        clean_cache
+        exit 0
+    fi
+
+    init_dependencies
+
+    ARCH=$(detect_arch)
+
+    local repo failures=0
+    for repo in "${REPOS[@]}"; do
+        if [[ ${#REPOS[@]} -gt 1 ]]; then
+            log_info "========== $repo =========="
+        fi
+
+        if ( update_one_repo "$repo" ); then
+            :
+        else
+            log_error "仓库处理失败: $repo"
+            failures=$((failures + 1))
+        fi
+    done
+
+    if [[ "$failures" -gt 0 ]]; then
+        die "${failures}/${#REPOS[@]} 个仓库处理失败"
+    fi
 }
 
 main "$@"
