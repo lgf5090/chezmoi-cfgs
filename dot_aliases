@@ -67,6 +67,10 @@ gcob=git checkout -b
 gaa=git add --all
 gad=git add
 glg = git log --oneline --graph
+gdf = git diff
+grs = git reset
+gsh = git stash
+gcl = git clone
 
 
 
