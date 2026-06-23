@@ -9,6 +9,8 @@ cmaen=chezmoi apply --exclude=encrypted
 cmup=chezmoi update
 cms=chezmoi status
 
+update_deb=bash ~/.config/common/scripts/shell/update-deb.sh
+
 cdcfg=cd ~/.config
 cdlc=cd ~/.local
 cdls=cd ~/.local/share
