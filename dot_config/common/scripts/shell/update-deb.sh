@@ -380,8 +380,9 @@ init_dependencies() {
 normalize_arch() {
     local arch="$1"
     case "$arch" in
-        x86_64|x64) echo "amd64" ;;
+        x86_64|x64|64) echo "amd64" ;;
         aarch64|arm64v8) echo "arm64" ;;
+        loong64|loongarch64) echo "loong64" ;;
         armv7l|armv7) echo "armhf" ;;
         i686|x86) echo "i386" ;;
         *) echo "$arch" ;;
