@@ -1,3 +1,3 @@
 prefix=~/.npm-global
-registry=https://registry.npmmirror.com
+# registry=https://registry.npmmirror.com
 # allow-scripts=@deveco/deveco-code,@moonshot-ai/kimi-code,@anthropic-ai/claude-code,@augmentcode/auggie,@github/copilot,@google/gemini-cli,@mimo-ai/cli,@openai/codex,@qwen-code/qwen-code,@tencent-ai/codebuddy-code,groq-code-cli,opencode-ai
