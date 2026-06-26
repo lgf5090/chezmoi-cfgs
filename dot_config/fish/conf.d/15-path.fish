@@ -1,6 +1,7 @@
 _fpath_append \
     "$HOME/.lmstudio/bin" \
     "$HOME/.mimocode/bin" \
+    "$HOME/.turso" \
     "$HOME/.local/bin" \
     "$HOME/bin" \
     "$HOME/Applications" \
@@ -18,7 +19,9 @@ _fpath_prepend \
     "$cargo_home/bin" \
     "$HOME/.rd/bin" \
     "$HOME/.opencode/bin"
+
 test -r "$HOME/.cargo/env.fish"; and source "$HOME/.cargo/env.fish"
+test -r "$HOME/.turso/env.fish"; and source "$HOME/.turso/env.fish"
 
 set -q BUN_INSTALL; and _fpath_prepend "$BUN_INSTALL/bin"
 set -q DENO_INSTALL; and _fpath_prepend "$DENO_INSTALL/bin"

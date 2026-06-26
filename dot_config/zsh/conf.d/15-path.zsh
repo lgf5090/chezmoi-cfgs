@@ -1,6 +1,7 @@
 _zpath_append \
   "$HOME/.lmstudio/bin" \
   "$HOME/.mimocode/bin" \
+  "$HOME/.turso" \
   "$HOME/.local/bin" \
   "$HOME/bin" \
   "$HOME/Applications" \
@@ -17,6 +18,8 @@ _zpath_prepend \
   "$HOME/.opencode/bin"
 
 [[ -r $HOME/.cargo/env ]] && source "$HOME/.cargo/env"
+
+[[ -r $HOME/.turso/env ]] && source "$HOME/.turso/env"
 
 _zpath_prepend \
   "${BUN_INSTALL:+$BUN_INSTALL/bin}" \
