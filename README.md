@@ -4,6 +4,8 @@
 
 
 # 如何使用 git worktree 进行管理开发
+1. [Git Worktrees 速成课程](https://www.bilibili.com/video/BV1jRGb6GEsm?spm_id_from=333.788.player.switch&vd_source=6cecd1f17a6c0ef08a944dd92199a516&p=4)
+
 ## 克隆裸项目
 ```bash
 mkdir -p ~/code/dotfiles/chezmoi-cfgs
