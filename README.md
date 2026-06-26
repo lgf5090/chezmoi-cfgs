@@ -2,6 +2,30 @@
 
 这是一个使用 [chezmoi](https://www.chezmoi.io/) 管理的个人 dotfiles 仓库，用来在多台机器之间同步终端环境配置。敏感文件通过 GPG 对称加密保存，适合把 SSH 配置、私钥等内容放进仓库但不暴露明文。
 
+
+# 如何使用 git worktree 进行管理开发
+## 克隆裸项目
+```bash
+mkdir -p ~/code/dotfiles/chezmoi-cfgs
+cd ~/code/dotfiles/chezmoi-cfgs
+git clone git@github.com:lgf5090/chezmoi-cfgs.git --bare .git
+```
+
+## 添加main主分支的worktree
+```bash
+# 不要在里面修改任何代码，主要功能是拉取最新代码
+git worktree add ./main
+```
+
+## 添加dev和test分支
+```bash
+git worktree add -b dev ./dev
+git worktree add -b test ./test
+cd dev && git push -u origin dev cd ..
+cd test && git push -u origin test && cd ..
+```
+
+
 ## 软件安装详细文档
 ### winget
 [winget_install_list](docs/winget_install_list.md)
