@@ -2,6 +2,47 @@
 
 这是一个使用 [chezmoi](https://www.chezmoi.io/) 管理的个人 dotfiles 仓库，用来在多台机器之间同步终端环境配置。敏感文件通过 GPG 对称加密保存，适合把 SSH 配置、私钥等内容放进仓库但不暴露明文。
 
+
+# 如何使用 git worktree 进行管理开发
+1. [Git Worktrees 速成课程](https://www.bilibili.com/video/BV1jRGb6GEsm?spm_id_from=333.788.player.switch&vd_source=6cecd1f17a6c0ef08a944dd92199a516&p=4)
+
+## 克隆裸项目
+```bash
+mkdir -p ~/code/dotfiles/chezmoi-cfgs
+cd ~/code/dotfiles/chezmoi-cfgs
+git clone git@github.com:lgf5090/chezmoi-cfgs.git --bare .git
+```
+
+## 添加main主分支的worktree
+```bash
+# 不要在里面修改任何代码，主要功能是拉取最新代码
+git worktree add ./main
+```
+
+## 添加dev和test分支
+```bash
+git worktree add -b dev ./dev
+git worktree add -b test ./test
+cd dev && git push -u origin dev cd ..
+cd test && git push -u origin test && cd ..
+```
+
+## 完整开发流程演示
+```bash
+git worktree add -b update-worktree-docs ./update-worktree-docs
+cd update-worktree-docs
+vim README.md
+git add README.md
+git commit -m "docs: update update-worktree-docs for README"
+git push -u origin update-worktree-docs
+# 在github进行pull request后并删除远程分支
+# 删除本领分支
+cd .. && git worktree remove ./update-worktree-docs
+# 更新主分支代码， 方式一： git fetch, 方式二：
+cd main && git pull && cd ..
+```
+
+
 ## 软件安装详细文档
 ### winget
 [winget_install_list](docs/winget_install_list.md)
