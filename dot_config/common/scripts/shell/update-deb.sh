@@ -13,7 +13,7 @@ DEFAULT_REPO="esengine/DeepSeek-Reasonix"
 DEFAULT_TAG_PREFIX="desktop-v"
 DEFAULT_TIMEOUT=30
 DEFAULT_CACHE_DIR="${HOME}/.cache/update-deb"
-DEFAULT_CONFIG_FILE="${HOME}/.config/common/config/update-deb.conf"
+DEFAULT_CONFIG_FILE="${HOME}/.config/update-deb/config"
 DEFAULT_LIST_LIMIT=10
 
 # ======================== 全局状态 ========================
@@ -194,8 +194,9 @@ http_download() {
 
     if command -v axel &>/dev/null && { [[ "$RESUME" -ne 1 ]] || [[ ! -f "$output" ]]; }; then
         # 非续传模式，或续传但文件不存在时用 axel
+        # axel 进度输出到 stdout 会污染 $(fetch_deb)，重定向到 stderr
         log_info "${YELLOW}使用 axel 下载...${NC}"
-        axel -n 4 -o "$output" "$url" && return
+        axel -n 4 -o "$output" "$url" >&2 && return
         log_warn "axel 下载失败，回退到其他工具"
     fi
 
@@ -204,11 +205,11 @@ http_download() {
         if command -v wget &>/dev/null; then
             log_info "${YELLOW}使用 wget 续传...${NC}"
             local w_flags=(-q --show-progress --timeout="$TIMEOUT" --tries=3 -c)
-            wget "${w_flags[@]}" -O "$output" "$url" || die "wget 续传失败"
+            wget "${w_flags[@]}" -O "$output" "$url" >&2 || die "wget 续传失败"
         elif command -v curl &>/dev/null; then
             log_info "${YELLOW}使用 curl 续传...${NC}"
             local c_flags=(-L --max-time 0 --connect-timeout "$TIMEOUT" --retry 3 --retry-delay 2 -C -)
-            curl "${c_flags[@]}" -o "$output" "$url" || {
+            curl "${c_flags[@]}" -o "$output" "$url" >&2 || {
                 local rc=$?
                 [[ "$rc" -eq 33 ]] || die "curl 续传失败 (exit $rc)"
             }
@@ -222,18 +223,18 @@ http_download() {
         log_info "${YELLOW}使用 aria2c 下载...${NC}"
         local a_flags=(-x 4 -s 4 --max-tries=3 --retry-wait=2)
         [[ "$RESUME" -eq 1 ]] && a_flags+=(-c)
-        aria2c "${a_flags[@]}" -d "$(dirname "$output")" -o "$(basename "$output")" "$url" || die "aria2c 下载失败"
+        aria2c "${a_flags[@]}" -d "$(dirname "$output")" -o "$(basename "$output")" "$url" >&2 || die "aria2c 下载失败"
     elif command -v wget &>/dev/null; then
         log_info "${YELLOW}使用 wget 下载...${NC}"
         local w_flags=(-q --show-progress --timeout="$TIMEOUT" --tries=3)
         [[ "$RESUME" -eq 1 ]] && w_flags+=(-c)
-        wget "${w_flags[@]}" -O "$output" "$url" || die "wget 下载失败"
+        wget "${w_flags[@]}" -O "$output" "$url" >&2 || die "wget 下载失败"
     elif command -v curl &>/dev/null; then
         log_info "${YELLOW}使用 curl 下载...${NC}"
         local c_flags=(-L --max-time 0 --connect-timeout "$TIMEOUT" --retry 3 --retry-delay 2)
         [[ "$RESUME" -eq 1 ]] && c_flags+=(-C -)
         # curl -C - 对已完整文件返回 33 (HTTP range error)，视为成功
-        curl "${c_flags[@]}" -o "$output" "$url" || {
+        curl "${c_flags[@]}" -o "$output" "$url" >&2 || {
             local rc=$?
             [[ "$rc" -eq 33 ]] || die "curl 下载失败 (exit $rc)"
         }
@@ -575,6 +576,22 @@ verify_sha256() {
     [[ "${actual,,}" == "$expected" ]]
 }
 
+# 验证 .deb 文件完整性（避免复用损坏/截断的缓存）
+validate_deb() {
+    local file="$1"
+    [[ -f "$file" ]] || return 1
+    # 优先用 dpkg-deb 读取元数据（能检测截断/损坏）
+    if command -v dpkg-deb &>/dev/null; then
+        dpkg-deb -I "$file" &>/dev/null
+    elif command -v ar &>/dev/null; then
+        # 回退：ar t 能检测 ar 归档是否完整
+        ar t "$file" &>/dev/null
+    else
+        # 无工具可用，仅检查文件非空
+        [[ -s "$file" ]]
+    fi
+}
+
 fetch_deb() {
     # fetch_deb URL NAME DIGEST -> 输出本地文件路径
     local url="$1" name="$2" digest="${3:-}"
@@ -598,9 +615,15 @@ fetch_deb() {
             log_info "${YELLOW}续传模式，继续下载: ${cached}${NC}"
             # 不 return，继续走下载逻辑
         else
-            log_info "${GREEN}复用缓存: ${cached}${NC}（未校验，--verify-checksum 可启用）"
-            echo "$cached"
-            return
+            # 无 digest 或未启用校验：验证 .deb 文件完整性
+            if validate_deb "$cached"; then
+                log_info "${GREEN}复用缓存: ${cached}${NC}（未校验，--verify-checksum 可启用）"
+                echo "$cached"
+                return
+            else
+                log_warn "缓存文件损坏或不完整，重新下载: ${cached}"
+                rm -f "$cached"
+            fi
         fi
     fi
 
@@ -624,6 +647,12 @@ fetch_deb() {
         log_debug "资产提供 digest，但未启用 --verify-checksum"
     fi
 
+    # 验证下载文件完整性（即使无 digest 也检查）
+    if ! validate_deb "$cached"; then
+        rm -f "$cached"
+        die "下载文件损坏或不完整: $cached"
+    fi
+
     echo "$cached"
 }
 
@@ -636,6 +665,12 @@ dpkg_install() {
         log_info "${YELLOW}[dry-run] 将执行: apt-get install ${deb_abs} -y${NC}"
         return
     fi
+
+    # 前置验证：避免损坏/截断的 deb 导致 apt/dpkg 报错
+    if ! validate_deb "$deb"; then
+        die "deb 文件损坏或不完整: $deb（请删除缓存后重试）"
+    fi
+
     log_step "安装中..."
 
     # apt-get 选项：自动处理依赖、允许降级
@@ -656,8 +691,18 @@ dpkg_install() {
     if "${sudo_prefix[@]}" dpkg -i "$deb"; then
         return 0
     fi
+
+    # dpkg -i 失败：可能是依赖问题，尝试修复
     log_warn "dpkg 报告依赖问题，尝试修复..."
-    "${sudo_prefix[@]}" apt-get install -f -y || die "依赖修复失败"
+    if ! "${sudo_prefix[@]}" apt-get install -f -y; then
+        die "依赖修复失败"
+    fi
+
+    # apt-get install -f 返回 0 不代表安装成功（如 deb 损坏时无可修复依赖）
+    # 重新检查 dpkg 是否真正装上了
+    if ! "${sudo_prefix[@]}" dpkg -i "$deb"; then
+        die "安装失败：dpkg -i 始终无法安装 $deb（文件可能损坏或不兼容）"
+    fi
 }
 
 dpkg_remove() {
