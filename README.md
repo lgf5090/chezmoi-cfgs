@@ -25,6 +25,21 @@ cd dev && git push -u origin dev cd ..
 cd test && git push -u origin test && cd ..
 ```
 
+## 完整开发流程演示
+```bash
+git worktree add -b update-worktree-docs ./update-worktree-docs
+cd update-worktree-docs
+vim README.md
+git add README.md
+git commit -m "docs: update update-worktree-docs for README"
+git push -u origin update-worktree-docs
+# 在github进行pull request后并删除远程分支
+# 删除本领分支
+cd .. && git worktree remove ./update-worktree-docs
+# 更新主分支代码， 方式一： git fetch, 方式二：
+cd main && git pull && cd ..
+```
+
 
 ## 软件安装详细文档
 ### winget
