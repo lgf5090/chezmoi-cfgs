@@ -23,3 +23,6 @@ alias reload='source "$ZSH_CONFIG_DIR/config.zsh"'
 alias nvl='NVIM_APPNAME=nvim-lite nvim'
 alias nvd='NVIM_APPNAME=nvim-dev nvim'
 alias nvlz='NVIM_APPNAME=nvim-lazy nvim'
+
+# alias dotfiles='/usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME"'
+alias dotfiles='git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME"'

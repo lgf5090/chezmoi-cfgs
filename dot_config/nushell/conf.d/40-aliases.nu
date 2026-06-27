@@ -20,3 +20,8 @@ def now [] {
 def reload [] {
     exec nu
 }
+
+def dotfiles [...args] {
+    let dotfiles_dir = $env.HOME | path join '.dotfiles'
+    ^git --git-dir $dotfiles_dir --work-tree $env.HOME ...$args
+}

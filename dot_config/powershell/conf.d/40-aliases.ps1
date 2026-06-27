@@ -25,3 +25,8 @@ if ($global:ShellsOS -eq 'windows' -and -not (Test-Command grep)) {
         Select-String -Pattern $Pattern -Path ($(if ($Path) { $Path } else { '*' }))
     }
 }
+
+function dotfiles {
+    $homePath = if ($env:HOME) { $env:HOME } else { $env:USERPROFILE }
+    git --git-dir (Join-Path $homePath '.dotfiles') --work-tree $homePath @args
+}

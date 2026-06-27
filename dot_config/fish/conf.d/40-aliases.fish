@@ -67,3 +67,6 @@ function reload --description 'reload fish config'
     set -q FISH_CONFIG_DIR; and set config_dir "$FISH_CONFIG_DIR"
     source "$config_dir/config.fish" $argv
 end
+
+# alias dotfiles='/usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME"'
+alias dotfiles='git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME"'
