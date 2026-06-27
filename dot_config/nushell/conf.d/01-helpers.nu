@@ -1,8 +1,15 @@
+# Separator for the PATH env var: ":" on Unix, ";" on Windows.
+# NOTE: Do not use `char path_sep` here — in Nushell 0.113 it returns the
+# filesystem separator ("/" on Unix), not the PATH separator.
+def _nu_path_sep [] {
+    if $nu.os-info.name == "windows" { ";" } else { ":" }
+}
+
 def _nu_path_list [] {
     if (($env.PATH | describe) | str starts-with "list") {
         $env.PATH
     } else {
-        $env.PATH | split row (char path_sep)
+        $env.PATH | split row (_nu_path_sep)
     }
 }
 
@@ -36,11 +43,10 @@ def --env _nu_path_append [...dirs: string] {
 }
 
 def --env _nu_path_prepend_value [value: string] {
-    let sep_re = if $nu.os-info.name == "windows" { (char path_sep) } else { "[:;]" }
     let parts = if $nu.os-info.name == "windows" {
-        $value | split row (char path_sep)
+        $value | split row ";"
     } else {
-        $value | split row --regex $sep_re
+        $value | split row --regex "[:;]"
     }
     mut paths = []
 
@@ -90,7 +96,7 @@ def --env _nu_load_envs [file: string] {
             $value = ($value | str replace --all "{HOME}" $nu.home-dir)
         }
         if ($value | str contains "{PATH}") {
-            $value = ($value | str replace --all "{PATH}" ((_nu_path_list) | str join (char path_sep)))
+            $value = ($value | str replace --all "{PATH}" ((_nu_path_list) | str join (_nu_path_sep)))
         }
 
         if $key == "PATH" {
