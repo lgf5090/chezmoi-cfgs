@@ -9,3 +9,5 @@ if sys.stdin.isatty():
     if _xonsh_rc_config_file.is_file():
         source @(str(_xonsh_rc_config_file))
     del _xonsh_rc_config_file
+
+test -e "$HOME/.x-cmd.root/local/data/xonsh/xonshrc" && source "$HOME/.x-cmd.root/local/data/xonsh/xonshrc" # boot up x-cmd.
